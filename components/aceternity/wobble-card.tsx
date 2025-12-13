@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export const WobbleCard = ({
@@ -12,7 +12,8 @@ export const WobbleCard = ({
   containerClassName?: string;
   className?: string;
 }) => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
   const [isHovering, setIsHovering] = useState(false);
 
   const handleMouseMove = (event: React.MouseEvent<HTMLElement>) => {
@@ -20,8 +21,25 @@ export const WobbleCard = ({
     const rect = event.currentTarget.getBoundingClientRect();
     const x = (clientX - (rect.left + rect.width / 2)) / 20;
     const y = (clientY - (rect.top + rect.height / 2)) / 20;
-    setMousePosition({ x, y });
+    mouseX.set(x);
+    mouseY.set(y);
   };
+
+  const transform = useSpring(
+    useTransform(
+        [mouseX, mouseY],
+        ([x, y]) => `translate3d(${x}px, ${y}px, 0) scale3d(1, 1, 1)`
+    ),
+    { stiffness: 300, damping: 30 }
+  );
+
+  const transformInner = useSpring(
+      useTransform(
+          [mouseX, mouseY],
+          ([x, y]) => `translate3d(${-x}px, ${-y}px, 0) scale3d(1.03, 1.03, 1)`
+      ),
+      { stiffness: 300, damping: 30 }
+  );
 
   return (
     <motion.section
@@ -29,14 +47,12 @@ export const WobbleCard = ({
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => {
         setIsHovering(false);
-        setMousePosition({ x: 0, y: 0 });
+        mouseX.set(0);
+        mouseY.set(0);
       }}
       style={{
-        transform: isHovering
-          ? `translate3d(${mousePosition.x}px, ${mousePosition.y}px, 0) scale3d(1, 1, 1)`
-          : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
-        transition: "transform 0.1s ease-out",
-      } as any}
+        transform: isHovering ? transform : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
+      }}
       className={cn(
         "mx-auto w-full bg-indigo-800  relative rounded-2xl overflow-hidden",
         containerClassName
@@ -51,11 +67,8 @@ export const WobbleCard = ({
       >
         <motion.div
           style={{
-            transform: isHovering
-              ? `translate3d(${-mousePosition.x}px, ${-mousePosition.y}px, 0) scale3d(1.03, 1.03, 1)`
-              : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
-            transition: "transform 0.1s ease-out",
-          } as any}
+            transform: isHovering ? transformInner : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
+          }}
           className={cn("h-full px-4 py-20 sm:px-10", className)}
         >
           <Noise />
@@ -71,7 +84,7 @@ const Noise = () => {
     <div
       className="absolute inset-0 w-full h-full scale-[1.2] transform opacity-10 [mask-image:radial-gradient(#fff,transparent,75%)]"
       style={{
-        backgroundImage: "url(/noise.webp)",
+        backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')",
         backgroundSize: "30%",
       }}
     ></div>

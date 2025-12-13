@@ -82,7 +82,7 @@ export function ServiceContent({ features, benefits, process, longDescription, o
                     </p>
                   )}
                   {!overviewText && (
-                    <p className="mt-4 text-neutral-600 italic">
+                    <p className="mt-4 text-neutral-400 italic">
                       [Descripción adicional del servicio configurable desde CMS]
                     </p>
                   )}
@@ -180,6 +180,7 @@ export function ServiceContent({ features, benefits, process, longDescription, o
                         src={card.imageUrl}
                         width={500}
                         height={500}
+                        sizes="(max-width: 768px) 100vw, 33vw"
                         alt={card.imageAlt || card.title}
                         className="absolute -right-4 lg:-right-[40%] grayscale filter -bottom-10 object-contain rounded-2xl opacity-80"
                       />

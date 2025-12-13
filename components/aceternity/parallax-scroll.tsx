@@ -77,6 +77,7 @@ const ProjectCard = ({ project }: { project: any }) => {
                     className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
                     height="400"
                     width="400"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     alt={project.title}
                 />
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-center p-4">

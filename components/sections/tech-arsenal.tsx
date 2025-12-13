@@ -33,6 +33,7 @@ export function TechArsenalSection() {
               src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop"
               width={500}
               height={500}
+              sizes="(max-width: 768px) 100vw, 50vw"
               alt="Fast Speed"
               className="absolute -right-4 lg:-right-[40%] grayscale filter -bottom-10 object-contain rounded-2xl"
             />
@@ -58,6 +59,7 @@ export function TechArsenalSection() {
               src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2672&auto=format&fit=crop"
               width={500}
               height={500}
+              sizes="(max-width: 768px) 100vw, 50vw"
               alt="Global Network"
               className="absolute -right-10 md:-right-[40%] lg:-right-[20%] -bottom-10 object-contain rounded-2xl"
             />

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,11 @@ const menuItems = [
 
 export function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -75,13 +81,13 @@ export function MobileNav() {
       </Button>
 
       <AnimatePresence>
-        {isOpen && (
+        {isOpen && mounted && createPortal(
           <motion.div
             initial="closed"
             animate="open"
             exit="closed"
             variants={menuVariants}
-            className="fixed inset-0 bg-neutral-950 z-40 flex flex-col justify-center items-center p-8"
+            className="fixed inset-0 bg-neutral-950 z-[100] flex flex-col justify-center items-center p-8"
           >
              {/* Background Gradient */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-neutral-800/20 via-neutral-950 to-neutral-950 pointer-events-none" />
@@ -115,7 +121,8 @@ export function MobileNav() {
             >
                 © 2024 ONBAST Agency.
             </motion.div>
-          </motion.div>
+          </motion.div>,
+          document.body
         )}
       </AnimatePresence>
     </div>

@@ -18,7 +18,7 @@ export const TracingBeam = ({
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start start", "end start"],
+    offset: ["start 0.8", "end 0.5"],
   });
 
   const contentRef = useRef<HTMLDivElement>(null);
@@ -59,6 +59,14 @@ export const TracingBeam = ({
     }
   );
 
+  const yDot = useSpring(
+      useTransform(scrollYProgress, [0, 1], [0, svgHeight]),
+      {
+        stiffness: 500,
+        damping: 90,
+      }
+  );
+
   return (
     <motion.div
       ref={ref}
@@ -73,7 +81,10 @@ export const TracingBeam = ({
           animate={{
             boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
           }}
-          className="ml-[27px] h-4 w-4 rounded-full border border-neutral-200 shadow-sm flex items-center justify-center"
+          style={{
+             y: yDot,
+          }}
+          className="ml-[27px] h-4 w-4 rounded-full border border-neutral-200 shadow-sm flex items-center justify-center z-50 relative"
         >
           <motion.div
             transition={{

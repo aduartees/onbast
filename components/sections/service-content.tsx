@@ -59,7 +59,7 @@ const FadeIn = ({ children, className, delay = 0 }: { children: React.ReactNode,
 
 export function ServiceContent({ features, benefits, process, longDescription, overviewText, problem, solution, technologies, impactSection, faqs }: ServiceContentProps) {
   return (
-    <div className="bg-neutral-950 min-h-screen py-20 px-4 md:px-8 relative z-20 overflow-hidden">
+    <div className="bg-neutral-950 min-h-screen py-20 px-4 md:px-8 relative z-20">
       
       <TracingBeam className="px-6">
         <div className="max-w-7xl mx-auto pt-10 antialiased relative">

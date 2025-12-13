@@ -36,7 +36,7 @@ export const WobbleCard = ({
   const transformInner = useSpring(
       useTransform(
           [mouseX, mouseY],
-          ([x, y]) => `translate3d(${-x}px, ${-y}px, 0) scale3d(1.03, 1.03, 1)`
+          ([x, y]) => `translate3d(${-(x as number)}px, ${-(y as number)}px, 0) scale3d(1.03, 1.03, 1)`
       ),
       { stiffness: 300, damping: 30 }
   );

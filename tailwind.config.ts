@@ -128,7 +128,7 @@ function addVariablesForColors({ addBase, theme }: any) {
     Object.entries(allColors).flatMap(([color, values]) =>
       typeof values === "string"
         ? [[`--${color}`, values]]
-        : Object.entries(values).map(([key, value]) => [
+        : Object.entries(values as any).map(([key, value]) => [
             `--${color}-${key}`,
             value,
           ])

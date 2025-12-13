@@ -25,7 +25,7 @@ export function ServiceHeader({ title, description }: ServiceHeaderProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-neutral-500 max-w-2xl mx-auto my-6 text-base sm:text-lg md:text-xl relative z-10 font-sans leading-relaxed"
+          className="text-neutral-400 max-w-2xl mx-auto my-6 text-base sm:text-lg md:text-xl relative z-10 font-sans leading-relaxed"
         >
           {description}
         </motion.p>

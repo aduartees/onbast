@@ -75,6 +75,7 @@ export function MobileNav() {
         variant="ghost"
         size="icon"
         onClick={toggleMenu}
+        aria-label="Abrir menú"
         className="relative z-50 text-white hover:bg-white/10"
       >
         <Menu className="w-6 h-6" />
@@ -95,6 +96,7 @@ export function MobileNav() {
                 variant="ghost"
                 size="icon"
                 onClick={toggleMenu}
+                aria-label="Cerrar menú"
                 className="absolute top-6 right-6 text-white hover:bg-white/10 z-50"
               >
                 <X className="w-8 h-8" />

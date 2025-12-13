@@ -71,7 +71,7 @@ export function ServiceContent({ features, benefits, process, longDescription, o
                 <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight mb-8">
                   Visión General
                 </h2>
-                <div className="prose prose-invert prose-lg text-neutral-400 leading-relaxed">
+                <div className="prose prose-invert prose-lg text-neutral-300 leading-relaxed">
                    {/* Fallback if no long description */}
                   <p>{longDescription || "Este servicio está diseñado para transformar tu presencia digital mediante estrategias avanzadas y tecnología de vanguardia. Nos enfocamos en cada detalle para asegurar que tu inversión genere un retorno medible y sostenible en el tiempo."}</p>
                   
@@ -226,19 +226,19 @@ export function ServiceContent({ features, benefits, process, longDescription, o
           )}
     
           {/* 3. Process Section (Sticky Scroll) */}
-          {process && process.length > 0 && (
-            <section className="mb-40">
-               <div className="text-center mb-24">
-                  <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight mb-4">
-                    Nuestro Proceso
-                  </h2>
-                  <p className="text-neutral-500 text-lg max-w-2xl mx-auto">
-                    Una metodología probada que elimina la incertidumbre y garantiza la excelencia en cada entrega.
-                  </p>
-               </div>
-               <ServiceProcess steps={process} />
-            </section>
-          )}
+           {process && process.length > 0 && (
+             <section className="mb-40">
+                <div className="text-center mb-24">
+                   <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight mb-4">
+                     Nuestro Proceso
+                   </h2>
+                   <p className="text-neutral-300 text-lg max-w-2xl mx-auto">
+                     Una metodología probada que elimina la incertidumbre y garantiza la excelencia en cada entrega.
+                   </p>
+                </div>
+                <ServiceProcess steps={process} />
+             </section>
+           )}
     
           {/* 5. FAQs (Animated) */}
           {faqs && faqs.length > 0 && (

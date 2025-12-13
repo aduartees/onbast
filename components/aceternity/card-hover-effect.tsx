@@ -12,6 +12,7 @@ export const HoverEffect = ({
   items: {
     title: string;
     description: string;
+    link?: string;
     icon?: string;
     imageUrl?: string;
     colSpan?: number;
@@ -28,7 +29,8 @@ export const HoverEffect = ({
       )}
     >
       {items.map((item, idx) => (
-        <div
+        <Link
+          href={item?.link || "#"}
           key={item?.title + idx}
           className={cn(
             "relative group  block p-2 h-full w-full",
@@ -58,7 +60,7 @@ export const HoverEffect = ({
             <CardTitle icon={item.icon}>{item.title}</CardTitle>
             <CardDescription>{item.description}</CardDescription>
           </Card>
-        </div>
+        </Link>
       ))}
     </div>
   );

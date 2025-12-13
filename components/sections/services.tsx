@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 interface SanityService {
   _id: string;
   title: string;
+  slug: string; // Add slug
   description: string;
   icon?: string;
   imageUrl?: string;
@@ -38,7 +39,10 @@ export const ServicesSection = async () => {
         </div>
 
         {/* Pasamos los datos de Sanity al componente HoverEffect */}
-        <HoverEffect items={services} />
+        <HoverEffect items={services.map(s => ({
+            ...s,
+            link: `/services/${s.slug}` // Add internal linking
+        }))} />
       </div>
     </section>
   );

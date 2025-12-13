@@ -116,7 +116,42 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    addVariablesForColors,
+  ],
 } satisfies Config
+
+function addVariablesForColors({ addBase, theme }: any) {
+  let allColors = theme("colors");
+  let newVars = Object.fromEntries(
+    Object.entries(allColors).flatMap(([color, values]) =>
+      typeof values === "string"
+        ? [[`--${color}`, values]]
+        : Object.entries(values).map(([key, value]) => [
+            `--${color}-${key}`,
+            value,
+          ])
+    )
+  );
+  
+  // Filter out variables that conflict with Shadcn (those starting with hsl(var( )
+  // Actually, we should just remove the specific keys we know are semantic
+  const semanticColors = [
+    "background", "foreground", "card", "popover", "primary", "secondary", 
+    "muted", "accent", "destructive", "border", "input", "ring"
+  ];
+
+  const filteredVars = Object.fromEntries(
+    Object.entries(newVars).filter(([key, value]) => {
+        // Exclude colors that are already CSS variable references (to avoid conflicts with Shadcn)
+        return typeof value === 'string' && !value.includes("var(--");
+    })
+  );
+
+  addBase({
+    ":root": filteredVars,
+  });
+}
 
 export default config

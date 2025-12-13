@@ -63,7 +63,11 @@ export const StickyScroll = ({
               key={item.title + index} 
               className={cn(
                 "min-h-[40vh] lg:min-h-[60vh] flex flex-col justify-center",
-                index === 0 ? "mt-0 mb-10 lg:mb-40" : "my-10 lg:my-40"
+                index === 0 
+                  ? "mt-0 mb-10 lg:mb-40" 
+                  : index === content.length - 1 
+                  ? "mt-10 mb-10 lg:mt-40 lg:mb-0" 
+                  : "my-10 lg:my-40"
               )}
             >
               <motion.h2
@@ -97,7 +101,6 @@ export const StickyScroll = ({
               </div>
             </div>
           ))}
-          <div className="h-40" />
         </div>
       </div>
       <div

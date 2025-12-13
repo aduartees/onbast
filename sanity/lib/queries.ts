@@ -14,6 +14,7 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
   "slug": slug.current,
   shortDescription,
   longDescription,
+  overviewText,
   problem,
   solution,
   "imageUrl": mainImage.asset->url,

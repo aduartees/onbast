@@ -68,6 +68,14 @@ export default defineType({
       rows: 4,
     }),
     defineField({
+      name: 'overviewText',
+      title: 'Texto de Visión General (Párrafo 2)',
+      type: 'text',
+      group: 'content',
+      rows: 4,
+      description: 'Texto adicional que aparece debajo de la descripción principal en la sección de Visión General.'
+    }),
+    defineField({
         name: 'problem',
         title: 'El Problema (Pain Points)',
         type: 'text',

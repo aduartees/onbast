@@ -17,6 +17,7 @@ interface SanityServiceDetail {
   slug: string;
   shortDescription: string;
   longDescription?: string;
+  overviewText?: string;
   problem?: string;
   solution?: string;
   imageUrl?: string;
@@ -145,6 +146,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
         benefits={service.benefits}
         process={service.process}
         longDescription={service.longDescription}
+        overviewText={service.overviewText}
         problem={service.problem}
         solution={service.solution}
         technologies={service.technologies}

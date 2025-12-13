@@ -56,7 +56,7 @@ const content = [
 
 export function PhilosophySection() {
   return (
-    <section className="py-20 bg-neutral-950">
+    <section className="py-20 bg-neutral-950" id="about">
         <div className="max-w-4xl mx-auto px-4 mb-20 text-center">
             <h2 className="text-3xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-400 mb-6 tracking-tighter">
                 Filosofía ONBAST

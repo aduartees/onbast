@@ -14,9 +14,11 @@ interface SanityService {
 }
 
 export const ServicesSection = async () => {
-  // Fetch data directly from Sanity
-  // En Next.js 15, el fetch se hace directamente en el componente de servidor
-  const services: SanityService[] = await client.fetch(SERVICES_QUERY);
+  // Fetch data directly from Sanity with ISR (Incremental Static Regeneration)
+  // Revalidamos cada 60 segundos para mantener el rendimiento alto pero el contenido fresco
+  const services: SanityService[] = await client.fetch(SERVICES_QUERY, {}, {
+    next: { revalidate: 60 } 
+  });
 
   return (
     <section className="py-20 bg-neutral-950 w-full relative overflow-hidden" id="services">

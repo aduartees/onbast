@@ -17,5 +17,9 @@ function assertValue<T>(v: T | undefined, errorMessage: string): T {
   if (v === undefined) {
     throw new Error(errorMessage)
   }
+  // Clean up potential quotes and whitespace from env vars
+  if (typeof v === 'string') {
+    return v.replace(/["']/g, '').trim() as unknown as T
+  }
   return v
 }

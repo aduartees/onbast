@@ -11,9 +11,11 @@ export function Navbar() {
         <a href="#projects" className="text-sm font-medium text-neutral-300 hover:text-white transition-colors">Proyectos</a>
         <a href="#about" className="text-sm font-medium text-neutral-300 hover:text-white transition-colors">Agencia</a>
       </div>
-      <Button variant="secondary" className="bg-white text-black hover:bg-neutral-200">
-        Contacto
-      </Button>
+      <a href="#contact">
+        <Button variant="secondary" className="bg-white text-black hover:bg-neutral-200">
+          Contacto
+        </Button>
+      </a>
     </nav>
   )
 }

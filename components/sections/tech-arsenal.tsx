@@ -5,9 +5,9 @@ import { WobbleCard } from "@/components/aceternity/wobble-card";
 
 export function TechArsenalSection() {
   return (
-    <section className="py-20 bg-neutral-950 w-full">
+    <section className="py-10 bg-neutral-950 w-full">
       <div className="max-w-7xl mx-auto px-4 md:px-8 w-full">
-        <div className="max-w-3xl mx-auto text-center mb-16">
+        <div className="max-w-3xl mx-auto text-center mb-10">
           <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tighter mb-4">
             Arsenal Tecnológico
           </h2>

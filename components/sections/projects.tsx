@@ -25,8 +25,8 @@ export const ProjectsSection = async () => {
   }
 
   return (
-    <section className="py-20 bg-neutral-950 w-full" id="projects">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 mb-10">
+    <section className="py-24 bg-neutral-950 w-full" id="projects">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 mb-12">
          <h2 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 text-center">
             Proyectos Destacados
           </h2>

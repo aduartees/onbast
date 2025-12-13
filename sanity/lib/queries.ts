@@ -1,5 +1,3 @@
-import { defineQuery } from "next-sanity";
-
 export const SERVICES_QUERY = `*[_type == "service"] | order(_createdAt asc) {
   _id,
   title,

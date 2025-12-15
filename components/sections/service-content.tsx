@@ -174,9 +174,9 @@ const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, f
              {/* Large Editorial Intro */}
              <FadeIn>
                 <div className="prose prose-invert max-w-none mb-16 md:mb-24">
-                   <h2 className="text-2xl md:text-4xl lg:text-5xl font-normal leading-tight tracking-tight text-white/90 font-sans">
+                   <div className="text-2xl md:text-4xl lg:text-5xl font-normal leading-tight tracking-tight text-white/90 font-sans">
                       <BlurReveal text={longDescription || "Transforming your digital presence."} />
-                   </h2>
+                   </div>
                    {overviewText && (
                       <p className="text-lg md:text-2xl text-neutral-400 mt-8 font-light leading-relaxed border-l-2 border-indigo-500/50 pl-6">
                         {overviewText}

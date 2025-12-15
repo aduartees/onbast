@@ -89,11 +89,11 @@ export function ServiceHeader({ title, description, introduction, buttonText, bu
           variants={blurReveal}
           className="mb-8 md:mb-12 mt-auto md:mt-0"
         >
-           <span className="inline-flex items-center gap-2 px-3 py-1 md:px-4 md:py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 shadow-[0_0_30px_-5px_rgba(99,102,241,0.3)] backdrop-blur-md group hover:bg-indigo-500/20 transition-colors cursor-default">
+           <h1 className="inline-flex items-center gap-2 px-3 py-1 md:px-4 md:py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 shadow-[0_0_30px_-5px_rgba(99,102,241,0.3)] backdrop-blur-md group hover:bg-indigo-500/20 transition-colors cursor-default">
               <span className="text-xs md:text-sm font-medium text-indigo-200 tracking-wide uppercase">
                 {title}
               </span>
-           </span>
+           </h1>
         </motion.div>
 
         {/* Big Phrase with Cursive */}

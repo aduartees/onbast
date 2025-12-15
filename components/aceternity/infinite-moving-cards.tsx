@@ -24,10 +24,6 @@ export const InfiniteMovingCards = ({
   const containerRef = React.useRef<HTMLDivElement>(null);
   const scrollerRef = React.useRef<HTMLUListElement>(null);
 
-  const [isDragging, setIsDragging] = React.useState(false);
-  const [startX, setStartX] = React.useState(0);
-  const [scrollLeft, setScrollLeft] = React.useState(0);
-
   React.useEffect(() => {
     addAnimation();
   }, []);
@@ -60,82 +56,6 @@ export const InfiniteMovingCards = ({
     }
   }
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!containerRef.current) return;
-    setIsDragging(true);
-    setStartX(e.pageX - containerRef.current.offsetLeft);
-    setScrollLeft(containerRef.current.scrollLeft);
-    containerRef.current.style.cursor = 'grabbing';
-    containerRef.current.style.setProperty("animation-play-state", "paused");
-  };
-
-  const handleMouseLeave = () => {
-    if (!containerRef.current) return;
-    setIsDragging(false);
-    containerRef.current.style.cursor = 'grab';
-    containerRef.current.style.removeProperty("animation-play-state");
-  };
-
-  const handleMouseUp = () => {
-    if (!containerRef.current) return;
-    setIsDragging(false);
-    containerRef.current.style.cursor = 'grab';
-    containerRef.current.style.removeProperty("animation-play-state");
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !containerRef.current) return;
-    e.preventDefault();
-    const x = e.pageX - containerRef.current.offsetLeft;
-    const walk = (x - startX) * 2; // scroll-fast
-    
-    // Manual infinite scroll logic
-    const maxScrollLeft = containerRef.current.scrollWidth - containerRef.current.clientWidth;
-    let newScrollLeft = scrollLeft - walk;
-
-    if (newScrollLeft < 0) {
-        newScrollLeft = maxScrollLeft + newScrollLeft; // Loop to end
-    } else if (newScrollLeft > maxScrollLeft) {
-        newScrollLeft = newScrollLeft - maxScrollLeft; // Loop to start
-    }
-
-    containerRef.current.scrollLeft = newScrollLeft;
-  };
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (!containerRef.current) return;
-    setIsDragging(true);
-    setStartX(e.touches[0].pageX - containerRef.current.offsetLeft);
-    setScrollLeft(containerRef.current.scrollLeft);
-    containerRef.current.style.setProperty("animation-play-state", "paused");
-  };
-
-  const handleTouchEnd = () => {
-    if (!containerRef.current) return;
-    setIsDragging(false);
-    containerRef.current.style.removeProperty("animation-play-state");
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging || !containerRef.current) return;
-    // Don't prevent default here to allow vertical scrolling of the page
-    // e.preventDefault(); 
-    const x = e.touches[0].pageX - containerRef.current.offsetLeft;
-    const walk = (x - startX) * 2; // scroll-fast
-    
-    // Manual infinite scroll logic
-    const maxScrollLeft = containerRef.current.scrollWidth - containerRef.current.clientWidth;
-    let newScrollLeft = scrollLeft - walk;
-
-    if (newScrollLeft < 0) {
-        newScrollLeft = maxScrollLeft + newScrollLeft; // Loop to end
-    } else if (newScrollLeft > maxScrollLeft) {
-        newScrollLeft = newScrollLeft - maxScrollLeft; // Loop to start
-    }
-
-    containerRef.current.scrollLeft = newScrollLeft;
-  };
-
   const getDirection = () => {
     if (containerRef.current) {
       if (direction === "left") {
@@ -166,40 +86,29 @@ export const InfiniteMovingCards = ({
     <div
       ref={containerRef}
       className={cn(
-        "scroller relative z-20  max-w-7xl overflow-hidden  [mask-image:linear-gradient(to_right,transparent,white_20%,white_80%,transparent)] cursor-grab",
+        "scroller relative z-20 max-w-7xl overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_20%,white_80%,transparent)]",
         className
       )}
-      onMouseDown={handleMouseDown}
-      onMouseLeave={handleMouseLeave}
-      onMouseUp={handleMouseUp}
-      onMouseMove={handleMouseMove}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
     >
       <ul
         ref={scrollerRef}
         className={cn(
-          " flex min-w-full shrink-0 gap-4 py-4 w-max flex-nowrap",
-          start && !isDragging && "animate-scroll ",
-          pauseOnHover && !isDragging && "hover:[animation-play-state:paused]"
+          "flex min-w-full shrink-0 gap-6 py-4 w-max flex-nowrap will-change-transform",
+          start && "animate-scroll",
+          pauseOnHover && "hover:[animation-play-state:paused]"
         )}
       >
         {items.map((item, idx) => (
           <li
-            className="w-[350px] max-w-full relative rounded-2xl border border-b-0 flex-shrink-0 border-slate-700 px-8 py-6 md:w-[450px]"
-            style={{
-              background:
-                "linear-gradient(180deg, var(--slate-800), var(--slate-900)",
-            }}
-            key={item.name}
+            className="w-[350px] max-w-full relative rounded-2xl border border-white/5 bg-neutral-900/40 backdrop-blur-sm px-8 py-6 md:w-[450px] shadow-[0_8px_16px_rgb(0_0_0/0.4)]"
+            key={item.name + idx}
           >
             <blockquote>
               <div
                 aria-hidden="true"
                 className="user-select-none -z-1 pointer-events-none absolute -left-0.5 -top-0.5 h-[calc(100%_+_4px)] w-[calc(100%_+_4px)]"
               ></div>
-              <span className=" relative z-20 text-sm leading-[1.6] text-gray-100 font-normal">
+              <span className="relative z-20 text-sm leading-[1.6] text-neutral-100 font-normal italic">
                 "{item.quote}"
               </span>
               <div className="relative z-20 mt-6 flex flex-row items-center">
@@ -209,14 +118,14 @@ export const InfiniteMovingCards = ({
                         alt={item.name}
                         width={40}
                         height={40}
-                        className="rounded-full mr-4 object-cover"
+                        className="rounded-full mr-4 object-cover ring-2 ring-indigo-500/20"
                     />
                 )}
                 <span className="flex flex-col gap-1">
-                  <span className=" text-sm leading-[1.6] text-gray-400 font-normal">
+                  <span className="text-sm leading-[1.6] text-white font-bold">
                     {item.name}
                   </span>
-                  <span className=" text-sm leading-[1.6] text-gray-400 font-normal">
+                  <span className="text-xs leading-[1.6] text-indigo-300 font-mono uppercase tracking-wider">
                     {item.role}
                   </span>
                 </span>

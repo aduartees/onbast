@@ -15,6 +15,8 @@ const ServiceProcess = dynamic(() => import("./service-process").then(mod => mod
 const TestimonialsSection = dynamic(() => import("@/components/sections/testimonials").then(mod => mod.TestimonialsSection));
 const TeamSection = dynamic(() => import("@/components/sections/team").then(mod => mod.TeamSection));
 const PricingSection = dynamic(() => import("@/components/sections/pricing-section").then(mod => mod.PricingSection));
+const ImpactStats = dynamic(() => import("@/components/sections/impact-stats").then(mod => mod.ImpactStats));
+const TransformationSection = dynamic(() => import("@/components/sections/transformation").then(mod => mod.TransformationSection));
 
 // Removed imports that are now dynamic
 import { WobbleCard } from "@/components/aceternity/wobble-card";
@@ -28,28 +30,30 @@ interface ServiceContentProps {
     icon?: string;
   }[];
   featuresTitle?: string;
+  featuresDescription?: string;
   benefits?: string[];
   process?: {
     title: string;
     description: string;
-    imageUrl?: string;
   }[];
   processTitle?: string;
+  processDescription?: string;
   longDescription?: string;
   overviewText?: string;
   problem?: string;
   solution?: string;
   technologies?: string[];
+  techTitle?: string;
+  techDescription?: string;
   impactSection?: {
-    title: string;
-    cards: {
-      title: string;
-      description: string;
-      colSpan: number;
-      minHeight?: number;
-      imageUrl?: string;
-      imageAlt?: string;
-      color: string;
+    title?: string;
+    subtitle?: string;
+    stats?: {
+      value: number;
+      prefix?: string;
+      suffix?: string;
+      label: string;
+      description?: string;
     }[];
   };
   team?: {
@@ -60,6 +64,7 @@ interface ServiceContentProps {
     social?: { linkedin?: string; twitter?: string };
   }[];
   teamTitle?: string;
+  teamDescription?: string;
   testimonials?: {
     name: string;
     role: string;
@@ -67,6 +72,7 @@ interface ServiceContentProps {
     imageUrl?: string;
   }[];
   testimonialsTitle?: string;
+  testimonialsDescription?: string;
   pricing?: {
     title?: string;
     subtitle?: string;
@@ -91,9 +97,18 @@ interface ServiceContentProps {
     answer: string;
   }[];
   faqTitle?: string;
+  faqDescription?: string;
+  ctaSection?: {
+    title?: string;
+    description?: string;
+    buttonText?: string;
+    buttonLink?: string;
+    secondaryButtonText?: string;
+    secondaryButtonLink?: string;
+  };
 }
 
-export function ServiceContent({ mainImage, features, featuresTitle, benefits, process, processTitle, longDescription, overviewText, problem, solution, technologies, impactSection, team, teamTitle, testimonials, testimonialsTitle, pricing, faqs, faqTitle }: ServiceContentProps) {
+export function ServiceContent({ mainImage, features, featuresTitle, featuresDescription, benefits, process, processTitle, processDescription, longDescription, overviewText, problem, solution, technologies, techTitle, techDescription, impactSection, team, teamTitle, teamDescription, testimonials, testimonialsTitle, testimonialsDescription, pricing, faqs, faqTitle, faqDescription, ctaSection }: ServiceContentProps) {
   return (
     <div className="bg-neutral-950 min-h-screen py-12 md:py-24 px-4 md:px-6 relative z-10 rounded-t-[3rem] md:rounded-t-[5rem] shadow-[0_-50px_100px_-20px_rgba(79,70,229,0.1)] border-t border-white/10 mt-0 overflow-hidden transform-gpu backface-hidden">
       
@@ -109,14 +124,15 @@ export function ServiceContent({ mainImage, features, featuresTitle, benefits, p
         <TracingBeam className="px-4 max-w-6xl mx-auto">
            <ContentWrapper 
              mainImage={mainImage}
-             features={features} featuresTitle={featuresTitle}
-             benefits={benefits} process={process} processTitle={processTitle}
+             features={features} featuresTitle={featuresTitle} featuresDescription={featuresDescription}
+             benefits={benefits} process={process} processTitle={processTitle} processDescription={processDescription}
              longDescription={longDescription} overviewText={overviewText} 
-             problem={problem} solution={solution} technologies={technologies} 
-             impactSection={impactSection} team={team} teamTitle={teamTitle}
-             testimonials={testimonials} testimonialsTitle={testimonialsTitle}
+             problem={problem} solution={solution} technologies={technologies} techTitle={techTitle} techDescription={techDescription}
+             impactSection={impactSection} team={team} teamTitle={teamTitle} teamDescription={teamDescription}
+             testimonials={testimonials} testimonialsTitle={testimonialsTitle} testimonialsDescription={testimonialsDescription}
              pricing={pricing}
-             faqs={faqs} faqTitle={faqTitle}
+             faqs={faqs} faqTitle={faqTitle} faqDescription={faqDescription}
+             ctaSection={ctaSection}
            />
         </TracingBeam>
       </div>
@@ -125,14 +141,15 @@ export function ServiceContent({ mainImage, features, featuresTitle, benefits, p
       <div className="lg:hidden">
          <ContentWrapper 
              mainImage={mainImage}
-             features={features} featuresTitle={featuresTitle}
-             benefits={benefits} process={process} processTitle={processTitle}
+             features={features} featuresTitle={featuresTitle} featuresDescription={featuresDescription}
+             benefits={benefits} process={process} processTitle={processTitle} processDescription={processDescription}
              longDescription={longDescription} overviewText={overviewText} 
-             problem={problem} solution={solution} technologies={technologies} 
-             impactSection={impactSection} team={team} teamTitle={teamTitle}
-             testimonials={testimonials} testimonialsTitle={testimonialsTitle}
+             problem={problem} solution={solution} technologies={technologies} techTitle={techTitle} techDescription={techDescription}
+             impactSection={impactSection} team={team} teamTitle={teamTitle} teamDescription={teamDescription}
+             testimonials={testimonials} testimonialsTitle={testimonialsTitle} testimonialsDescription={testimonialsDescription}
              pricing={pricing}
-             faqs={faqs} faqTitle={faqTitle}
+             faqs={faqs} faqTitle={faqTitle} faqDescription={faqDescription}
+             ctaSection={ctaSection}
            />
       </div>
     </div>
@@ -140,7 +157,7 @@ export function ServiceContent({ mainImage, features, featuresTitle, benefits, p
 }
 
 // Extracted Content Component to reuse
-const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process, processTitle, longDescription, overviewText, problem, solution, technologies, impactSection, team, teamTitle, testimonials, testimonialsTitle, pricing, faqs, faqTitle }: ServiceContentProps) => {
+const ContentWrapper = ({ mainImage, features, featuresTitle, featuresDescription, benefits, process, processTitle, processDescription, longDescription, overviewText, problem, solution, technologies, techTitle, techDescription, impactSection, team, teamTitle, teamDescription, testimonials, testimonialsTitle, testimonialsDescription, pricing, faqs, faqTitle, faqDescription, ctaSection }: ServiceContentProps) => {
     return (
         <div className="max-w-6xl mx-auto pt-4 antialiased relative pb-16">
           
@@ -160,56 +177,33 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
                 </div>
              </FadeIn>
 
-             {/* Transformation Row (Problem -> Solution) */}
+             {/* Transformation Section (Modern Replacement) */}
              {(problem || solution) && (
-                <FadeIn delay={0.2} className="relative mt-16">
-                   <div className="bg-neutral-900/30 border border-white/5 rounded-3xl p-8 md:p-12 overflow-hidden relative">
-                      {/* Background Decoration */}
-                      <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none" />
-                      
-                      <div className="grid md:grid-cols-2 gap-12 items-center relative z-10">
-                          {/* Problem */}
-                          <div className="space-y-4">
-                             <div className="flex items-center gap-2 text-red-400/80 mb-2">
-                                <div className="w-2 h-2 rounded-full bg-red-500/50" />
-                                <span className="text-xs font-mono uppercase tracking-widest">El Desafío</span>
-                             </div>
-                             <p className="text-xl md:text-2xl text-neutral-400 font-light leading-relaxed">
-                                &quot;{problem || "Identificamos los obstáculos que frenan tu crecimiento."}&quot;
-                             </p>
-                          </div>
-
-                          {/* Connection Arrow (Mobile: Down, Desktop: Right) */}
-                          <div className="flex justify-center md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-20">
-                             <div className="w-10 h-10 rounded-full bg-neutral-800 border border-white/10 flex items-center justify-center shadow-xl">
-                                <ArrowRight className="w-5 h-5 text-neutral-400 rotate-90 md:rotate-0" />
-                             </div>
-                          </div>
-
-                          {/* Solution */}
-                          <div className="bg-gradient-to-br from-indigo-500/10 to-purple-500/5 border border-indigo-500/20 rounded-2xl p-6 md:p-8 relative group hover:border-indigo-500/40 transition-colors">
-                             <div className="flex items-center gap-2 text-indigo-400 mb-4">
-                                <Zap className="w-4 h-4" />
-                                <span className="text-xs font-mono uppercase tracking-widest">La Solución ONBAST</span>
-                             </div>
-                             <p className="text-lg text-white font-medium leading-relaxed">
-                                {solution || "Nuestra metodología convierte obstáculos en ventajas competitivas."}
-                             </p>
-                          </div>
-                      </div>
-                   </div>
-                </FadeIn>
+                <TransformationSection 
+                  problem={problem || "Identificamos los obstáculos que frenan tu crecimiento."}
+                  solution={solution || "Nuestra metodología convierte obstáculos en ventajas competitivas."}
+                  imageUrl={mainImage}
+                />
              )}
           </section>
     
           {/* 2. Tech Stack - Ultra Minimalist */}
           {technologies && technologies.length > 0 && (
               <FadeIn className="mb-20 md:mb-28 py-8 relative max-w-4xl mx-auto">
-                   <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-neutral-800 to-transparent opacity-50" />
                   <div className="text-center mb-8 relative z-10">
-                    <span className="px-3 py-1 bg-neutral-950 text-neutral-500 text-[10px] font-medium uppercase tracking-[0.2em] border border-neutral-800 rounded-full">
-                        Stack Tecnológico
-                    </span>
+                    <div className="relative flex justify-center items-center mb-6">
+                        <div className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-neutral-800 to-transparent opacity-50" />
+                        <div className="relative z-10 bg-neutral-950 px-2">
+                            <span className="inline-block px-3 py-1 rounded-full border border-indigo-500/20 bg-indigo-500/10 text-indigo-300 text-xs font-medium uppercase tracking-wider">
+                                {techTitle || "Stack Tecnológico"}
+                            </span>
+                        </div>
+                    </div>
+                    {techDescription && (
+                        <p className="text-neutral-400 text-sm max-w-lg mx-auto font-light leading-relaxed">
+                            {techDescription}
+                        </p>
+                    )}
                   </div>
                   <div className="flex flex-wrap justify-center gap-3 relative z-10 max-w-3xl mx-auto">
                       {technologies.map((tech, i) => (
@@ -221,54 +215,9 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
               </FadeIn>
           )}
     
-          {/* Impact Section - Clean Grid */}
-          {impactSection && impactSection.cards && impactSection.cards.length > 0 && (
-            <section className="mb-20 md:mb-28 max-w-5xl mx-auto">
-               {impactSection.title && (
-                 <FadeIn>
-                    <SectionHeading title={impactSection.title} subtitle="Impacto" highlight="Real" />
-                 </FadeIn>
-               )}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-                {impactSection.cards.map((card, i) => (
-                  <div 
-                    key={i} 
-                    className={cn(
-                        "relative overflow-hidden rounded-2xl bg-neutral-900/20 border border-white/5 p-6 group hover:border-white/10 transition-colors",
-                        card.colSpan === 2 ? "md:col-span-2" : "md:col-span-1",
-                        "min-h-[200px] flex flex-col justify-between"
-                    )}
-                  >
-                     <div className="relative z-10">
-                        <h3 className="text-xl font-bold text-white mb-2">{card.title}</h3>
-                        <p className="text-sm text-neutral-400 leading-relaxed">{card.description}</p>
-                     </div>
-                     
-                     {/* Abstract Decorative Elements based on color */}
-                     <div className={cn(
-                         "absolute -bottom-10 -right-10 w-32 h-32 rounded-full blur-3xl opacity-20 group-hover:opacity-30 transition-opacity",
-                         card.color === "blue" && "bg-blue-500",
-                         card.color === "pink" && "bg-pink-500",
-                         card.color === "indigo" && "bg-indigo-500",
-                         !card.color && "bg-white"
-                     )} />
-                     
-                     {card.imageUrl && (
-                         <div className="absolute right-0 bottom-0 w-1/2 h-1/2 opacity-30 group-hover:opacity-50 transition-opacity">
-                             <Image 
-                                src={card.imageUrl}
-                                alt={card.title}
-                                width={200}
-                                height={200}
-                                sizes="(max-width: 768px) 50vw, 200px"
-                                className="object-contain object-bottom-right w-full h-full"
-                             />
-                         </div>
-                     )}
-                  </div>
-                ))}
-              </div>
-            </section>
+          {/* Impact Section - Clean Stats */}
+          {impactSection && impactSection.stats && impactSection.stats.length > 0 && (
+             <ImpactStats impact={impactSection} />
           )}
     
     
@@ -281,11 +230,16 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
                     subtitle="Detalles" 
                     highlight="Premium" 
                   />
+                  {featuresDescription && (
+                    <p className="text-neutral-400 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed text-center">
+                        {featuresDescription}
+                    </p>
+                  )}
                </FadeIn>
                
-               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-12">
                   {features.map((feature, i) => (
-                    <FadeIn delay={i * 0.1} key={i} className="p-6 rounded-2xl bg-neutral-900/10 border border-white/5 hover:bg-neutral-900/30 transition-all duration-300 group">
+                    <FadeIn delay={i * 0.1} key={i} noVertical className="p-6 rounded-2xl bg-neutral-900/10 border border-white/5 hover:bg-neutral-900/30 transition-all duration-300 group">
                        <div className="mb-4 w-10 h-10 rounded-lg bg-neutral-800/50 flex items-center justify-center text-indigo-400 group-hover:text-indigo-300 group-hover:bg-indigo-500/10 transition-colors">
                           <Zap className="w-5 h-5" />
                        </div>
@@ -308,8 +262,15 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
                      subtitle="Talento" 
                      highlight="Experto" 
                    />
+                   {teamDescription && (
+                     <p className="text-neutral-400 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed text-center">
+                         {teamDescription}
+                     </p>
+                   )}
                 </FadeIn>
-                <TeamSection team={team} />
+                <div className="mt-12">
+                   <TeamSection team={team} />
+                </div>
             </section>
           )}
 
@@ -322,8 +283,15 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
                      subtitle="Confianza" 
                      highlight="Real" 
                    />
+                   {testimonialsDescription && (
+                     <p className="text-neutral-400 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed text-center">
+                         {testimonialsDescription}
+                     </p>
+                   )}
                 </FadeIn>
-                <TestimonialsSection testimonials={testimonials} />
+                <div className="mt-12">
+                   <TestimonialsSection testimonials={testimonials} />
+                </div>
             </section>
           )}
 
@@ -336,6 +304,11 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
                      subtitle="Metodología" 
                      highlight="Ágil" 
                    />
+                   {processDescription && (
+                     <p className="text-neutral-400 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed text-center mb-12">
+                         {processDescription}
+                     </p>
+                   )}
                 </FadeIn>
                 <ServiceProcess steps={process} />
              </section>
@@ -357,8 +330,13 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
                       subtitle="Dudas" 
                       highlight="Resueltas" 
                     />
+                    {faqDescription && (
+                      <p className="text-neutral-400 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed text-center">
+                          {faqDescription}
+                      </p>
+                    )}
                   </FadeIn>
-                  <FadeIn delay={0.2}>
+                  <FadeIn delay={0.2} className="mt-12">
                     <ServiceFAQ faqs={faqs} />
                   </FadeIn>
               </section>
@@ -369,17 +347,17 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
               <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none" />
               <FadeIn className="relative z-10 max-w-2xl mx-auto px-6">
                 <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tighter mb-4">
-                  ¿Listo para comenzar?
+                  {ctaSection?.title || "¿Listo para comenzar?"}
                 </h2>
                 <p className="text-neutral-400 text-base mb-8 max-w-lg mx-auto font-light">
-                  Agenda una llamada estratégica con nuestro equipo y descubre cómo podemos transformar tu negocio.
+                  {ctaSection?.description || "Agenda una llamada estratégica con nuestro equipo y descubre cómo podemos transformar tu negocio."}
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
                   <Button size="lg" className="bg-white text-black hover:bg-neutral-200 text-sm font-medium h-12 px-8 rounded-full shadow-lg hover:shadow-xl transition-all">
-                     Agendar Llamada
+                     {ctaSection?.buttonText || "Agendar Llamada"}
                   </Button>
-                  <Button size="lg" variant="ghost" className="text-neutral-300 hover:text-white hover:bg-white/5 text-sm h-12 px-8 rounded-full">
-                     Ver Portfolio <ArrowRight className="ml-2 w-4 h-4" />
+                  <Button size="lg" variant="outline" className="text-neutral-300 hover:text-white hover:bg-white/5 border-neutral-800 text-sm h-12 px-8 rounded-full">
+                     {ctaSection?.secondaryButtonText || "Ver Portfolio"} <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
                 </div>
               </FadeIn>

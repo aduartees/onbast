@@ -26,7 +26,7 @@ interface SanityServiceDetail {
   heroButtonLink?: string;
   heroHeadline?: string;
   heroIntroduction?: string;
-  heroTrustedLogos?: { name: string; logo: string }[];
+  heroTrustedLogos?: { name: string; logo: string; alt?: string }[];
   icon?: string;
   featuresTitle?: string;
   features?: {
@@ -39,22 +39,21 @@ interface SanityServiceDetail {
   process?: {
     title: string;
     description: string;
-    imageUrl?: string;
   }[];
   technologies?: string[];
   impactSection?: {
-    title: string;
-    cards: {
-      title: string;
-      description: string;
-      colSpan: number;
-      minHeight?: number;
-      imageUrl?: string;
-      imageAlt?: string;
-      color: string;
+    title?: string;
+    subtitle?: string;
+    stats?: {
+      value: number;
+      prefix?: string;
+      suffix?: string;
+      label: string;
+      description?: string;
     }[];
   };
   teamTitle?: string;
+  teamDescription?: string;
   team?: {
     name: string;
     role: string;
@@ -63,6 +62,7 @@ interface SanityServiceDetail {
     social?: { linkedin?: string; twitter?: string };
   }[];
   testimonialsTitle?: string;
+  testimonialsDescription?: string;
   testimonials?: {
     name: string;
     role: string;
@@ -89,12 +89,37 @@ interface SanityServiceDetail {
     trustedLogos?: string[];
   };
   faqTitle?: string;
+  faqDescription?: string;
   faqs?: {
     question: string;
     answer: string;
   }[];
+  ctaSection?: {
+    title?: string;
+    description?: string;
+    buttonText?: string;
+    buttonLink?: string;
+    secondaryButtonText?: string;
+    secondaryButtonLink?: string;
+  };
   seoTitle?: string;
   seoDescription?: string;
+  agency?: {
+    name: string;
+    url: string;
+    description: string;
+    logo: string;
+    email: string;
+    phone: string;
+    address: {
+      street: string;
+      city: string;
+      region: string;
+      postalCode: string;
+      country: string;
+    };
+    socialProfiles: string[];
+  };
 }
 
 // --- Dynamic Metadata ---
@@ -136,12 +161,33 @@ export default async function ServicePage({ params }: ServicePageProps) {
     "@type": "Service",
     "name": service.title,
     "description": service.shortDescription,
+    "image": service.imageUrl,
     "provider": {
       "@type": "Organization",
-      "name": "ONBAST",
-      "url": "https://onbast.com" // Reemplazar con dominio real
+      "name": service.agency?.name || "ONBAST",
+      "url": service.agency?.url || "https://onbast.com",
+      "logo": service.agency?.logo,
+      "description": service.agency?.description,
+      "email": service.agency?.email,
+      "telephone": service.agency?.phone,
+      "address": service.agency?.address ? {
+        "@type": "PostalAddress",
+        "streetAddress": service.agency.address.street,
+        "addressLocality": service.agency.address.city,
+        "addressRegion": service.agency.address.region,
+        "postalCode": service.agency.address.postalCode,
+        "addressCountry": service.agency.address.country
+      } : undefined,
+      "sameAs": service.agency?.socialProfiles
     },
     "areaServed": "Global",
+    "offers": service.pricing ? {
+        "@type": "Offer",
+        "price": service.pricing.price ? parseFloat(service.pricing.price.replace(/[^0-9.]/g, '')) : undefined,
+        "priceCurrency": "EUR", // Default to EUR, could be dynamic
+        "description": service.pricing.description,
+        "url": `${service.agency?.url || "https://onbast.com"}/services/${service.slug}`
+    } : undefined,
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
       "name": "Servicios Digitales",
@@ -190,22 +236,30 @@ export default async function ServicePage({ params }: ServicePageProps) {
         mainImage={service.imageUrl}
         features={service.features} 
         featuresTitle={service.featuresTitle}
+        featuresDescription={service.featuresDescription}
         benefits={service.benefits} 
         process={service.process} 
         processTitle={service.processTitle}
+        processDescription={service.processDescription}
         longDescription={service.longDescription} 
         overviewText={service.overviewText} 
         problem={service.problem} 
         solution={service.solution} 
         technologies={service.technologies} 
+        techTitle={service.techTitle}
+        techDescription={service.techDescription}
         impactSection={service.impactSection} 
         team={service.team} 
         teamTitle={service.teamTitle}
+        teamDescription={service.teamDescription}
         testimonials={service.testimonials} 
         testimonialsTitle={service.testimonialsTitle}
+        testimonialsDescription={service.testimonialsDescription}
         pricing={service.pricing}
         faqs={service.faqs} 
         faqTitle={service.faqTitle}
+        faqDescription={service.faqDescription}
+        ctaSection={service.ctaSection}
       />
 
     </main>

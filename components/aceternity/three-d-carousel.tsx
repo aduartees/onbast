@@ -127,31 +127,59 @@ export const ThreeDCarousel = ({ items }: { items: TeamMember[] }) => {
 
 const TeamCard = ({ member }: { member: TeamMember }) => {
   return (
-    <div className="w-[280px] h-[400px] bg-neutral-900/80 border border-white/10 rounded-3xl overflow-hidden relative group backdrop-blur-sm select-none shadow-2xl backface-hidden">
-      <Image
-        src={member.imageUrl}
-        alt={member.name}
-        fill
-        className="object-cover transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0 pointer-events-none"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-90" />
-      
-      <div className="absolute bottom-0 left-0 w-full p-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-        <h3 className="text-xl font-bold text-white font-serif mb-1">{member.name}</h3>
-        <p className="text-indigo-400 font-medium text-xs tracking-widest uppercase mb-4">{member.role}</p>
-        
-        <div className="flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          {member.social?.linkedin && (
-            <a href={member.social.linkedin} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors pointer-events-auto">
-              <Linkedin className="w-4 h-4" />
-            </a>
-          )}
-           {member.social?.twitter && (
-            <a href={member.social.twitter} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors pointer-events-auto">
-              <Twitter className="w-4 h-4" />
-            </a>
-          )}
-        </div>
+    <div className="w-[280px] h-[400px] group relative overflow-hidden rounded-[2rem] bg-neutral-900 border border-white/5 hover:border-white/10 transition-colors select-none shadow-2xl backface-hidden">
+      {/* Background Image - Clean & Sharp */}
+      <div className="absolute inset-0 h-full w-full">
+        <Image
+          src={member.imageUrl}
+          alt={member.imageAlt || member.name}
+          fill
+          className="object-cover transition-transform duration-700 will-change-transform group-hover:scale-105 pointer-events-none"
+        />
+        {/* Subtle Gradient for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/20 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-80" />
+      </div>
+
+      {/* Floating Glass Info Card */}
+      <div className="absolute bottom-4 left-4 right-4 p-5 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] translate-y-2 transition-transform duration-500 group-hover:translate-y-0 will-change-transform">
+         <div className="flex flex-col gap-1">
+            <h3 className="text-xl font-bold text-white tracking-tight leading-tight">
+              {member.name}
+            </h3>
+            <p className="text-indigo-300 font-mono text-xs uppercase tracking-wider font-medium">
+              {member.role}
+            </p>
+         </div>
+
+         {/* Divider & Socials (Reveal on Hover) */}
+         <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-out">
+            <div className="overflow-hidden">
+               <div className="pt-4 mt-4 border-t border-white/10 flex items-center gap-3">
+                  {member.social?.linkedin && (
+                    <a 
+                      href={member.social.linkedin} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-neutral-400 hover:text-white transition-colors pointer-events-auto"
+                      onPointerDown={(e) => e.stopPropagation()}
+                    >
+                      <Linkedin className="w-4 h-4" />
+                    </a>
+                  )}
+                  {member.social?.twitter && (
+                    <a 
+                      href={member.social.twitter} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-neutral-400 hover:text-white transition-colors pointer-events-auto"
+                      onPointerDown={(e) => e.stopPropagation()}
+                    >
+                      <Twitter className="w-4 h-4" />
+                    </a>
+                  )}
+               </div>
+            </div>
+         </div>
       </div>
     </div>
   );

@@ -23,12 +23,24 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
   heroButtonLink,
   heroHeadline,
   heroIntroduction,
-  "heroTrustedLogos": heroTrustedLogos[] {
+  "heroTrustedLogos": *[_type == "settings"][0].trustedLogos[] {
     name,
-    "logo": logo.asset->url
+    "logo": logo.asset->url,
+    "alt": logo.alt
+  },
+  "agency": *[_type == "settings"][0].agencyInfo {
+    name,
+    url,
+    description,
+    "logo": logo.asset->url,
+    email,
+    phone,
+    address,
+    socialProfiles
   },
   icon,
   featuresTitle,
+  featuresDescription,
   features[] {
     title,
     description,
@@ -36,25 +48,27 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
   },
   benefits,
   processTitle,
+  processDescription,
   process[] {
     title,
-    description,
-    "imageUrl": image.asset->url
+    description
   },
   impactSection {
     title,
-    cards[] {
-      title,
-      description,
-      colSpan,
-      minHeight,
-      "imageUrl": backgroundImage.asset->url,
-      "imageAlt": backgroundImage.alt,
-      color
+    subtitle,
+    stats[] {
+      value,
+      prefix,
+      suffix,
+      label,
+      description
     }
   },
+  techTitle,
+  techDescription,
   technologies,
   teamTitle,
+  teamDescription,
   team[]->{
     name,
     role,
@@ -63,6 +77,7 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
     social
   },
   testimonialsTitle,
+  testimonialsDescription,
   testimonials[]->{
     name,
     role,
@@ -81,17 +96,22 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
     secondaryButtonText,
     secondaryButtonLink,
     features,
-    addon {
-      title,
-      price,
-      active
-    },
+    addon,
     "trustedLogos": trustedLogos[].asset->url
   },
   faqTitle,
+  faqDescription,
   faqs[] {
     question,
     answer
+  },
+  ctaSection {
+    title,
+    description,
+    buttonText,
+    buttonLink,
+    secondaryButtonText,
+    secondaryButtonLink
   },
   seoTitle,
   seoDescription

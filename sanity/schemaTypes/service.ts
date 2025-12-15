@@ -140,7 +140,7 @@ export default defineType({
     }),
     defineField({
         name: 'impactSection',
-        title: 'Sección de Impacto (Wobble Cards)',
+        title: 'Sección de Impacto (Estadísticas)',
         type: 'object',
         group: 'content',
         fields: [
@@ -148,38 +148,27 @@ export default defineType({
                 name: 'title',
                 title: 'Título de la Sección',
                 type: 'string',
+                initialValue: 'Resultados Medibles'
             }),
             defineField({
-                name: 'cards',
-                title: 'Tarjetas',
+                name: 'subtitle',
+                title: 'Subtítulo',
+                type: 'string',
+                initialValue: 'Nuestros números hablan por sí mismos'
+            }),
+            defineField({
+                name: 'stats',
+                title: 'Estadísticas',
                 type: 'array',
                 of: [
                     {
                         type: 'object',
                         fields: [
-                            defineField({ name: 'title', title: 'Título', type: 'string' }),
-                            defineField({ name: 'description', title: 'Descripción', type: 'text' }),
-                            defineField({ 
-                                name: 'colSpan', 
-                                title: 'Columnas (1, 2 o 3)', 
-                                type: 'number',
-                                initialValue: 1,
-                                validation: Rule => Rule.min(1).max(3)
-                            }),
-                            defineField({
-                                name: 'color',
-                                title: 'Tinte de Color',
-                                type: 'string',
-                                options: {
-                                    list: [
-                                        { title: 'Neutro', value: 'neutral' },
-                                        { title: 'Azul', value: 'blue' },
-                                        { title: 'Rosa', value: 'pink' },
-                                        { title: 'Indigo', value: 'indigo' },
-                                    ]
-                                }
-                            }),
-                            defineField({ name: 'imageUrl', title: 'Imagen (Opcional)', type: 'image' })
+                            defineField({ name: 'value', title: 'Valor Numérico', type: 'number', validation: Rule => Rule.required() }),
+                            defineField({ name: 'prefix', title: 'Prefijo (ej: $)', type: 'string' }),
+                            defineField({ name: 'suffix', title: 'Sufijo (ej: %, +)', type: 'string' }),
+                            defineField({ name: 'label', title: 'Etiqueta Principal', type: 'string', validation: Rule => Rule.required() }),
+                            defineField({ name: 'description', title: 'Descripción Corta', type: 'text', rows: 2 }),
                         ]
                     }
                 ]
@@ -192,6 +181,13 @@ export default defineType({
       type: 'string',
       group: 'content',
       initialValue: 'Equipo Asignado'
+    }),
+    defineField({
+      name: 'teamDescription',
+      title: 'Descripción Sección Equipo',
+      type: 'text',
+      rows: 2,
+      group: 'content',
     }),
     defineField({
       name: 'team',
@@ -208,6 +204,13 @@ export default defineType({
       initialValue: 'Testimonios Relacionados'
     }),
     defineField({
+      name: 'testimonialsDescription',
+      title: 'Descripción Sección Testimonios',
+      type: 'text',
+      rows: 2,
+      group: 'content',
+    }),
+    defineField({
       name: 'testimonials',
       title: 'Testimonios Relacionados',
       type: 'array',
@@ -220,6 +223,13 @@ export default defineType({
         type: 'string',
         group: 'content',
         initialValue: 'Características'
+    }),
+    defineField({
+        name: 'featuresDescription',
+        title: 'Descripción Sección Características',
+        type: 'text',
+        rows: 2,
+        group: 'content',
     }),
     defineField({
         name: 'features',
@@ -250,6 +260,13 @@ export default defineType({
         initialValue: 'Nuestro Proceso'
     }),
     defineField({
+        name: 'processDescription',
+        title: 'Descripción Sección Proceso',
+        type: 'text',
+        rows: 2,
+        group: 'content',
+    }),
+    defineField({
         name: 'process',
         title: 'Proceso de Trabajo (Tracing Beam)',
         type: 'array',
@@ -259,9 +276,22 @@ export default defineType({
             fields: [
                 {name: 'title', type: 'string', title: 'Título del Paso'},
                 {name: 'description', type: 'text', title: 'Descripción Detallada'},
-                {name: 'image', type: 'image', title: 'Imagen del Paso'},
             ]
         }]
+    }),
+    defineField({
+        name: 'techTitle',
+        title: 'Título Stack Tecnológico',
+        type: 'string',
+        group: 'content',
+        initialValue: 'Stack Tecnológico'
+    }),
+    defineField({
+        name: 'techDescription',
+        title: 'Descripción Stack Tecnológico',
+        type: 'text',
+        rows: 2,
+        group: 'content',
     }),
     defineField({
         name: 'technologies',
@@ -321,6 +351,13 @@ export default defineType({
         initialValue: 'Preguntas Frecuentes'
     }),
     defineField({
+        name: 'faqDescription',
+        title: 'Descripción Sección FAQ',
+        type: 'text',
+        rows: 2,
+        group: 'content',
+    }),
+    defineField({
         name: 'faqs',
         title: 'Preguntas Frecuentes (SEO FAQ Schema)',
         type: 'array',
@@ -332,6 +369,21 @@ export default defineType({
                 {name: 'answer', type: 'text', title: 'Respuesta'},
             ]
         }]
+    }),
+
+    defineField({
+        name: 'ctaSection',
+        title: 'Sección CTA Final',
+        type: 'object',
+        group: 'content',
+        fields: [
+            defineField({ name: 'title', title: 'Título', type: 'string', initialValue: '¿Listo para comenzar?' }),
+            defineField({ name: 'description', title: 'Descripción', type: 'text', rows: 2, initialValue: 'Agenda una llamada estratégica con nuestro equipo y descubre cómo podemos transformar tu negocio.' }),
+            defineField({ name: 'buttonText', title: 'Texto Botón Principal', type: 'string', initialValue: 'Agendar Llamada' }),
+            defineField({ name: 'buttonLink', title: 'Enlace Botón Principal', type: 'string' }),
+            defineField({ name: 'secondaryButtonText', title: 'Texto Botón Secundario', type: 'string', initialValue: 'Ver Portfolio' }),
+            defineField({ name: 'secondaryButtonLink', title: 'Enlace Botón Secundario', type: 'string' }),
+        ]
     }),
 
     // --- SEO ---

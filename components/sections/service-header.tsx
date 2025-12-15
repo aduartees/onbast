@@ -13,18 +13,18 @@ interface ServiceHeaderProps {
   introduction?: string;
   buttonText?: string;
   buttonLink?: string;
-  trustedLogos?: { name: string; logo: string }[];
+  trustedLogos?: { name: string; logo: string; alt?: string }[];
 }
 
 const DEFAULT_LOGOS = [
-  { name: "Vercel", logo: "https://assets.vercel.com/image/upload/v1588805858/repositories/vercel/logo.png" },
-  { name: "Next.js", logo: "https://assets.vercel.com/image/upload/v1662130559/nextjs/Icon_dark_background.png" },
-  { name: "Sanity", logo: "https://avatars.githubusercontent.com/u/17177659?s=200&v=4" },
-  { name: "Tailwind", logo: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" },
-  { name: "React", logo: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" },
-  { name: "Framer", logo: "https://upload.wikimedia.org/wikipedia/commons/8/87/Framer_logo.svg" },
-  { name: "OpenAI", logo: "https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg" },
-  { name: "Google", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" },
+  { name: "Vercel", logo: "https://assets.vercel.com/image/upload/v1588805858/repositories/vercel/logo.png", alt: "Vercel" },
+  { name: "Next.js", logo: "https://assets.vercel.com/image/upload/v1662130559/nextjs/Icon_dark_background.png", alt: "Next.js" },
+  { name: "Sanity", logo: "https://avatars.githubusercontent.com/u/17177659?s=200&v=4", alt: "Sanity" },
+  { name: "Tailwind", logo: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg", alt: "Tailwind CSS" },
+  { name: "React", logo: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg", alt: "React" },
+  { name: "Framer", logo: "https://upload.wikimedia.org/wikipedia/commons/8/87/Framer_logo.svg", alt: "Framer Motion" },
+  { name: "OpenAI", logo: "https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg", alt: "OpenAI" },
+  { name: "Google", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", alt: "Google" },
 ];
 
 export function ServiceHeader({ title, description, introduction, buttonText, buttonLink, trustedLogos }: ServiceHeaderProps) {
@@ -157,7 +157,7 @@ export function ServiceHeader({ title, description, introduction, buttonText, bu
                         {logo.logo ? (
                            <Image 
                               src={logo.logo} 
-                              alt={logo.name} 
+                              alt={logo.alt || logo.name} 
                               width={100} 
                               height={40} 
                               sizes="(max-width: 768px) 100px, 120px"

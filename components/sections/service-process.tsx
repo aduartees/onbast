@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 interface ProcessStep {
   title: string;
   description: string;
-  imageUrl?: string;
 }
 
 export function ServiceProcess({ steps }: { steps: ProcessStep[] }) {
@@ -72,7 +71,7 @@ const ProcessCard = ({ step, index }: { step: ProcessStep; index: number }) => {
     >
       
       {/* Lado del Contenido */}
-      <div className="w-full md:w-1/2 pl-16 md:pl-0 md:px-16">
+      <div className="w-full md:w-1/2 pl-16 md:px-16">
         <div
           className={cn(
              "relative p-6 md:p-8 rounded-2xl md:rounded-3xl border border-white/5 bg-neutral-900/80 backdrop-blur-xl hover:border-indigo-500/30 transition-colors group overflow-hidden",

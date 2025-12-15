@@ -31,14 +31,26 @@ interface PricingProps {
 }
 
 export function PricingSection({ pricing }: PricingProps) {
-  const [addonActive, setAddonActive] = React.useState(pricing?.addon?.active || false);
+  const [addonActive, setAddonActive] = React.useState(pricing.addon?.active || false);
 
   if (!pricing) return null;
 
+  // Helper to parse price string (e.g. "1.850€" -> 1850)
+  const parsePrice = (priceStr: string) => {
+    return parseInt(priceStr.replace(/[^0-9]/g, '')) || 0;
+  };
+
+  const basePrice = parsePrice(pricing.price || "0");
+  const addonPrice = pricing.addon ? parsePrice(pricing.addon.price) : 0;
+  const totalPrice = addonActive ? basePrice + addonPrice : basePrice;
+
+  // Format back to locale string (simple implementation for Euro)
+  const formattedPrice = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 0 }).format(totalPrice);
+
   return (
-    <section className="py-20 relative overflow-x-clip">
-      {/* Background Elements - MOVED TO PARENT or Fixed Position if needed, but here relative to section without overflow hidden */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200vw] h-[200vw] max-w-[1000px] max-h-[1000px] bg-indigo-900/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+    <section className="py-20 relative">
+      {/* Background Elements - Fixed clipping on mobile */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-screen h-[600px] bg-indigo-900/20 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="max-w-4xl mx-auto px-4 relative z-10">
         {/* Header */}
@@ -75,7 +87,16 @@ export function PricingSection({ pricing }: PricingProps) {
 
               {/* Price */}
               <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-5xl font-bold text-white tracking-tight">{pricing.price}</span>
+                <span className="text-5xl font-bold text-white tracking-tight">
+                    <motion.span
+                        key={totalPrice}
+                        initial={{ opacity: 0, y: 20 }} // Start from below
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, ease: "easeOut" }}
+                    >
+                        {formattedPrice}€
+                    </motion.span>
+                </span>
                 <span className="text-neutral-500 text-lg">{pricing.period}</span>
               </div>
               <p className="text-neutral-400 text-sm mb-8 leading-relaxed">
@@ -94,28 +115,26 @@ export function PricingSection({ pricing }: PricingProps) {
 
               {/* Addon Switch */}
               {pricing.addon && (
-                <div 
-                  className="flex items-center justify-between p-3 rounded-xl bg-neutral-900/50 border border-white/5 mb-8 cursor-pointer hover:bg-neutral-900/80 transition-colors"
-                  onClick={() => setAddonActive(!addonActive)}
-                >
-                   <div className="flex items-center gap-3">
-                      <div className={cn(
-                          "w-10 h-6 rounded-full relative p-1 transition-colors duration-300",
-                          addonActive ? "bg-indigo-600" : "bg-neutral-800"
-                      )}>
-                          <div className={cn(
-                              "w-4 h-4 bg-white rounded-full transition-transform duration-300 shadow-sm", 
-                              addonActive ? "translate-x-4" : ""
-                          )} />
+                <div className="flex items-center justify-between p-3 rounded-xl bg-neutral-900/50 border border-white/5 mb-8">
+                   <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <div 
+                        onClick={() => setAddonActive(!addonActive)}
+                        className={cn(
+                            "w-10 h-6 rounded-full relative p-1 cursor-pointer transition-colors duration-300 shrink-0",
+                            addonActive ? "bg-emerald-500" : "bg-neutral-800 hover:bg-neutral-700"
+                        )}
+                      >
+                          <motion.div 
+                            animate={{ x: addonActive ? 16 : 0 }}
+                            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                            className={cn("w-4 h-4 bg-white rounded-full")} 
+                          />
                       </div>
-                      <span className="text-sm text-neutral-300 font-medium">{pricing.addon.title}</span>
+                      <span className={cn("text-xs md:text-sm font-medium transition-colors leading-tight", addonActive ? "text-white" : "text-neutral-300")}>
+                        {pricing.addon.title}
+                      </span>
                    </div>
-                   <span className={cn(
-                       "text-xs font-mono px-2 py-1 rounded border transition-colors duration-300",
-                       addonActive 
-                        ? "text-indigo-300 bg-indigo-500/10 border-indigo-500/20" 
-                        : "text-neutral-500 bg-neutral-900 border-white/5"
-                   )}>
+                   <span className="text-xs font-mono text-neutral-500 bg-neutral-900 px-2 py-1 rounded border border-white/5 whitespace-nowrap ml-2">
                       {pricing.addon.price}
                    </span>
                 </div>

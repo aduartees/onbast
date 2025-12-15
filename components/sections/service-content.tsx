@@ -89,7 +89,7 @@ interface ServiceContentProps {
 
 export function ServiceContent({ mainImage, features, featuresTitle, benefits, process, processTitle, longDescription, overviewText, problem, solution, technologies, impactSection, team, teamTitle, testimonials, testimonialsTitle, pricing, faqs, faqTitle }: ServiceContentProps) {
   return (
-    <div className="bg-neutral-950 min-h-screen py-8 md:py-12 px-4 md:px-6 relative z-20">
+    <div className="bg-neutral-950 min-h-screen py-8 md:py-12 px-4 md:px-6 relative z-20 overflow-x-hidden">
       
       {/* Ambient Background Glow - Subtle - Wrapped in overflow hidden container to prevent scroll */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

@@ -15,7 +15,7 @@ export const SectionHeading = ({
   return (
     <div className={cn("mb-6 md:mb-10", align === "center" ? "text-center" : "text-left")}>
       {subtitle && (
-        <div className="inline-block px-3 py-1 rounded-full border border-white/10 bg-white/5 text-neutral-400 text-xs font-medium mb-4 uppercase tracking-wider">
+        <div className="inline-block px-3 py-1 rounded-full border border-indigo-500/20 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-4 uppercase tracking-wider">
             {subtitle}
         </div>
       )}

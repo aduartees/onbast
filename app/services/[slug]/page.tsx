@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Navbar } from "@/components/layout/navbar";
 import { ServiceHeader } from "@/components/sections/service-header";
 import { ServiceContent } from "@/components/sections/service-content";
+import { ScrollReset } from "@/components/utils/scroll-reset";
 
 // --- Types ---
 interface ServicePageProps {
@@ -268,6 +269,9 @@ export default async function ServicePage({ params }: ServicePageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       
+      {/* Scroll Reset on Mount */}
+      <ScrollReset />
+
       <Navbar />
 
       <ServiceHeader 

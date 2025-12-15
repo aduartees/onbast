@@ -38,7 +38,7 @@ export default async function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={cn(
-          "min-h-screen bg-background font-sans antialiased overflow-x-hidden",
+          "min-h-screen bg-background font-sans antialiased overflow-x-hidden scroll-smooth",
           inter.variable,
           poppins.variable,
           spaceGrotesk.variable,

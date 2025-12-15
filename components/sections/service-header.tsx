@@ -152,9 +152,6 @@ export function ServiceHeader({ title, description, introduction, buttonText, bu
            className="w-full max-w-5xl shrink-0 pb-8 md:pb-0"
         >
            <div className="relative w-full overflow-hidden">
-              {/* Gradient Masks for Fade Effect */}
-              <div className="absolute left-0 top-0 bottom-0 w-12 md:w-24 bg-gradient-to-r from-neutral-950 to-transparent z-10 pointer-events-none" />
-              <div className="absolute right-0 top-0 bottom-0 w-12 md:w-24 bg-gradient-to-l from-neutral-950 to-transparent z-10 pointer-events-none" />
               
               {/* Marquee Container */}
               <div className="flex gap-8 md:gap-12 items-center animate-scroll w-max hover:[animation-play-state:paused]">

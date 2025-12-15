@@ -24,6 +24,10 @@ export const InfiniteMovingCards = ({
   const containerRef = React.useRef<HTMLDivElement>(null);
   const scrollerRef = React.useRef<HTMLUListElement>(null);
 
+  const [isDragging, setIsDragging] = React.useState(false);
+  const [startX, setStartX] = React.useState(0);
+  const [scrollLeft, setScrollLeft] = React.useState(0);
+
   React.useEffect(() => {
     addAnimation();
   }, []);
@@ -34,18 +38,64 @@ export const InfiniteMovingCards = ({
     if (containerRef.current && scrollerRef.current) {
       const scrollerContent = Array.from(scrollerRef.current.children);
 
-      scrollerContent.forEach((item) => {
-        const duplicatedItem = item.cloneNode(true);
-        if (scrollerRef.current) {
-          scrollerRef.current.appendChild(duplicatedItem);
-        }
-      });
+      // Only duplicate if we haven't already
+      if (scrollerRef.current.children.length === items.length) {
+        scrollerContent.forEach((item) => {
+          const duplicatedItem = item.cloneNode(true);
+          if (scrollerRef.current) {
+            scrollerRef.current.appendChild(duplicatedItem);
+          }
+        });
+      }
 
       getDirection();
       getSpeed();
       setStart(true);
     }
   }
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!containerRef.current) return;
+    setIsDragging(true);
+    setStartX(e.pageX - containerRef.current.offsetLeft);
+    setScrollLeft(containerRef.current.scrollLeft);
+    containerRef.current.style.cursor = 'grabbing';
+    containerRef.current.style.setProperty("animation-play-state", "paused");
+  };
+
+  const handleMouseLeave = () => {
+    if (!containerRef.current) return;
+    setIsDragging(false);
+    containerRef.current.style.cursor = 'grab';
+    containerRef.current.style.removeProperty("animation-play-state");
+  };
+
+  const handleMouseUp = () => {
+    if (!containerRef.current) return;
+    setIsDragging(false);
+    containerRef.current.style.cursor = 'grab';
+    containerRef.current.style.removeProperty("animation-play-state");
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !containerRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - containerRef.current.offsetLeft;
+    const walk = (x - startX) * 2; // scroll-fast
+    
+    // Manual infinite scroll logic
+    const maxScrollLeft = containerRef.current.scrollWidth - containerRef.current.clientWidth;
+    let newScrollLeft = scrollLeft - walk;
+
+    if (newScrollLeft < 0) {
+        newScrollLeft = maxScrollLeft + newScrollLeft; // Loop to end
+    } else if (newScrollLeft > maxScrollLeft) {
+        newScrollLeft = newScrollLeft - maxScrollLeft; // Loop to start
+    }
+
+    containerRef.current.scrollLeft = newScrollLeft;
+  };
+
   const getDirection = () => {
     if (containerRef.current) {
       if (direction === "left") {
@@ -76,16 +126,20 @@ export const InfiniteMovingCards = ({
     <div
       ref={containerRef}
       className={cn(
-        "scroller relative z-20  max-w-7xl overflow-hidden  [mask-image:linear-gradient(to_right,transparent,white_20%,white_80%,transparent)]",
+        "scroller relative z-20  max-w-7xl overflow-hidden  [mask-image:linear-gradient(to_right,transparent,white_20%,white_80%,transparent)] cursor-grab",
         className
       )}
+      onMouseDown={handleMouseDown}
+      onMouseLeave={handleMouseLeave}
+      onMouseUp={handleMouseUp}
+      onMouseMove={handleMouseMove}
     >
       <ul
         ref={scrollerRef}
         className={cn(
           " flex min-w-full shrink-0 gap-4 py-4 w-max flex-nowrap",
-          start && "animate-scroll ",
-          pauseOnHover && "hover:[animation-play-state:paused]"
+          start && !isDragging && "animate-scroll ",
+          pauseOnHover && !isDragging && "hover:[animation-play-state:paused]"
         )}
       >
         {items.map((item, idx) => (

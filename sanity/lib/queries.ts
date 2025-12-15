@@ -22,12 +22,14 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
   heroButtonText,
   heroButtonLink,
   icon,
+  featuresTitle,
   features[] {
     title,
     description,
     icon
   },
   benefits,
+  processTitle,
   process[] {
     title,
     description,
@@ -46,6 +48,7 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
     }
   },
   technologies,
+  teamTitle,
   team[]->{
     name,
     role,
@@ -53,12 +56,14 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
     "imageAlt": image.alt,
     social
   },
+  testimonialsTitle,
   testimonials[]->{
     name,
     role,
     quote,
     "imageUrl": image.asset->url
   },
+  faqTitle,
   faqs[] {
     question,
     answer

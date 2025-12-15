@@ -25,12 +25,14 @@ interface SanityServiceDetail {
   heroButtonText?: string;
   heroButtonLink?: string;
   icon?: string;
+  featuresTitle?: string;
   features?: {
     title: string;
     description: string;
     icon?: string;
   }[];
   benefits?: string[];
+  processTitle?: string;
   process?: {
     title: string;
     description: string;
@@ -49,6 +51,7 @@ interface SanityServiceDetail {
       color: string;
     }[];
   };
+  teamTitle?: string;
   team?: {
     name: string;
     role: string;
@@ -56,12 +59,14 @@ interface SanityServiceDetail {
     imageAlt?: string;
     social?: { linkedin?: string; twitter?: string };
   }[];
+  testimonialsTitle?: string;
   testimonials?: {
     name: string;
     role: string;
     quote: string;
     imageUrl?: string;
   }[];
+  faqTitle?: string;
   faqs?: {
     question: string;
     answer: string;
@@ -153,24 +158,29 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
       <ServiceHeader 
         title={service.title} 
-        description={service.longDescription || service.shortDescription} 
+        description={service.shortDescription}
         buttonText={service.heroButtonText}
         buttonLink={service.heroButtonLink}
       />
-
       <ServiceContent 
-        features={service.features}
-        benefits={service.benefits}
-        process={service.process}
-        longDescription={service.longDescription}
-        overviewText={service.overviewText}
-        problem={service.problem}
-        solution={service.solution}
-        technologies={service.technologies}
-        impactSection={service.impactSection}
-        team={service.team}
-        testimonials={service.testimonials}
-        faqs={service.faqs}
+        mainImage={service.imageUrl}
+        features={service.features} 
+        featuresTitle={service.featuresTitle}
+        benefits={service.benefits} 
+        process={service.process} 
+        processTitle={service.processTitle}
+        longDescription={service.longDescription} 
+        overviewText={service.overviewText} 
+        problem={service.problem} 
+        solution={service.solution} 
+        technologies={service.technologies} 
+        impactSection={service.impactSection} 
+        team={service.team} 
+        teamTitle={service.teamTitle}
+        testimonials={service.testimonials} 
+        testimonialsTitle={service.testimonialsTitle}
+        faqs={service.faqs} 
+        faqTitle={service.faqTitle}
       />
 
     </main>

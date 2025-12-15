@@ -156,6 +156,13 @@ export default defineType({
         ]
     }),
     defineField({
+      name: 'teamTitle',
+      title: 'Título Sección Equipo',
+      type: 'string',
+      group: 'content',
+      initialValue: 'Equipo Asignado'
+    }),
+    defineField({
       name: 'team',
       title: 'Equipo Asignado',
       type: 'array',
@@ -163,11 +170,25 @@ export default defineType({
       of: [{ type: 'reference', to: [{ type: 'teamMember' }] }]
     }),
     defineField({
+      name: 'testimonialsTitle',
+      title: 'Título Sección Testimonios',
+      type: 'string',
+      group: 'content',
+      initialValue: 'Testimonios Relacionados'
+    }),
+    defineField({
       name: 'testimonials',
       title: 'Testimonios Relacionados',
       type: 'array',
       group: 'content',
       of: [{ type: 'reference', to: [{ type: 'testimonial' }] }]
+    }),
+    defineField({
+        name: 'featuresTitle',
+        title: 'Título Sección Características',
+        type: 'string',
+        group: 'content',
+        initialValue: 'Características'
     }),
     defineField({
         name: 'features',
@@ -191,6 +212,13 @@ export default defineType({
         of: [{type: 'string'}]
     }),
     defineField({
+        name: 'processTitle',
+        title: 'Título Sección Proceso',
+        type: 'string',
+        group: 'content',
+        initialValue: 'Nuestro Proceso'
+    }),
+    defineField({
         name: 'process',
         title: 'Proceso de Trabajo (Tracing Beam)',
         type: 'array',
@@ -211,20 +239,15 @@ export default defineType({
         group: 'content',
         of: [{type: 'string'}],
         options: {
-            list: [
-                {title: 'Next.js', value: 'Next.js'},
-                {title: 'React', value: 'React'},
-                {title: 'TypeScript', value: 'TypeScript'},
-                {title: 'Sanity', value: 'Sanity'},
-                {title: 'Node.js', value: 'Node.js'},
-                {title: 'Tailwind CSS', value: 'Tailwind CSS'},
-                {title: 'Vercel', value: 'Vercel'},
-                {title: 'OpenAI', value: 'OpenAI'},
-                {title: 'Shopify', value: 'Shopify'},
-                {title: 'Stripe', value: 'Stripe'},
-                {title: 'Supabase', value: 'Supabase'},
-            ]
+            // Eliminar lista fija para permitir cualquier entrada
         }
+    }),
+    defineField({
+        name: 'faqTitle',
+        title: 'Título Sección FAQ',
+        type: 'string',
+        group: 'content',
+        initialValue: 'Preguntas Frecuentes'
     }),
     defineField({
         name: 'faqs',

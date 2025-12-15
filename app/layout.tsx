@@ -5,6 +5,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/next";
 import { Footer } from "@/components/layout/footer";
+import { client } from "@/sanity/lib/client";
+import { SETTINGS_QUERY } from "@/sanity/lib/queries";
+import { Navbar } from "@/components/layout/navbar";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const poppins = Poppins({ 
@@ -25,11 +28,13 @@ export const metadata: Metadata = {
   description: "Agencia de Desarrollo Web Ultra-High-Performance, SEO & GEO.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await client.fetch(SETTINGS_QUERY, {}, { next: { revalidate: 60 } });
+
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={cn(
@@ -45,8 +50,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <Navbar data={settings} />
             {children}
-            <Footer />
+            <Footer data={settings} />
             <Analytics />
           </ThemeProvider>
       </body>

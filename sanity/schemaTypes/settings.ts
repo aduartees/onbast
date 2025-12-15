@@ -65,6 +65,113 @@ export default defineType({
           ]
         }
       ]
+    }),
+    defineField({
+      name: 'header',
+      title: 'Configuración del Header',
+      type: 'object',
+      group: 'content',
+      fields: [
+        defineField({ 
+          name: 'logoText', 
+          title: 'Texto del Logo', 
+          type: 'string', 
+          initialValue: 'onbast.',
+          description: 'Texto que aparece en el logo (si no hay imagen).' 
+        }),
+        defineField({
+          name: 'menuItems',
+          title: 'Elementos del Menú',
+          type: 'array',
+          of: [{
+            type: 'object',
+            title: 'Enlace',
+            fields: [
+              {name: 'label', title: 'Texto del Enlace', type: 'string'},
+              {name: 'url', title: 'URL', type: 'string'},
+              {
+                name: 'submenu',
+                title: 'Submenú (Opcional)',
+                type: 'array',
+                of: [{
+                  type: 'object',
+                  fields: [
+                    {name: 'label', title: 'Texto del Enlace', type: 'string'},
+                    {name: 'url', title: 'URL', type: 'string'},
+                    {name: 'description', title: 'Descripción Corta', type: 'string', description: 'Pequeño texto debajo del enlace (para menús ricos)'}
+                  ]
+                }]
+              }
+            ]
+          }]
+        }),
+        defineField({
+          name: 'ctaButton',
+          title: 'Botón CTA',
+          type: 'object',
+          fields: [
+            {name: 'text', title: 'Texto', type: 'string', initialValue: 'Contacto'},
+            {name: 'url', title: 'URL', type: 'string', initialValue: '#contact'}
+          ]
+        })
+      ]
+    }),
+    defineField({
+      name: 'footer',
+      title: 'Configuración del Footer',
+      type: 'object',
+      group: 'content',
+      fields: [
+        defineField({ 
+          name: 'brandText', 
+          title: 'Texto de Marca', 
+          type: 'text', 
+          rows: 3,
+          description: 'Texto que aparece debajo del logo en el footer.' 
+        }),
+        defineField({
+          name: 'socialLinks',
+          title: 'Redes Sociales (Footer)',
+          type: 'array',
+          of: [{
+            type: 'object',
+            fields: [
+              {name: 'platform', title: 'Plataforma', type: 'string', options: {list: ['Twitter', 'LinkedIn', 'GitHub', 'Instagram', 'Facebook', 'YouTube']}},
+              {name: 'url', title: 'URL', type: 'url'}
+            ]
+          }]
+        }),
+        defineField({
+          name: 'columns',
+          title: 'Columnas de Navegación',
+          type: 'array',
+          of: [{
+            type: 'object',
+            title: 'Columna',
+            fields: [
+              {name: 'title', title: 'Título de Columna', type: 'string'},
+              {
+                name: 'links', 
+                title: 'Enlaces', 
+                type: 'array', 
+                of: [{
+                  type: 'object', 
+                  fields: [
+                    {name: 'label', title: 'Texto del Enlace', type: 'string'},
+                    {name: 'url', title: 'URL (ej: /services o #contact)', type: 'string'}
+                  ]
+                }]
+              }
+            ]
+          }]
+        }),
+        defineField({ 
+          name: 'copyrightText', 
+          title: 'Texto Copyright', 
+          type: 'string',
+          description: 'Ej: ONBAST Agency. Todos los derechos reservados. (El año se actualiza solo)'
+        })
+      ]
     })
   ]
 })

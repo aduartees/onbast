@@ -143,3 +143,44 @@ export const HOME_PAGE_QUERY = `*[_type == "homePage"][0] {
   projects,
   contact
 }`;
+
+export const SETTINGS_QUERY = `*[_type == "settings"][0] {
+  "agency": agencyInfo {
+    name,
+    email,
+    address,
+    socialProfiles,
+    "logo": logo.asset->url
+  },
+  header {
+    logoText,
+    menuItems[] {
+      label,
+      url,
+      submenu[] {
+        label,
+        url,
+        description
+      }
+    },
+    ctaButton {
+      text,
+      url
+    }
+  },
+  footer {
+    brandText,
+    socialLinks,
+    columns[] {
+      title,
+      links[] {
+        label,
+        url
+      }
+    },
+    copyrightText
+  }
+}`;
+
+// Deprecated: FOOTER_QUERY is now part of SETTINGS_QUERY, but keeping for backward compatibility if needed temporarily
+export const FOOTER_QUERY = SETTINGS_QUERY;

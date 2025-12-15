@@ -54,7 +54,7 @@ export const BlurReveal = ({ text, className, highlightClassName, delay = 0, as:
             key={index}
             variants={child}
             className={cn(
-              "inline-block mr-[0.25em]",
+              "inline-block mr-[0.25em] will-change-[opacity,filter,transform]",
               // Apply highlight logic (middle word + potential next word if long phrase)
               highlightClassName && (index === midIndex || (words.length > 3 && index === midIndex + 1))
                 ? highlightClassName

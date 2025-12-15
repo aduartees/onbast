@@ -4,16 +4,21 @@ import { CheckCircle2, ArrowRight, BarChart3, Users, Zap, MessageSquare, Star } 
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { ServiceFAQ } from "./service-faq";
-import { ServiceProcess } from "./service-process";
-import { WobbleCard } from "@/components/aceternity/wobble-card";
-import { TracingBeam } from "@/components/aceternity/tracing-beam";
-import { TestimonialsSection } from "@/components/sections/testimonials";
-import { TeamSection } from "@/components/sections/team";
-import { PricingSection } from "@/components/sections/pricing-section";
+import dynamic from "next/dynamic";
 import { FadeIn } from "@/components/ui/fade-in";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { BlurReveal } from "@/components/ui/blur-reveal";
+
+// Lazy load heavy components
+const ServiceFAQ = dynamic(() => import("./service-faq").then(mod => mod.ServiceFAQ), { ssr: false });
+const ServiceProcess = dynamic(() => import("./service-process").then(mod => mod.ServiceProcess), { ssr: false });
+const TestimonialsSection = dynamic(() => import("@/components/sections/testimonials").then(mod => mod.TestimonialsSection));
+const TeamSection = dynamic(() => import("@/components/sections/team").then(mod => mod.TeamSection));
+const PricingSection = dynamic(() => import("@/components/sections/pricing-section").then(mod => mod.PricingSection));
+
+// Removed imports that are now dynamic
+import { WobbleCard } from "@/components/aceternity/wobble-card";
+import { TracingBeam } from "@/components/aceternity/tracing-beam";
 
 interface ServiceContentProps {
   mainImage?: string;
@@ -96,7 +101,7 @@ export function ServiceContent({ mainImage, features, featuresTitle, benefits, p
       <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-t-[3rem] md:rounded-t-[5rem]">
           {/* Static Background Layer to prevent bleed-through */}
           <div className="absolute inset-0 bg-neutral-950 z-[-1]" />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-indigo-900/10 blur-[60px] rounded-full" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-indigo-900/10 blur-[60px] rounded-full transform-gpu will-change-transform" />
       </div>
 
       {/* Responsive Tracing Beam: Hidden on mobile, visible on lg+ */}
@@ -271,6 +276,7 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
                                 alt={card.title}
                                 width={200}
                                 height={200}
+                                sizes="(max-width: 768px) 50vw, 200px"
                                 className="object-contain object-bottom-right w-full h-full"
                              />
                          </div>

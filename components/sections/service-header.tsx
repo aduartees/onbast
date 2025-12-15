@@ -66,10 +66,10 @@ export function ServiceHeader({ title, description, introduction, buttonText, bu
       {/* Delicate Animated Background - Optimized */}
       <div className="absolute inset-0 w-full h-full bg-neutral-950 overflow-hidden pointer-events-none">
         {/* Soft Indigo Orb - Static/Simple Animation for Performance */}
-        <div className="absolute top-[-20%] left-[-10%] w-[120vw] h-[120vw] md:w-[90vw] md:h-[90vw] bg-indigo-900/20 rounded-full blur-[60px] md:blur-[80px]" />
+        <div className="absolute top-[-20%] left-[-10%] w-[120vw] h-[120vw] md:w-[90vw] md:h-[90vw] bg-indigo-900/20 rounded-full blur-[60px] md:blur-[80px] transform-gpu will-change-transform" />
         
         {/* Soft Cyan Orb - Static/Simple Animation for Performance */}
-        <div className="absolute bottom-[-20%] right-[-10%] w-[100vw] h-[100vw] md:w-[80vw] md:h-[80vw] bg-cyan-900/10 rounded-full blur-[60px] md:blur-[80px]" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[100vw] h-[100vw] md:w-[80vw] md:h-[80vw] bg-cyan-900/10 rounded-full blur-[60px] md:blur-[80px] transform-gpu will-change-transform" />
         
         {/* Noise - Static Layer */}
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
@@ -78,7 +78,7 @@ export function ServiceHeader({ title, description, introduction, buttonText, bu
       {/* Main Content */}
       <motion.div 
         style={{ y, opacity, scale }} 
-        className="relative z-10 flex flex-col items-center justify-center h-full w-full text-center px-8 md:px-20 max-w-5xl mx-auto pt-24 pb-safe md:pt-20 md:pb-12"
+        className="relative z-10 flex flex-col items-center justify-center h-full w-full text-center px-8 md:px-20 max-w-5xl mx-auto pt-24 pb-safe md:pt-20 md:pb-12 will-change-[transform,opacity]"
         initial="hidden"
         animate="visible"
       >
@@ -154,7 +154,7 @@ export function ServiceHeader({ title, description, introduction, buttonText, bu
            <div className="relative w-full overflow-hidden">
               
               {/* Marquee Container */}
-              <div className="flex gap-8 md:gap-12 items-center animate-scroll w-max hover:[animation-play-state:paused]">
+              <div className="flex gap-8 md:gap-12 items-center animate-scroll w-max hover:[animation-play-state:paused] will-change-transform">
                  {/* Triple the logos for seamless loop on large screens */}
                  {[...logos, ...logos, ...logos].map((logo, i) => (
                     <div key={i} className="flex items-center justify-center opacity-30 hover:opacity-80 transition-opacity duration-300 group">
@@ -164,6 +164,7 @@ export function ServiceHeader({ title, description, introduction, buttonText, bu
                               alt={logo.name} 
                               width={100} 
                               height={40} 
+                              sizes="(max-width: 768px) 100px, 120px"
                               className="h-6 md:h-8 w-auto object-contain brightness-0 invert" 
                            />
                         ) : (

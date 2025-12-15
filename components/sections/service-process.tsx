@@ -67,7 +67,7 @@ const ProcessCard = ({ step, index }: { step: ProcessStep; index: number }) => {
       ref={cardRef}
       style={{ opacity, scale }}
       className={cn(
-        "relative flex flex-col md:flex-row items-start md:items-center gap-8 md:gap-0",
+        "relative flex flex-col md:flex-row items-start md:items-center gap-8 md:gap-0 will-change-[opacity,transform]",
         isEven ? "md:flex-row-reverse" : ""
       )}
     >

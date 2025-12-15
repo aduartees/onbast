@@ -347,7 +347,7 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
 
           {/* Process Section (Sticky Scroll) */}
            {process && process.length > 0 && (
-             <section className="mb-20 md:mb-28 w-full">
+             <section className="mb-10 md:mb-16 w-full">
                 <FadeIn className="max-w-4xl mx-auto">
                    <SectionHeading 
                      title={processTitle || "Nuestro Proceso"} 

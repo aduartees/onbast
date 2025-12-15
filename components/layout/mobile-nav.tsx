@@ -22,6 +22,17 @@ export function MobileNav() {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
   const toggleMenu = () => setIsOpen(!isOpen);
 
   const menuVariants = {
@@ -89,7 +100,7 @@ export function MobileNav() {
               animate="open"
               exit="closed"
               variants={menuVariants}
-              className="fixed inset-0 bg-neutral-950 z-[9999] flex flex-col justify-center items-center p-8"
+              className="fixed inset-0 bg-neutral-950/60 backdrop-blur-md z-[9999] flex flex-col justify-center items-center p-8"
             >
                {/* Close Button inside Portal */}
               <Button
@@ -103,7 +114,7 @@ export function MobileNav() {
               </Button>
 
                {/* Background Gradient */}
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-neutral-800/20 via-neutral-950 to-neutral-950 pointer-events-none" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-neutral-800/20 via-neutral-950/50 to-neutral-950/50 pointer-events-none" />
               
               <motion.ul variants={listVariants} className="flex flex-col gap-8 items-center relative z-10">
                 {menuItems.map((item) => (
@@ -120,7 +131,7 @@ export function MobileNav() {
                 
                 <motion.li variants={itemVariants} className="mt-8">
                    <Link href="#contact" onClick={toggleMenu}>
-                      <Button size="lg" className="bg-white text-black hover:bg-neutral-200 text-lg px-8 py-6 rounded-full">
+                      <Button size="lg" className="bg-white text-black hover:bg-neutral-200 text-lg px-8 py-6 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all">
                           Contacto <ArrowRight className="ml-2 w-5 h-5" />
                       </Button>
                    </Link>

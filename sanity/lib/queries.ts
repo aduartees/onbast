@@ -124,3 +124,12 @@ export const PROJECTS_QUERY = `*[_type == "project"] | order(_createdAt desc) {
   tags,
   link
 }`;
+
+export const HOME_PAGE_QUERY = `*[_type == "homePage"][0] {
+  hero,
+  philosophy,
+  techArsenal,
+  services,
+  projects,
+  contact
+}`;

@@ -1,6 +1,8 @@
 import { client } from "@/sanity/lib/client";
 import { PROJECTS_QUERY } from "@/sanity/lib/queries";
 import { ParallaxScroll } from "@/components/aceternity/parallax-scroll";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { FadeIn } from "@/components/ui/fade-in";
 
 interface SanityProject {
   _id: string;
@@ -12,7 +14,16 @@ interface SanityProject {
   link?: string;
 }
 
-export const ProjectsSection = async () => {
+interface ProjectsSectionProps {
+  header?: {
+    pill?: string;
+    title?: string;
+    highlight?: string;
+    description?: string;
+  };
+}
+
+export const ProjectsSection = async ({ header }: ProjectsSectionProps) => {
   const projects: SanityProject[] = await client.fetch(PROJECTS_QUERY, {}, {
     next: { revalidate: 60 }
   });
@@ -27,12 +38,18 @@ export const ProjectsSection = async () => {
   return (
     <section className="py-24 bg-neutral-950 w-full" id="projects">
       <div className="max-w-7xl mx-auto px-4 md:px-8 mb-12">
-         <h2 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 text-center">
-            Proyectos Destacados
-          </h2>
-          <p className="mt-4 text-neutral-300 text-center max-w-lg mx-auto">
-              Una selección de nuestros trabajos más recientes. Diseño de vanguardia y performance extrema.
-          </p>
+         <FadeIn>
+           <SectionHeading 
+             title={header?.title || "Proyectos Destacados"}
+             subtitle={header?.pill}
+             highlight={header?.highlight}
+             align="center"
+             titleClassName="text-3xl md:text-5xl"
+           />
+           <p className="mt-4 text-neutral-300 text-center max-w-lg mx-auto">
+               {header?.description || "Una selección de nuestros trabajos más recientes. Diseño de vanguardia y performance extrema."}
+           </p>
+         </FadeIn>
       </div>
       <ParallaxScroll items={projects} />
     </section>

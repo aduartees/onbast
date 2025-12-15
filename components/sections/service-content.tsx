@@ -177,7 +177,7 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, featuresDescriptio
     
           {/* 2. Tech Stack - Ultra Minimalist */}
           {technologies && technologies.length > 0 && (
-              <FadeIn className="mb-20 md:mb-28 py-8 relative max-w-4xl mx-auto">
+              <FadeIn className="mb-10 md:mb-16 py-8 relative max-w-4xl mx-auto">
                   <div className="text-center mb-8 relative z-10">
                     <div className="relative flex justify-center items-center mb-6">
                         <div className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-neutral-800 to-transparent opacity-50" />

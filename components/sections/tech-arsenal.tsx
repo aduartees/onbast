@@ -2,18 +2,35 @@
 import React from "react";
 import Image from "next/image";
 import { WobbleCard } from "@/components/aceternity/wobble-card";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { FadeIn } from "@/components/ui/fade-in";
 
-export function TechArsenalSection() {
+interface TechArsenalSectionProps {
+  header?: {
+    pill?: string;
+    title?: string;
+    highlight?: string;
+    description?: string;
+  };
+}
+
+export function TechArsenalSection({ header }: TechArsenalSectionProps) {
   return (
-    <section className="py-10 bg-neutral-950 w-full">
+    <section className="py-24 bg-neutral-950 w-full">
       <div className="max-w-7xl mx-auto px-4 md:px-8 w-full">
-        <div className="max-w-3xl mx-auto text-center mb-10">
-          <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tighter mb-4">
-            Arsenal Tecnológico
-          </h2>
-          <p className="text-neutral-400 text-lg">
-            Stack nuclear diseñado para la dominación global. Sin compromisos.
-          </p>
+        <div className="max-w-3xl mx-auto mb-10">
+          <FadeIn>
+            <SectionHeading 
+               title={header?.title || "Arsenal Tecnológico"}
+               subtitle={header?.pill}
+               highlight={header?.highlight}
+               align="center"
+               titleClassName="text-3xl md:text-5xl"
+             />
+            <p className="text-neutral-400 text-lg text-center mt-6">
+              {header?.description || "Stack nuclear diseñado para la dominación global. Sin compromisos."}
+            </p>
+          </FadeIn>
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 max-w-7xl mx-auto w-full">

@@ -2,6 +2,8 @@
 import React from "react";
 import { StickyScroll } from "@/components/aceternity/sticky-scroll-reveal";
 import Image from "next/image";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { FadeIn } from "@/components/ui/fade-in";
 
 const content = [
   {
@@ -54,16 +56,31 @@ const content = [
   },
 ];
 
-export function PhilosophySection() {
+interface PhilosophySectionProps {
+  header?: {
+    pill?: string;
+    title?: string;
+    highlight?: string;
+    description?: string;
+  };
+}
+
+export function PhilosophySection({ header }: PhilosophySectionProps) {
   return (
     <section className="py-20 bg-neutral-950" id="about">
-        <div className="max-w-4xl mx-auto px-4 mb-20 text-center">
-            <h2 className="text-3xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-400 mb-6 tracking-tighter">
-                Filosofía ONBAST
-            </h2>
-            <p className="text-neutral-400 text-lg md:text-xl max-w-2xl mx-auto">
-                No hacemos webs. Construimos ecosistemas digitales dominantes.
-            </p>
+        <div className="max-w-4xl mx-auto px-4 mb-20">
+            <FadeIn>
+              <SectionHeading 
+                title={header?.title || "Filosofía ONBAST"}
+                subtitle={header?.pill}
+                highlight={header?.highlight}
+                align="center"
+                titleClassName="text-3xl md:text-6xl"
+              />
+              <p className="text-neutral-400 text-lg md:text-xl max-w-2xl mx-auto text-center mt-6">
+                  {header?.description || "No hacemos webs. Construimos ecosistemas digitales dominantes."}
+              </p>
+            </FadeIn>
         </div>
       <div className="w-full max-w-6xl mx-auto px-4 md:px-6">
         <StickyScroll content={content} />

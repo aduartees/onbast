@@ -6,13 +6,15 @@ export const SectionHeading = ({
   subtitle, 
   highlight, 
   align = "center",
-  className
+  className,
+  titleClassName
 }: { 
   title: string; 
   subtitle?: string; 
   highlight?: string; 
   align?: "left" | "center";
   className?: string;
+  titleClassName?: string;
 }) => {
   return (
     <div className={cn("mb-6 md:mb-10", align === "center" ? "text-center" : "text-left", className)}>
@@ -21,9 +23,9 @@ export const SectionHeading = ({
             {subtitle}
         </div>
       )}
-      <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight leading-tight">
+      <h2 className={cn("text-xl md:text-2xl font-bold text-white tracking-tight leading-tight", titleClassName)}>
         <span className="font-sans">{title}</span>
-        {highlight && <span className="font-serif italic font-normal text-indigo-300 ml-2 text-xl md:text-2xl">{highlight}</span>}
+        {highlight && <span className="font-serif italic font-normal text-indigo-300 ml-2">{highlight}</span>}
       </h2>
       <div className={cn("h-px w-8 bg-indigo-500/30 mt-3", align === "center" ? "mx-auto" : "")} />
     </div>

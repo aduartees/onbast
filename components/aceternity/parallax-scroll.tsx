@@ -68,25 +68,37 @@ export const ParallaxScroll = ({
   );
 };
 
+import { ArrowUpRight } from "lucide-react";
+
 const ProjectCard = ({ project }: { project: any }) => {
     return (
-        <div className="group relative rounded-xl overflow-hidden bg-neutral-900 border border-neutral-800">
-            <div className="relative aspect-[4/3] w-full overflow-hidden">
+        <a href={project.link || "#"} className="group block w-full">
+            <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-neutral-900 ring-1 ring-white/10 transition-all duration-500 group-hover:ring-indigo-500/50 group-hover:shadow-2xl group-hover:shadow-indigo-500/20">
                 <Image
                     src={project.imageUrl}
-                    className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
-                    height="400"
-                    width="400"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                    height="600"
+                    width="800"
                     alt={project.title}
                 />
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-center p-4">
-                     <h3 className="text-xl font-bold text-white mb-2">{project.title}</h3>
-                     {project.description && (
-                        <p className="text-sm text-neutral-300 line-clamp-3">{project.description}</p>
-                     )}
+                <div className="absolute inset-0 bg-indigo-500/0 transition-colors duration-500 group-hover:bg-indigo-500/10" />
+            </div>
+            
+            <div className="mt-6 flex justify-between items-start gap-4">
+                <div>
+                    <h3 className="text-xl font-medium text-white group-hover:text-indigo-400 transition-colors duration-300">
+                        {project.title}
+                    </h3>
+                </div>
+                <div className="rounded-full border border-white/10 p-2 text-neutral-400 transition-all duration-300 group-hover:border-indigo-500/50 group-hover:bg-indigo-500/10 group-hover:text-indigo-400">
+                    <ArrowUpRight className="h-5 w-5" />
                 </div>
             </div>
-        </div>
+            {project.description && (
+                <p className="mt-3 text-sm text-neutral-400 leading-relaxed line-clamp-2">
+                    {project.description}
+                </p>
+            )}
+        </a>
     )
 }

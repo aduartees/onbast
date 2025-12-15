@@ -54,7 +54,7 @@ export function PricingSection({ pricing }: PricingProps) {
   return (
     <section className="py-0 relative">
       {/* Background Elements - Fixed clipping on mobile */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-screen h-[600px] bg-indigo-900/20 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1200px] h-[600px] bg-indigo-900/20 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="max-w-4xl mx-auto px-4 relative z-10 pt-10 md:pt-0">
         {/* Header */}

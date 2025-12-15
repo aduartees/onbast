@@ -46,7 +46,7 @@ export const ProjectsSection = async ({ header }: ProjectsSectionProps) => {
              align="center"
              titleClassName="text-3xl md:text-5xl"
            />
-           <p className="mt-4 text-neutral-300 text-center max-w-lg mx-auto">
+           <p className="mt-4 text-neutral-400 text-center max-w-2xl mx-auto text-lg md:text-xl font-light leading-relaxed">
                {header?.description || "Una selección de nuestros trabajos más recientes. Diseño de vanguardia y performance extrema."}
            </p>
          </FadeIn>

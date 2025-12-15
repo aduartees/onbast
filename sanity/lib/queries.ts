@@ -124,7 +124,7 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
   seoDescription
 }`;
 
-export const PROJECTS_QUERY = `*[_type == "project"] | order(_createdAt desc) {
+export const PROJECTS_QUERY = `*[_type == "project"] | order(_createdAt desc)[0...3] {
   _id,
   title,
   description,

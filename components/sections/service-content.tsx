@@ -230,7 +230,7 @@ const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, f
                     highlight="Premium" 
                   />
                   {featuresDescription && (
-                    <p className="text-neutral-400 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed text-center">
+                    <p className="text-neutral-400 mt-6 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed text-center">
                         {featuresDescription}
                     </p>
                   )}
@@ -329,6 +329,9 @@ const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, f
                      subtitle="Casos de Éxito" 
                      highlight="Destacados" 
                    />
+                   <p className="text-neutral-400 mt-6 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed text-center">
+                      Descubre cómo hemos transformado ideas en productos digitales de alto impacto.
+                   </p>
                 </FadeIn>
                 <ParallaxScroll items={relatedProjects} />
              </section>

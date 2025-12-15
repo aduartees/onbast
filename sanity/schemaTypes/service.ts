@@ -394,5 +394,12 @@ export default defineType({
       rows: 3,
       description: 'Si se deja vacío, usa la Descripción Corta.'
     }),
+    defineField({
+      name: 'seoImage',
+      title: 'SEO Image (OG / Twitter)',
+      type: 'image',
+      group: 'seo',
+      description: 'Imagen específica para compartir en redes sociales (1200x630). Si se deja vacío, usa la imagen principal del servicio.'
+    }),
   ],
 })

@@ -121,7 +121,8 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
     secondaryButtonLink
   },
   seoTitle,
-  seoDescription
+  seoDescription,
+  "seoImage": seoImage.asset->url
 }`;
 
 export const PROJECTS_QUERY = `*[_type == "project"] | order(_createdAt desc)[0...3] {

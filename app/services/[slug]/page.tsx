@@ -113,6 +113,7 @@ interface SanityServiceDetail {
   };
   seoTitle?: string;
   seoDescription?: string;
+  seoImage?: string;
   agency?: {
     name: string;
     url: string;
@@ -131,6 +132,8 @@ interface SanityServiceDetail {
   };
 }
 
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop"; // Fallback Tech/Business Image
+
 // --- Dynamic Metadata ---
 export async function generateMetadata({ params }: ServicePageProps): Promise<Metadata> {
   const { slug } = await params;
@@ -142,13 +145,31 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
     };
   }
 
+  const shareImage = service.seoImage || service.imageUrl || DEFAULT_IMAGE;
+
   return {
     title: service.seoTitle || `${service.title} | ONBAST Agencia`,
     description: service.seoDescription || service.shortDescription,
     openGraph: {
       title: service.seoTitle || service.title,
       description: service.seoDescription || service.shortDescription,
-      images: service.imageUrl ? [service.imageUrl] : [],
+      url: `https://onbast.com/services/${service.slug}`,
+      images: [
+        {
+          url: shareImage,
+          width: 1200,
+          height: 630,
+          alt: service.title,
+        },
+      ],
+      locale: 'es_ES',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: service.seoTitle || service.title,
+      description: service.seoDescription || service.shortDescription,
+      images: [shareImage],
     },
   };
 }
@@ -164,13 +185,19 @@ export default async function ServicePage({ params }: ServicePageProps) {
     notFound();
   }
 
+  // --- Price Logic for Schema ---
+  const basePrice = service.pricing?.price ? parseFloat(service.pricing.price.replace(/[^0-9.]/g, '')) : 0;
+  const addonPrice = service.pricing?.addon?.price ? parseFloat(service.pricing.addon.price.replace(/[^0-9.]/g, '')) : 0;
+  const hasAddon = !!service.pricing?.addon;
+  const maxPrice = basePrice + addonPrice;
+
   // --- JSON-LD (Schema.org) ---
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Service",
     "name": service.title,
     "description": service.shortDescription,
-    "image": service.imageUrl,
+    "image": service.imageUrl || DEFAULT_IMAGE,
     "provider": {
       "@type": "Organization",
       "name": service.agency?.name || "ONBAST",
@@ -192,10 +219,20 @@ export default async function ServicePage({ params }: ServicePageProps) {
     "areaServed": "Global",
     "offers": service.pricing ? {
         "@type": "Offer",
-        "price": service.pricing.price ? parseFloat(service.pricing.price.replace(/[^0-9.]/g, '')) : undefined,
-        "priceCurrency": "EUR", // Default to EUR, could be dynamic
+        "priceCurrency": "EUR",
         "description": service.pricing.description,
-        "url": `${service.agency?.url || "https://onbast.com"}/services/${service.slug}`
+        "url": `${service.agency?.url || "https://onbast.com"}/services/${service.slug}`,
+        // Logic: If addon exists, show price range (oscillation). If not, show fixed price.
+        ...(hasAddon ? {
+            "priceSpecification": {
+                "@type": "PriceSpecification",
+                "minPrice": basePrice,
+                "maxPrice": maxPrice,
+                "priceCurrency": "EUR"
+            }
+        } : {
+            "price": basePrice
+        })
     } : undefined,
     "hasOfferCatalog": {
       "@type": "OfferCatalog",

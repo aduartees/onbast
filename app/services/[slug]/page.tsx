@@ -224,7 +224,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
   };
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-white selection:bg-neutral-700 selection:text-white">
+    <main className="min-h-screen bg-neutral-950 text-white selection:bg-neutral-700 selection:text-white overflow-x-hidden">
       {/* 1. SEO Injection */}
       <script
         type="application/ld+json"

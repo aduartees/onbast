@@ -66,6 +66,25 @@ interface SanityServiceDetail {
     quote: string;
     imageUrl?: string;
   }[];
+  pricing?: {
+    title?: string;
+    subtitle?: string;
+    badge?: string;
+    price?: string;
+    period?: string;
+    description?: string;
+    buttonText?: string;
+    buttonLink?: string;
+    secondaryButtonText?: string;
+    secondaryButtonLink?: string;
+    features?: string[];
+    addon?: {
+      title: string;
+      price: string;
+      active?: boolean;
+    };
+    trustedLogos?: string[];
+  };
   faqTitle?: string;
   faqs?: {
     question: string;
@@ -179,6 +198,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
         teamTitle={service.teamTitle}
         testimonials={service.testimonials} 
         testimonialsTitle={service.testimonialsTitle}
+        pricing={service.pricing}
         faqs={service.faqs} 
         faqTitle={service.faqTitle}
       />

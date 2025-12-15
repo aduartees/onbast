@@ -15,7 +15,7 @@ interface TeamMember {
 
 export const TeamSection = ({ team }: { team: TeamMember[] }) => {
   return (
-    <div className="w-full flex justify-center overflow-hidden py-10">
+    <div className="w-full flex justify-center overflow-hidden">
       <ThreeDCarousel items={team} />
     </div>
   );

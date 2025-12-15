@@ -1,10 +1,17 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Twitter, Linkedin, Github, Instagram, ArrowUpRight } from "lucide-react";
 
 export function Footer() {
+  const pathname = usePathname();
   const currentYear = new Date().getFullYear();
+
+  // Don't show footer in Sanity Studio
+  if (pathname?.startsWith("/studio")) {
+    return null;
+  }
 
   return (
     <footer className="relative bg-neutral-950 pt-24 pb-12 overflow-hidden border-t border-white/5">

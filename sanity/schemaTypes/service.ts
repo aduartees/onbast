@@ -243,6 +243,46 @@ export default defineType({
         }
     }),
     defineField({
+        name: 'pricing',
+        title: 'Sección de Precios',
+        type: 'object',
+        group: 'content',
+        fields: [
+            defineField({ name: 'title', title: 'Título Principal', type: 'string', initialValue: "Pricing that's so simple." }),
+            defineField({ name: 'subtitle', title: 'Subtítulo', type: 'string', initialValue: "We like to keep things simple with one, limitless plan." }),
+            defineField({ name: 'badge', title: 'Badge (ej: 3 spots left)', type: 'string' }),
+            defineField({ name: 'price', title: 'Precio', type: 'string', initialValue: "2,989" }),
+            defineField({ name: 'period', title: 'Periodo (ej: /month)', type: 'string', initialValue: "/month" }),
+            defineField({ name: 'description', title: 'Descripción Corta', type: 'string', initialValue: "One request at a time. Pause or cancel anytime." }),
+            defineField({ name: 'buttonText', title: 'Texto Botón Primario', type: 'string', initialValue: "Subscribe" }),
+            defineField({ name: 'buttonLink', title: 'Enlace Botón Primario', type: 'string' }),
+            defineField({ name: 'secondaryButtonText', title: 'Texto Botón Secundario', type: 'string', initialValue: "Book a call" }),
+            defineField({ name: 'secondaryButtonLink', title: 'Enlace Botón Secundario', type: 'string' }),
+            defineField({ 
+                name: 'features', 
+                title: 'Lista de Características', 
+                type: 'array', 
+                of: [{ type: 'string' }] 
+            }),
+            defineField({
+                name: 'addon',
+                title: 'Add-on (Opcional)',
+                type: 'object',
+                fields: [
+                    { name: 'title', type: 'string', title: 'Título Add-on' },
+                    { name: 'price', type: 'string', title: 'Precio Add-on' },
+                    { name: 'active', type: 'boolean', title: 'Activo por defecto', initialValue: false }
+                ]
+            }),
+            defineField({
+                name: 'trustedLogos',
+                title: 'Logos de Confianza (Imágenes)',
+                type: 'array',
+                of: [{ type: 'image' }]
+            })
+        ]
+    }),
+    defineField({
         name: 'faqTitle',
         title: 'Título Sección FAQ',
         type: 'string',

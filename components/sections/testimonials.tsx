@@ -11,7 +11,7 @@ interface Testimonial {
 
 export function TestimonialsSection({ testimonials }: { testimonials: Testimonial[] }) {
   return (
-    <div className="h-[25rem] rounded-md flex flex-col antialiased bg-transparent items-center justify-center relative overflow-hidden mask-image-gradient">
+    <div className="rounded-md flex flex-col antialiased bg-transparent items-center justify-start relative overflow-hidden mask-image-gradient">
       <div className="absolute inset-0 z-0 bg-neutral-950 opacity-0" /> {/* Clean background */}
       <InfiniteMovingCards
         items={testimonials}

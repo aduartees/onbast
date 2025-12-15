@@ -10,35 +10,9 @@ import { WobbleCard } from "@/components/aceternity/wobble-card";
 import { TracingBeam } from "@/components/aceternity/tracing-beam";
 import { TestimonialsSection } from "@/components/sections/testimonials";
 import { TeamSection } from "@/components/sections/team";
+import { PricingSection } from "@/components/sections/pricing-section";
 import { FadeIn } from "@/components/ui/fade-in";
-
-// Helper for mixed typography titles - REFINED & SMALLER
-const SectionHeading = ({ 
-  title, 
-  subtitle, 
-  highlight, 
-  align = "center" 
-}: { 
-  title: string; 
-  subtitle?: string; 
-  highlight?: string; 
-  align?: "left" | "center" 
-}) => {
-  return (
-    <div className={cn("mb-6 md:mb-10", align === "center" ? "text-center" : "text-left")}>
-      {subtitle && (
-        <span className="block text-indigo-400/80 font-mono text-[10px] tracking-[0.2em] uppercase mb-2">
-          {subtitle}
-        </span>
-      )}
-      <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight leading-tight">
-        <span className="font-sans">{title}</span>
-        {highlight && <span className="font-serif italic font-normal text-indigo-300 ml-2 text-xl md:text-2xl">{highlight}</span>}
-      </h2>
-      <div className={cn("h-px w-8 bg-indigo-500/30 mt-3", align === "center" ? "mx-auto" : "")} />
-    </div>
-  );
-};
+import { SectionHeading } from "@/components/ui/section-heading";
 
 interface ServiceContentProps {
   mainImage?: string;
@@ -87,6 +61,25 @@ interface ServiceContentProps {
     imageUrl?: string;
   }[];
   testimonialsTitle?: string;
+  pricing?: {
+    title?: string;
+    subtitle?: string;
+    badge?: string;
+    price?: string;
+    period?: string;
+    description?: string;
+    buttonText?: string;
+    buttonLink?: string;
+    secondaryButtonText?: string;
+    secondaryButtonLink?: string;
+    features?: string[];
+    addon?: {
+      title: string;
+      price: string;
+      active?: boolean;
+    };
+    trustedLogos?: string[];
+  };
   faqs?: {
     question: string;
     answer: string;
@@ -94,7 +87,7 @@ interface ServiceContentProps {
   faqTitle?: string;
 }
 
-export function ServiceContent({ mainImage, features, featuresTitle, benefits, process, processTitle, longDescription, overviewText, problem, solution, technologies, impactSection, team, teamTitle, testimonials, testimonialsTitle, faqs, faqTitle }: ServiceContentProps) {
+export function ServiceContent({ mainImage, features, featuresTitle, benefits, process, processTitle, longDescription, overviewText, problem, solution, technologies, impactSection, team, teamTitle, testimonials, testimonialsTitle, pricing, faqs, faqTitle }: ServiceContentProps) {
   return (
     <div className="bg-neutral-950 min-h-screen py-8 md:py-12 px-4 md:px-6 relative z-20">
       
@@ -114,6 +107,7 @@ export function ServiceContent({ mainImage, features, featuresTitle, benefits, p
              problem={problem} solution={solution} technologies={technologies} 
              impactSection={impactSection} team={team} teamTitle={teamTitle}
              testimonials={testimonials} testimonialsTitle={testimonialsTitle}
+             pricing={pricing}
              faqs={faqs} faqTitle={faqTitle}
            />
         </TracingBeam>
@@ -129,6 +123,7 @@ export function ServiceContent({ mainImage, features, featuresTitle, benefits, p
              problem={problem} solution={solution} technologies={technologies} 
              impactSection={impactSection} team={team} teamTitle={teamTitle}
              testimonials={testimonials} testimonialsTitle={testimonialsTitle}
+             pricing={pricing}
              faqs={faqs} faqTitle={faqTitle}
            />
       </div>
@@ -137,12 +132,12 @@ export function ServiceContent({ mainImage, features, featuresTitle, benefits, p
 }
 
 // Extracted Content Component to reuse
-const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process, processTitle, longDescription, overviewText, problem, solution, technologies, impactSection, team, teamTitle, testimonials, testimonialsTitle, faqs, faqTitle }: ServiceContentProps) => {
+const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process, processTitle, longDescription, overviewText, problem, solution, technologies, impactSection, team, teamTitle, testimonials, testimonialsTitle, pricing, faqs, faqTitle }: ServiceContentProps) => {
     return (
         <div className="max-w-6xl mx-auto pt-4 antialiased relative pb-16">
           
           {/* 1. Overview Section with Image Side-by-Side */}
-          <section className="mb-16 md:mb-24 relative max-w-4xl mx-auto">
+          <section className="mb-20 md:mb-28 relative max-w-4xl mx-auto">
             <FadeIn className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center mb-12">
               <div>
                 <SectionHeading 
@@ -347,7 +342,7 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
 
           {/* Process Section (Sticky Scroll) */}
            {process && process.length > 0 && (
-             <section className="mb-10 md:mb-16 w-full">
+             <section className="mb-20 md:mb-28 w-full">
                 <FadeIn className="max-w-4xl mx-auto">
                    <SectionHeading 
                      title={processTitle || "Nuestro Proceso"} 
@@ -358,6 +353,13 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
                 <ServiceProcess steps={process} />
              </section>
            )}
+
+          {/* Pricing Section */}
+          {pricing && (
+            <div className="mb-20 md:mb-28">
+               <PricingSection pricing={pricing} />
+            </div>
+          )}
     
           {/* FAQs */}
           {faqs && faqs.length > 0 && (

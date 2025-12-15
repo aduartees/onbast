@@ -17,28 +17,46 @@ export const StickyScroll = ({
 }) => {
   const [activeCard, setActiveCard] = React.useState(0);
   const ref = useRef<any>(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end end"],
-  });
-  
-  const cardLength = content.length;
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    const cardsBreakpoints = content.map((_, index) => index / cardLength);
-    const closestBreakpointIndex = cardsBreakpoints.reduce(
-      (acc, breakpoint, index) => {
-        const distance = Math.abs(latest - breakpoint);
-        if (distance < Math.abs(latest - cardsBreakpoints[acc])) {
-          return index;
+  React.useEffect(() => {
+    const handleScroll = () => {
+        const viewportCenter = window.innerHeight / 2;
+        
+        // Special check for bottom of page/container
+        const container = ref.current;
+        if (container) {
+           const containerRect = container.getBoundingClientRect();
+           const isAtBottom = containerRect.bottom <= window.innerHeight + 50; // Tolerance
+           if (isAtBottom) {
+               setActiveCard(cardRefs.current.length - 1);
+               return;
+           }
         }
-        return acc;
-      },
-      0
-    );
-    setActiveCard(closestBreakpointIndex);
-  });
+
+        let closestIndex = 0;
+        let minDistance = Number.MAX_VALUE;
+
+        cardRefs.current.forEach((card, index) => {
+          if (!card) return;
+          const rect = card.getBoundingClientRect();
+          const cardCenter = rect.top + rect.height / 2;
+          const distance = Math.abs(viewportCenter - cardCenter);
+
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestIndex = index;
+          }
+        });
+
+        setActiveCard(closestIndex);
+      };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const backgroundColors = [
     "var(--neutral-950)",
@@ -51,7 +69,7 @@ export const StickyScroll = ({
       animate={{
         backgroundColor: backgroundColors[activeCard % backgroundColors.length] as any,
       }}
-      className="flex justify-center relative lg:space-x-10 rounded-md p-4 md:p-8 transition-colors duration-1000"
+      className="flex justify-center relative lg:space-x-10 rounded-md px-4 md:px-8 py-0 transition-colors duration-1000"
       ref={ref}
     >
       <div className="div relative flex items-start px-4 w-full lg:w-1/2">
@@ -59,13 +77,11 @@ export const StickyScroll = ({
           {content.map((item, index) => (
             <div 
               key={item.title + index} 
+              ref={(el) => { cardRefs.current[index] = el; }}
               className={cn(
-                "min-h-[40vh] lg:min-h-[60vh] flex flex-col justify-center", // Tall enough to trigger scroll events properly
-                index === 0 
-                  ? "mt-0 mb-8 lg:mb-16" 
-                  : index === content.length - 1 
-                  ? "mt-8 mb-8 lg:mt-16 lg:mb-16" 
-                  : "my-8 lg:my-16"
+                "flex flex-col justify-center",
+                "min-h-[60vh] lg:min-h-screen", // Mobile: 60vh, Desktop: Full screen for perfect alignment
+                "py-10 lg:py-0" // Padding for mobile, clean for desktop
               )}
             >
               <motion.h2
@@ -102,8 +118,6 @@ export const StickyScroll = ({
               </div>
             </div>
           ))}
-          {/* Extra spacer at the end to allow scrolling past the last item to trigger it fully if needed */}
-          <div className="h-[20vh]" />
         </div>
       </div>
       

@@ -63,6 +63,25 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
     quote,
     "imageUrl": image.asset->url
   },
+  pricing {
+    title,
+    subtitle,
+    badge,
+    price,
+    period,
+    description,
+    buttonText,
+    buttonLink,
+    secondaryButtonText,
+    secondaryButtonLink,
+    features,
+    addon {
+      title,
+      price,
+      active
+    },
+    "trustedLogos": trustedLogos[].asset->url
+  },
   faqTitle,
   faqs[] {
     question,

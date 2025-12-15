@@ -4,7 +4,6 @@ import { ThreeDCarousel } from "@/components/aceternity/three-d-carousel";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Linkedin, Twitter } from "lucide-react";
-import { BlurReveal } from "@/components/ui/blur-reveal";
 
 interface TeamMember {
   name: string;
@@ -61,7 +60,7 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
         <div className="mb-4 h-1 w-12 bg-indigo-500 transition-all duration-500 group-hover:w-20" />
         
         <h3 className="text-3xl font-bold text-white mb-1 font-sans tracking-tight">
-          <BlurReveal text={member.name} />
+          {member.name}
         </h3>
         <p className="text-indigo-300 font-mono text-sm uppercase tracking-widest mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 delay-100 will-change-[opacity,transform]">
           {member.role}

@@ -153,12 +153,9 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
                       <BlurReveal text={longDescription || "Transforming your digital presence."} />
                    </h2>
                    {overviewText && (
-                      <BlurReveal 
-                        as="p"
-                        text={overviewText}
-                        className="text-lg md:text-2xl text-neutral-400 mt-8 font-light leading-relaxed border-l-2 border-indigo-500/50 pl-6"
-                        delay={0.2}
-                      />
+                      <p className="text-lg md:text-2xl text-neutral-400 mt-8 font-light leading-relaxed border-l-2 border-indigo-500/50 pl-6">
+                        {overviewText}
+                      </p>
                    )}
                 </div>
              </FadeIn>
@@ -177,12 +174,9 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
                                 <div className="w-2 h-2 rounded-full bg-red-500/50" />
                                 <span className="text-xs font-mono uppercase tracking-widest">El Desafío</span>
                              </div>
-                             <BlurReveal 
-                               as="p"
-                               text={`"${problem || "Identificamos los obstáculos que frenan tu crecimiento."}"`}
-                               className="text-xl md:text-2xl text-neutral-400 font-light leading-relaxed"
-                               delay={0.1}
-                             />
+                             <p className="text-xl md:text-2xl text-neutral-400 font-light leading-relaxed">
+                                &quot;{problem || "Identificamos los obstáculos que frenan tu crecimiento."}&quot;
+                             </p>
                           </div>
 
                           {/* Connection Arrow (Mobile: Down, Desktop: Right) */}
@@ -198,12 +192,9 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
                                 <Zap className="w-4 h-4" />
                                 <span className="text-xs font-mono uppercase tracking-widest">La Solución ONBAST</span>
                              </div>
-                             <BlurReveal 
-                               as="p"
-                               text={solution || "Nuestra metodología convierte obstáculos en ventajas competitivas."}
-                               className="text-lg text-white font-medium leading-relaxed"
-                               delay={0.3}
-                             />
+                             <p className="text-lg text-white font-medium leading-relaxed">
+                                {solution || "Nuestra metodología convierte obstáculos en ventajas competitivas."}
+                             </p>
                           </div>
                       </div>
                    </div>
@@ -249,15 +240,8 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
                     )}
                   >
                      <div className="relative z-10">
-                        <h3 className="text-xl font-bold text-white mb-2">
-                          <BlurReveal text={card.title} />
-                        </h3>
-                        <BlurReveal 
-                          as="p"
-                          text={card.description}
-                          className="text-sm text-neutral-400 leading-relaxed"
-                          delay={0.1}
-                        />
+                        <h3 className="text-xl font-bold text-white mb-2">{card.title}</h3>
+                        <p className="text-sm text-neutral-400 leading-relaxed">{card.description}</p>
                      </div>
                      
                      {/* Abstract Decorative Elements based on color */}
@@ -305,15 +289,10 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
                        <div className="mb-4 w-10 h-10 rounded-lg bg-neutral-800/50 flex items-center justify-center text-indigo-400 group-hover:text-indigo-300 group-hover:bg-indigo-500/10 transition-colors">
                           <Zap className="w-5 h-5" />
                        </div>
-                       <h3 className="text-lg font-bold text-white mb-2 group-hover:text-indigo-200 transition-colors">
-                          <BlurReveal text={feature.title} />
-                       </h3>
-                       <BlurReveal 
-                         as="p"
-                         text={feature.description}
-                         className="text-neutral-400 text-sm leading-relaxed font-light"
-                         delay={0.1}
-                       />
+                       <h3 className="text-lg font-bold text-white mb-2 group-hover:text-indigo-200 transition-colors">{feature.title}</h3>
+                       <p className="text-neutral-400 text-sm leading-relaxed font-light">
+                         {feature.description}
+                       </p>
                     </FadeIn>
                   ))}
                </div>
@@ -390,14 +369,11 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
               <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none" />
               <FadeIn className="relative z-10 max-w-2xl mx-auto px-6">
                 <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tighter mb-4">
-                  <BlurReveal text="¿Listo para comenzar?" />
+                  ¿Listo para comenzar?
                 </h2>
-                <BlurReveal 
-                  as="p"
-                  text="Agenda una llamada estratégica con nuestro equipo y descubre cómo podemos transformar tu negocio."
-                  className="text-neutral-400 text-base mb-8 max-w-lg mx-auto font-light"
-                  delay={0.1}
-                />
+                <p className="text-neutral-400 text-base mb-8 max-w-lg mx-auto font-light">
+                  Agenda una llamada estratégica con nuestro equipo y descubre cómo podemos transformar tu negocio.
+                </p>
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
                   <Button size="lg" className="bg-white text-black hover:bg-neutral-200 text-sm font-medium h-12 px-8 rounded-full shadow-lg hover:shadow-xl transition-all">
                      Agendar Llamada

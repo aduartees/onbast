@@ -77,6 +77,7 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-neutral-400 hover:text-white transition-colors"
+                      aria-label="LinkedIn Profile"
                     >
                       <Linkedin className="w-4 h-4" />
                     </a>
@@ -87,6 +88,7 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-neutral-400 hover:text-white transition-colors"
+                      aria-label="Twitter Profile"
                     >
                       <Twitter className="w-4 h-4" />
                     </a>

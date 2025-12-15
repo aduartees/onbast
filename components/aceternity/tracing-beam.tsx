@@ -27,8 +27,14 @@ export const TracingBeam = ({
   useEffect(() => {
     if (!contentRef.current) return;
 
-    // Initial measurement
-    setSvgHeight(contentRef.current.offsetHeight);
+    // Initial measurement wrapped in RAF to avoid initial forced reflow
+    const measureHeight = () => {
+      if (contentRef.current) {
+        setSvgHeight(contentRef.current.offsetHeight);
+      }
+    };
+    
+    requestAnimationFrame(measureHeight);
 
     // Dynamic measurement with ResizeObserver
     const resizeObserver = new ResizeObserver((entries) => {

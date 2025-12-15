@@ -15,8 +15,6 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
   shortDescription,
   longDescription,
   overviewText,
-  problem,
-  solution,
   "imageUrl": mainImage.asset->url,
   "imageAlt": mainImage.alt,
   heroButtonText,

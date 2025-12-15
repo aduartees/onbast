@@ -162,6 +162,7 @@ const TeamCard = ({ member }: { member: TeamMember }) => {
                       rel="noopener noreferrer"
                       className="text-neutral-400 hover:text-white transition-colors pointer-events-auto"
                       onPointerDown={(e) => e.stopPropagation()}
+                      aria-label="LinkedIn Profile"
                     >
                       <Linkedin className="w-4 h-4" />
                     </a>
@@ -173,6 +174,7 @@ const TeamCard = ({ member }: { member: TeamMember }) => {
                       rel="noopener noreferrer"
                       className="text-neutral-400 hover:text-white transition-colors pointer-events-auto"
                       onPointerDown={(e) => e.stopPropagation()}
+                      aria-label="Twitter Profile"
                     >
                       <Twitter className="w-4 h-4" />
                     </a>

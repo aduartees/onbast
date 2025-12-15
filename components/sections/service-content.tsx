@@ -16,7 +16,6 @@ const TestimonialsSection = dynamic(() => import("@/components/sections/testimon
 const TeamSection = dynamic(() => import("@/components/sections/team").then(mod => mod.TeamSection));
 const PricingSection = dynamic(() => import("@/components/sections/pricing-section").then(mod => mod.PricingSection));
 const ImpactStats = dynamic(() => import("@/components/sections/impact-stats").then(mod => mod.ImpactStats));
-const TransformationSection = dynamic(() => import("@/components/sections/transformation").then(mod => mod.TransformationSection));
 
 // Removed imports that are now dynamic
 import { WobbleCard } from "@/components/aceternity/wobble-card";
@@ -40,8 +39,6 @@ interface ServiceContentProps {
   processDescription?: string;
   longDescription?: string;
   overviewText?: string;
-  problem?: string;
-  solution?: string;
   technologies?: string[];
   techTitle?: string;
   techDescription?: string;
@@ -108,9 +105,9 @@ interface ServiceContentProps {
   };
 }
 
-export function ServiceContent({ mainImage, features, featuresTitle, featuresDescription, benefits, process, processTitle, processDescription, longDescription, overviewText, problem, solution, technologies, techTitle, techDescription, impactSection, team, teamTitle, teamDescription, testimonials, testimonialsTitle, testimonialsDescription, pricing, faqs, faqTitle, faqDescription, ctaSection }: ServiceContentProps) {
+export function ServiceContent({ mainImage, features, featuresTitle, featuresDescription, benefits, process, processTitle, processDescription, longDescription, overviewText, technologies, techTitle, techDescription, impactSection, team, teamTitle, teamDescription, testimonials, testimonialsTitle, testimonialsDescription, pricing, faqs, faqTitle, faqDescription, ctaSection }: ServiceContentProps) {
   return (
-    <div className="bg-neutral-950 min-h-screen py-12 md:py-24 px-4 md:px-6 relative z-10 rounded-t-[3rem] md:rounded-t-[5rem] shadow-[0_-50px_100px_-20px_rgba(79,70,229,0.1)] border-t border-white/10 mt-0 overflow-hidden transform-gpu backface-hidden">
+    <div className="bg-neutral-950 min-h-screen py-12 md:py-24 px-4 md:px-6 relative z-10 rounded-t-[3rem] md:rounded-t-[5rem] shadow-[0_-50px_100px_-20px_rgba(79,70,229,0.1)] border-t border-white/10 mt-0 transform-gpu backface-hidden">
       
       {/* Ambient Background Glow - Subtle - Wrapped in overflow hidden container to prevent scroll */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-t-[3rem] md:rounded-t-[5rem]">
@@ -127,7 +124,7 @@ export function ServiceContent({ mainImage, features, featuresTitle, featuresDes
              features={features} featuresTitle={featuresTitle} featuresDescription={featuresDescription}
              benefits={benefits} process={process} processTitle={processTitle} processDescription={processDescription}
              longDescription={longDescription} overviewText={overviewText} 
-             problem={problem} solution={solution} technologies={technologies} techTitle={techTitle} techDescription={techDescription}
+             technologies={technologies} techTitle={techTitle} techDescription={techDescription}
              impactSection={impactSection} team={team} teamTitle={teamTitle} teamDescription={teamDescription}
              testimonials={testimonials} testimonialsTitle={testimonialsTitle} testimonialsDescription={testimonialsDescription}
              pricing={pricing}
@@ -144,7 +141,7 @@ export function ServiceContent({ mainImage, features, featuresTitle, featuresDes
              features={features} featuresTitle={featuresTitle} featuresDescription={featuresDescription}
              benefits={benefits} process={process} processTitle={processTitle} processDescription={processDescription}
              longDescription={longDescription} overviewText={overviewText} 
-             problem={problem} solution={solution} technologies={technologies} techTitle={techTitle} techDescription={techDescription}
+             technologies={technologies} techTitle={techTitle} techDescription={techDescription}
              impactSection={impactSection} team={team} teamTitle={teamTitle} teamDescription={teamDescription}
              testimonials={testimonials} testimonialsTitle={testimonialsTitle} testimonialsDescription={testimonialsDescription}
              pricing={pricing}
@@ -157,7 +154,7 @@ export function ServiceContent({ mainImage, features, featuresTitle, featuresDes
 }
 
 // Extracted Content Component to reuse
-const ContentWrapper = ({ mainImage, features, featuresTitle, featuresDescription, benefits, process, processTitle, processDescription, longDescription, overviewText, problem, solution, technologies, techTitle, techDescription, impactSection, team, teamTitle, teamDescription, testimonials, testimonialsTitle, testimonialsDescription, pricing, faqs, faqTitle, faqDescription, ctaSection }: ServiceContentProps) => {
+const ContentWrapper = ({ mainImage, features, featuresTitle, featuresDescription, benefits, process, processTitle, processDescription, longDescription, overviewText, technologies, techTitle, techDescription, impactSection, team, teamTitle, teamDescription, testimonials, testimonialsTitle, testimonialsDescription, pricing, faqs, faqTitle, faqDescription, ctaSection }: ServiceContentProps) => {
     return (
         <div className="max-w-6xl mx-auto pt-4 antialiased relative pb-16">
           
@@ -176,15 +173,6 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, featuresDescriptio
                    )}
                 </div>
              </FadeIn>
-
-             {/* Transformation Section (Modern Replacement) */}
-             {(problem || solution) && (
-                <TransformationSection 
-                  problem={problem || "Identificamos los obstáculos que frenan tu crecimiento."}
-                  solution={solution || "Nuestra metodología convierte obstáculos en ventajas competitivas."}
-                  imageUrl={mainImage}
-                />
-             )}
           </section>
     
           {/* 2. Tech Stack - Ultra Minimalist */}

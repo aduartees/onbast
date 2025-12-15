@@ -18,8 +18,6 @@ interface SanityServiceDetail {
   shortDescription: string;
   longDescription?: string;
   overviewText?: string;
-  problem?: string;
-  solution?: string;
   imageUrl?: string;
   imageAlt?: string;
   heroButtonText?: string;

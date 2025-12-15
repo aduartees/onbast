@@ -51,7 +51,7 @@ export function Footer() {
           <div className="md:col-span-2 flex flex-col gap-4">
             <h4 className="text-white font-medium mb-2">Contacto</h4>
             <FooterLink href="mailto:hello@onbast.agency">hello@onbast.agency</FooterLink>
-            <span className="text-neutral-500 text-sm">Madrid, España</span>
+            <span className="text-neutral-400 text-sm">Madrid, España</span>
             <Link href="/contact" className="inline-flex items-center gap-1 text-indigo-400 hover:text-indigo-300 text-sm transition-colors mt-2">
               Iniciar Proyecto <ArrowUpRight className="w-3 h-3" />
             </Link>
@@ -60,11 +60,11 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/5 gap-4 relative z-20 pb-12 md:pb-0">
-          <p className="text-neutral-500 text-xs text-center md:text-left">
+          <p className="text-neutral-400 text-xs text-center md:text-left">
             © {currentYear} ONBAST Agency. Todos los derechos reservados.
           </p>
-          <p className="text-neutral-600 text-xs flex items-center gap-2">
-            Designed & Built with <span className="text-red-900/50">♥</span> by ONBAST
+          <p className="text-neutral-400 text-xs flex items-center gap-2">
+            Designed & Built with <span className="text-red-500">♥</span> by ONBAST
           </p>
         </div>
       </div>

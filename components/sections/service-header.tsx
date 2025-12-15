@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { BlurReveal } from "@/components/ui/blur-reveal";
+import { InfiniteMovingLogos } from "@/components/aceternity/infinite-moving-logos";
 
 interface ServiceHeaderProps {
   title: string;
@@ -147,31 +148,12 @@ export function ServiceHeader({ title, description, introduction, buttonText, bu
            transition={{ delay: 0.4 }}
            className="w-full max-w-5xl shrink-0 pb-8 md:pb-0"
         >
-           <div className="relative w-full overflow-hidden">
-              
-              {/* Marquee Container */}
-              <div className="flex gap-8 md:gap-12 items-center animate-scroll w-max hover:[animation-play-state:paused] will-change-transform">
-                 {/* Triple the logos for seamless loop on large screens */}
-                 {[...logos, ...logos, ...logos].map((logo, i) => (
-                    <div key={i} className="flex items-center justify-center opacity-30 hover:opacity-80 transition-opacity duration-300 group">
-                        {logo.logo ? (
-                           <Image 
-                              src={logo.logo} 
-                              alt={logo.alt || logo.name} 
-                              width={100} 
-                              height={40} 
-                              sizes="(max-width: 768px) 100px, 120px"
-                              className="h-6 md:h-8 w-auto object-contain brightness-0 invert" 
-                           />
-                        ) : (
-                           <span className="text-lg md:text-2xl font-bold font-mono text-white tracking-tighter uppercase group-hover:text-indigo-300 transition-colors">
-                               {logo.name}
-                           </span>
-                        )}
-                    </div>
-                 ))}
-              </div>
-           </div>
+           <InfiniteMovingLogos 
+              items={logos} 
+              speed="slow" 
+              direction="left"
+              pauseOnHover={true}
+           />
         </motion.div>
       </motion.div>
     </div>

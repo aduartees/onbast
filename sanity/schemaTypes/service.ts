@@ -123,22 +123,6 @@ export default defineType({
       description: 'Texto adicional que aparece debajo de la descripción principal en la sección de Visión General.'
     }),
     defineField({
-        name: 'problem',
-        title: 'El Problema (Pain Points)',
-        type: 'text',
-        rows: 3,
-        group: 'content',
-        description: 'Describe el problema principal que este servicio resuelve.'
-    }),
-    defineField({
-        name: 'solution',
-        title: 'La Solución (Value Prop)',
-        type: 'text',
-        rows: 3,
-        group: 'content',
-        description: 'Describe cómo solucionamos ese problema.'
-    }),
-    defineField({
         name: 'impactSection',
         title: 'Sección de Impacto (Estadísticas)',
         type: 'object',

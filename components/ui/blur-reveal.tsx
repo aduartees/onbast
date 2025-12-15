@@ -12,6 +12,7 @@ interface BlurRevealProps {
 }
 
 export const BlurReveal = ({ text, className, highlightClassName, delay = 0, as: Component = "div" }: BlurRevealProps) => {
+  if (!text) return null;
   const words = text.split(" ");
   const midIndex = Math.floor(words.length / 2);
 

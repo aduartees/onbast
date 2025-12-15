@@ -36,16 +36,20 @@ export function PricingSection({ pricing }: PricingProps) {
   if (!pricing) return null;
 
   // Helper to parse price string (e.g. "1.850€" -> 1850)
-  const parsePrice = (priceStr: string) => {
-    return parseInt(priceStr.replace(/[^0-9]/g, '')) || 0;
-  };
+  const basePrice = React.useMemo(() => {
+     return parseInt(pricing.price?.replace(/[^0-9]/g, '') || "0") || 0;
+  }, [pricing.price]);
 
-  const basePrice = parsePrice(pricing.price || "0");
-  const addonPrice = pricing.addon ? parsePrice(pricing.addon.price) : 0;
+  const addonPrice = React.useMemo(() => {
+     return pricing.addon ? parseInt(pricing.addon.price.replace(/[^0-9]/g, '') || "0") || 0 : 0;
+  }, [pricing.addon]);
+
   const totalPrice = addonActive ? basePrice + addonPrice : basePrice;
 
   // Format back to locale string (simple implementation for Euro)
-  const formattedPrice = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 0 }).format(totalPrice);
+  const formattedPrice = React.useMemo(() => {
+     return new Intl.NumberFormat('es-ES', { minimumFractionDigits: 0 }).format(totalPrice);
+  }, [totalPrice]);
 
   return (
     <section className="py-0 relative">
@@ -93,6 +97,7 @@ export function PricingSection({ pricing }: PricingProps) {
                         initial={{ opacity: 0, y: 20 }} // Start from below
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, ease: "easeOut" }}
+                        suppressHydrationWarning
                     >
                         {formattedPrice}€
                     </motion.span>

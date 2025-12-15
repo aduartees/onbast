@@ -22,6 +22,8 @@ interface SanityServiceDetail {
   solution?: string;
   imageUrl?: string;
   imageAlt?: string;
+  heroButtonText?: string;
+  heroButtonLink?: string;
   icon?: string;
   features?: {
     title: string;
@@ -47,6 +49,19 @@ interface SanityServiceDetail {
       color: string;
     }[];
   };
+  team?: {
+    name: string;
+    role: string;
+    imageUrl: string;
+    imageAlt?: string;
+    social?: { linkedin?: string; twitter?: string };
+  }[];
+  testimonials?: {
+    name: string;
+    role: string;
+    quote: string;
+    imageUrl?: string;
+  }[];
   faqs?: {
     question: string;
     answer: string;
@@ -139,6 +154,8 @@ export default async function ServicePage({ params }: ServicePageProps) {
       <ServiceHeader 
         title={service.title} 
         description={service.longDescription || service.shortDescription} 
+        buttonText={service.heroButtonText}
+        buttonLink={service.heroButtonLink}
       />
 
       <ServiceContent 
@@ -151,6 +168,8 @@ export default async function ServicePage({ params }: ServicePageProps) {
         solution={service.solution}
         technologies={service.technologies}
         impactSection={service.impactSection}
+        team={service.team}
+        testimonials={service.testimonials}
         faqs={service.faqs}
       />
 

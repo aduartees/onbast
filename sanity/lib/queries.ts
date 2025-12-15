@@ -19,6 +19,8 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
   solution,
   "imageUrl": mainImage.asset->url,
   "imageAlt": mainImage.alt,
+  heroButtonText,
+  heroButtonLink,
   icon,
   features[] {
     title,
@@ -44,6 +46,19 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
     }
   },
   technologies,
+  team[]->{
+    name,
+    role,
+    "imageUrl": image.asset->url,
+    "imageAlt": image.alt,
+    social
+  },
+  testimonials[]->{
+    name,
+    role,
+    quote,
+    "imageUrl": image.asset->url
+  },
   faqs[] {
     question,
     answer

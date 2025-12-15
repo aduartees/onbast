@@ -58,6 +58,22 @@ export default defineType({
         }
       ]
     }),
+    defineField({
+      name: 'heroButtonText',
+      title: 'Texto Botón Hero',
+      type: 'string',
+      group: 'general',
+      description: 'Ej: Solicitar Consultoría, Ver Planes',
+      initialValue: 'Solicitar Consultoría'
+    }),
+    defineField({
+      name: 'heroButtonLink',
+      title: 'Enlace Botón Hero',
+      type: 'string',
+      group: 'general',
+      description: 'Ej: /contacto, https://calendly.com/...',
+      initialValue: '/contacto'
+    }),
 
     // --- Contenido Detallado ---
     defineField({
@@ -101,33 +117,57 @@ export default defineType({
                 name: 'title',
                 title: 'Título de la Sección',
                 type: 'string',
-                initialValue: 'Resultados que hablan por sí mismos.'
             }),
             defineField({
                 name: 'cards',
-                title: 'Tarjetas de Impacto',
+                title: 'Tarjetas',
                 type: 'array',
                 of: [
-                    defineArrayMember({
+                    {
                         type: 'object',
                         fields: [
-                            defineField({ name: 'title', type: 'string', title: 'Título' }),
-                            defineField({ name: 'description', type: 'text', title: 'Descripción' }),
-                            defineField({ name: 'colSpan', type: 'number', title: 'Column Span (1-3)', initialValue: 1 }),
-                            defineField({ name: 'minHeight', type: 'number', title: 'Min Height (px)', initialValue: 300 }),
-                            defineField({ name: 'backgroundImage', type: 'image', title: 'Imagen de Fondo (Opcional)', options: { hotspot: true }, fields: [
-                                defineField({
-                                    name: 'alt',
-                                    type: 'string',
-                                    title: 'Alternative Text',
-                                }),
-                            ]}),
-                            defineField({ name: 'color', type: 'string', title: 'Color de Fondo (Tailwind Class)', description: 'ej: bg-pink-800, bg-blue-900', initialValue: 'bg-neutral-900' }),
+                            defineField({ name: 'title', title: 'Título', type: 'string' }),
+                            defineField({ name: 'description', title: 'Descripción', type: 'text' }),
+                            defineField({ 
+                                name: 'colSpan', 
+                                title: 'Columnas (1, 2 o 3)', 
+                                type: 'number',
+                                initialValue: 1,
+                                validation: Rule => Rule.min(1).max(3)
+                            }),
+                            defineField({
+                                name: 'color',
+                                title: 'Tinte de Color',
+                                type: 'string',
+                                options: {
+                                    list: [
+                                        { title: 'Neutro', value: 'neutral' },
+                                        { title: 'Azul', value: 'blue' },
+                                        { title: 'Rosa', value: 'pink' },
+                                        { title: 'Indigo', value: 'indigo' },
+                                    ]
+                                }
+                            }),
+                            defineField({ name: 'imageUrl', title: 'Imagen (Opcional)', type: 'image' })
                         ]
-                    })
+                    }
                 ]
             })
         ]
+    }),
+    defineField({
+      name: 'team',
+      title: 'Equipo Asignado',
+      type: 'array',
+      group: 'content',
+      of: [{ type: 'reference', to: [{ type: 'teamMember' }] }]
+    }),
+    defineField({
+      name: 'testimonials',
+      title: 'Testimonios Relacionados',
+      type: 'array',
+      group: 'content',
+      of: [{ type: 'reference', to: [{ type: 'testimonial' }] }]
     }),
     defineField({
         name: 'features',

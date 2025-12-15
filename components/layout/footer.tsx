@@ -19,7 +19,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-24">
           
           {/* Brand Column */}
-          <div className="md:col-span-5 flex flex-col gap-6">
+          <div className="md:col-span-5 flex flex-col gap-6 items-center md:items-start text-center md:text-left">
             <h3 className="text-2xl font-bold text-white tracking-tighter font-inter">onbast.</h3>
             <p className="text-neutral-400 max-w-sm leading-relaxed text-sm font-light">
               Redefiniendo el estándar digital. Creamos experiencias web de alto rendimiento y estrategias GEO que dominan el futuro de la búsqueda.
@@ -33,7 +33,7 @@ export function Footer() {
           </div>
 
           {/* Links Columns */}
-          <div className="md:col-span-2 md:col-start-7 flex flex-col gap-4">
+          <div className="md:col-span-2 md:col-start-7 flex flex-col gap-4 items-center md:items-start text-center md:text-left">
             <h4 className="text-white font-medium mb-2">Explorar</h4>
             <FooterLink href="#services">Servicios</FooterLink>
             <FooterLink href="#projects">Proyectos</FooterLink>
@@ -41,14 +41,14 @@ export function Footer() {
             <FooterLink href="#blog">Insights</FooterLink>
           </div>
 
-          <div className="md:col-span-2 flex flex-col gap-4">
+          <div className="md:col-span-2 flex flex-col gap-4 items-center md:items-start text-center md:text-left">
             <h4 className="text-white font-medium mb-2">Legal</h4>
             <FooterLink href="/privacy">Privacidad</FooterLink>
             <FooterLink href="/terms">Términos</FooterLink>
             <FooterLink href="/cookies">Cookies</FooterLink>
           </div>
 
-          <div className="md:col-span-2 flex flex-col gap-4">
+          <div className="md:col-span-2 flex flex-col gap-4 items-center md:items-start text-center md:text-left">
             <h4 className="text-white font-medium mb-2">Contacto</h4>
             <FooterLink href="mailto:hello@onbast.agency">hello@onbast.agency</FooterLink>
             <span className="text-neutral-400 text-sm">Madrid, España</span>
@@ -62,9 +62,6 @@ export function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/5 gap-4 relative z-20 pb-12 md:pb-0">
           <p className="text-neutral-400 text-xs text-center md:text-left">
             © {currentYear} ONBAST Agency. Todos los derechos reservados.
-          </p>
-          <p className="text-neutral-400 text-xs flex items-center gap-2">
-            Designed & Built with <span className="text-red-500">♥</span> by ONBAST
           </p>
         </div>
       </div>

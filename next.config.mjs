@@ -41,6 +41,16 @@ const nextConfig = {
       fullUrl: true,
     },
   },
+  experimental: {
+    optimizePackageImports: [
+      'lucide-react',
+      '@tabler/icons-react',
+      'framer-motion',
+      'clsx',
+      'tailwind-merge',
+      '@radix-ui/react-slot',
+    ],
+  },
 };
 
 export default nextConfig;

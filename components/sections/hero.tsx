@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import { BackgroundBeams } from "@/components/aceternity/background-beams";
 import { Button } from "@/components/ui/button";

@@ -44,7 +44,7 @@ const getIcon = (iconName: string) => {
 export const ServicesSection = async () => {
   // Fetch data directly from Sanity with ISR (Incremental Static Regeneration)
   const services: SanityService[] = await client.fetch(SERVICES_QUERY, {}, {
-    next: { revalidate: 60 } 
+    next: { revalidate: 0 } 
   });
 
   return (

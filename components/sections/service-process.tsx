@@ -2,6 +2,7 @@
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { BlurReveal } from "@/components/ui/blur-reveal";
 
 interface ProcessStep {
   title: string;
@@ -88,11 +89,16 @@ const ProcessCard = ({ step, index }: { step: ProcessStep; index: number }) => {
              <span className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-indigo-500/20 flex items-center justify-center text-xs md:text-sm text-indigo-300 font-mono border border-indigo-500/30 shadow-[0_0_10px_rgba(99,102,241,0.2)] shrink-0">
                 {index + 1}
              </span>
-             {step.title}
+             <BlurReveal text={step.title} />
           </h3>
-          <p className="text-neutral-400 text-sm md:text-lg leading-relaxed relative z-10">
-            {step.description}
-          </p>
+          <div className="relative z-10">
+             <BlurReveal 
+               text={step.description} 
+               className="text-neutral-400 text-sm md:text-lg leading-relaxed"
+               delay={0.2}
+               as="p"
+             />
+          </div>
 
           {/* Efecto de brillo al pasar el mouse */}
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />

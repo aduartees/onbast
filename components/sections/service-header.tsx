@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { BlurReveal } from "@/components/ui/blur-reveal";
 
 interface ServiceHeaderProps {
   title: string;
@@ -64,28 +65,12 @@ export function ServiceHeader({ title, description, introduction, buttonText, bu
     >
       {/* Delicate Animated Background - Optimized */}
       <div className="absolute inset-0 w-full h-full bg-neutral-950 overflow-hidden pointer-events-none">
-        {/* Soft Indigo Orb - Hardware Accelerated */}
-        <motion.div 
-          animate={{ 
-            scale: [1, 1.1, 1],
-            opacity: [0.2, 0.3, 0.2],
-            rotate: [0, 45, 0]
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          style={{ willChange: "transform, opacity" }}
-          className="absolute top-[-20%] left-[-10%] w-[120vw] h-[120vw] md:w-[90vw] md:h-[90vw] bg-indigo-900/20 rounded-full blur-[80px] md:blur-[100px] translate-z-0" 
-        />
-        {/* Soft Cyan Orb - Hardware Accelerated */}
-        <motion.div 
-           animate={{ 
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.2, 0.1],
-            x: [0, 30, 0]
-          }}
-          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          style={{ willChange: "transform, opacity" }}
-          className="absolute bottom-[-20%] right-[-10%] w-[100vw] h-[100vw] md:w-[80vw] md:h-[80vw] bg-cyan-900/10 rounded-full blur-[80px] md:blur-[100px] translate-z-0" 
-        />
+        {/* Soft Indigo Orb - Static/Simple Animation for Performance */}
+        <div className="absolute top-[-20%] left-[-10%] w-[120vw] h-[120vw] md:w-[90vw] md:h-[90vw] bg-indigo-900/20 rounded-full blur-[60px] md:blur-[80px]" />
+        
+        {/* Soft Cyan Orb - Static/Simple Animation for Performance */}
+        <div className="absolute bottom-[-20%] right-[-10%] w-[100vw] h-[100vw] md:w-[80vw] md:h-[80vw] bg-cyan-900/10 rounded-full blur-[60px] md:blur-[80px]" />
+        
         {/* Noise - Static Layer */}
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
       </div>
@@ -93,7 +78,7 @@ export function ServiceHeader({ title, description, introduction, buttonText, bu
       {/* Main Content */}
       <motion.div 
         style={{ y, opacity, scale }} 
-        className="relative z-10 flex flex-col items-center justify-center h-full w-full text-center px-4 max-w-7xl mx-auto pt-24 pb-safe md:pt-20 md:pb-12"
+        className="relative z-10 flex flex-col items-center justify-center h-full w-full text-center px-8 md:px-20 max-w-5xl mx-auto pt-24 pb-safe md:pt-20 md:pb-12"
         initial="hidden"
         animate="visible"
       >
@@ -101,7 +86,7 @@ export function ServiceHeader({ title, description, introduction, buttonText, bu
         {/* Luminous Service Pill */}
         <motion.div 
           variants={blurReveal}
-          className="mb-6 md:mb-10 mt-auto md:mt-0"
+          className="mb-8 md:mb-12 mt-auto md:mt-0"
         >
            <span className="inline-flex items-center gap-2 px-3 py-1 md:px-4 md:py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 shadow-[0_0_30px_-5px_rgba(99,102,241,0.3)] backdrop-blur-md group hover:bg-indigo-500/20 transition-colors cursor-default">
               <span className="relative flex h-1.5 w-1.5 md:h-2 md:w-2">
@@ -115,31 +100,25 @@ export function ServiceHeader({ title, description, introduction, buttonText, bu
         </motion.div>
 
         {/* Big Phrase with Cursive */}
-        <motion.h1 
-          variants={blurReveal}
-          transition={{ delay: 0.1 }}
-          className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-medium tracking-tight text-white mb-6 md:mb-8 max-w-6xl shrink-0 leading-[1.15] md:leading-[1.1]"
-        >
-          {words.map((word, i) => (
-             <span key={i} className={cn(
-               "inline-block mr-1.5 md:mr-4",
-               // Make the middle word cursive and slightly colored
-               i === midIndex || (words.length > 3 && i === midIndex + 1) ? "font-serif italic font-normal text-indigo-200/90" : ""
-             )}>
-               {word}
-             </span>
-          ))}
-        </motion.h1>
+        <div className="mb-8 md:mb-10 max-w-4xl shrink-0">
+          <BlurReveal
+            text={description}
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight text-white leading-[1.15] md:leading-[1.1]"
+            highlightClassName="font-serif italic font-normal text-indigo-200/90"
+            delay={0.1}
+          />
+        </div>
 
         {/* Introduction Paragraph */}
         {introduction && (
-          <motion.p 
-            variants={blurReveal}
-            transition={{ delay: 0.15 }}
-            className="text-sm md:text-lg text-neutral-400 max-w-2xl mx-auto mb-8 md:mb-12 leading-relaxed px-4"
-          >
-            {introduction}
-          </motion.p>
+          <div className="max-w-xl mx-auto mb-10 md:mb-16 px-4">
+             <BlurReveal
+               text={introduction}
+               className="text-sm md:text-base text-neutral-400 leading-relaxed"
+               delay={0.3}
+               as="p"
+             />
+          </div>
         )}
 
         {/* Buttons */}
@@ -150,7 +129,7 @@ export function ServiceHeader({ title, description, introduction, buttonText, bu
         >
           <Button 
             size="default" 
-            className="h-10 md:h-11 px-6 md:px-8 text-sm md:text-base bg-white text-black hover:bg-neutral-200 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] transition-all duration-300 w-full sm:w-auto"
+            className="h-9 md:h-10 px-5 md:px-7 text-xs md:text-sm bg-white text-black hover:bg-neutral-200 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] transition-all duration-300 w-full sm:w-auto font-medium"
             asChild
           >
             <a href={buttonLink || "#contact"}>
@@ -160,7 +139,7 @@ export function ServiceHeader({ title, description, introduction, buttonText, bu
           <Button 
             size="default" 
             variant="outline" 
-            className="h-10 md:h-11 px-6 md:px-8 text-sm md:text-base border-neutral-800 bg-black/20 text-neutral-300 hover:bg-white/5 hover:text-white rounded-full backdrop-blur-sm transition-all w-full sm:w-auto"
+            className="h-9 md:h-10 px-5 md:px-7 text-xs md:text-sm border-neutral-800 bg-black/20 text-neutral-300 hover:bg-white/5 hover:text-white rounded-full backdrop-blur-sm transition-all w-full sm:w-auto font-medium"
           >
              Ver Casos de Éxito
           </Button>

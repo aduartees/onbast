@@ -123,7 +123,7 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
 export default async function ServicePage({ params }: ServicePageProps) {
   const { slug } = await params;
   const service: SanityServiceDetail = await client.fetch(SERVICE_BY_SLUG_QUERY, { slug }, {
-      next: { revalidate: 60 } // ISR
+      next: { revalidate: 0 } // No cache, always fresh
   });
 
   if (!service) {

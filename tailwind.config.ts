@@ -71,8 +71,14 @@ const config = {
         third: "moveInCircle 15s linear infinite",
         fourth: "moveHorizontal 15s ease infinite",
         fifth: "moveInCircle 8s ease infinite",
+        scroll: "scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite",
       },
       keyframes: {
+        scroll: {
+          to: {
+            transform: "translate(calc(-50% - 0.5rem))",
+          },
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },

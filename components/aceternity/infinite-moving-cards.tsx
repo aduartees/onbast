@@ -38,14 +38,20 @@ export const InfiniteMovingCards = ({
     if (containerRef.current && scrollerRef.current) {
       const scrollerContent = Array.from(scrollerRef.current.children);
 
-      // Only duplicate if we haven't already
+      // Duplicate content enough times to ensure smooth scrolling on large screens
+      // If we have few items, duplicate more times
+      const duplicationFactor = items.length < 5 ? 4 : 2;
+
+      // Only duplicate if we haven't already (check if length is greater than original items)
       if (scrollerRef.current.children.length === items.length) {
-        scrollerContent.forEach((item) => {
-          const duplicatedItem = item.cloneNode(true);
-          if (scrollerRef.current) {
-            scrollerRef.current.appendChild(duplicatedItem);
+          for (let i = 0; i < duplicationFactor; i++) {
+            scrollerContent.forEach((item) => {
+                const duplicatedItem = item.cloneNode(true);
+                if (scrollerRef.current) {
+                    scrollerRef.current.appendChild(duplicatedItem);
+                }
+            });
           }
-        });
       }
 
       getDirection();

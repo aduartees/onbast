@@ -96,14 +96,16 @@ interface ServiceContentProps {
 
 export function ServiceContent({ mainImage, features, featuresTitle, benefits, process, processTitle, longDescription, overviewText, problem, solution, technologies, impactSection, team, teamTitle, testimonials, testimonialsTitle, faqs, faqTitle }: ServiceContentProps) {
   return (
-    <div className="bg-neutral-950 min-h-screen py-8 md:py-12 px-4 md:px-6 relative z-20 overflow-hidden">
+    <div className="bg-neutral-950 min-h-screen py-8 md:py-12 px-4 md:px-6 relative z-20">
       
-      {/* Ambient Background Glow - Subtle */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-indigo-900/10 blur-[80px] rounded-full pointer-events-none" />
+      {/* Ambient Background Glow - Subtle - Wrapped in overflow hidden container to prevent scroll */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-indigo-900/10 blur-[80px] rounded-full" />
+      </div>
 
       {/* Responsive Tracing Beam: Hidden on mobile, visible on lg+ */}
       <div className="hidden lg:block">
-        <TracingBeam className="px-4">
+        <TracingBeam className="px-4 max-w-6xl mx-auto">
            <ContentWrapper 
              mainImage={mainImage}
              features={features} featuresTitle={featuresTitle}
@@ -137,10 +139,10 @@ export function ServiceContent({ mainImage, features, featuresTitle, benefits, p
 // Extracted Content Component to reuse
 const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process, processTitle, longDescription, overviewText, problem, solution, technologies, impactSection, team, teamTitle, testimonials, testimonialsTitle, faqs, faqTitle }: ServiceContentProps) => {
     return (
-        <div className="max-w-4xl mx-auto pt-4 antialiased relative pb-16">
+        <div className="max-w-6xl mx-auto pt-4 antialiased relative pb-16">
           
           {/* 1. Overview Section with Image Side-by-Side */}
-          <section className="mb-16 md:mb-24 relative">
+          <section className="mb-16 md:mb-24 relative max-w-4xl mx-auto">
             <FadeIn className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center mb-12">
               <div>
                 <SectionHeading 
@@ -221,7 +223,7 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
     
           {/* 2. Tech Stack - Ultra Minimalist */}
           {technologies && technologies.length > 0 && (
-              <FadeIn className="mb-20 md:mb-28 py-8 relative">
+              <FadeIn className="mb-20 md:mb-28 py-8 relative max-w-4xl mx-auto">
                    <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-neutral-800 to-transparent opacity-50" />
                   <div className="text-center mb-8 relative z-10">
                     <span className="px-3 py-1 bg-neutral-950 text-neutral-500 text-[10px] font-medium uppercase tracking-[0.2em] border border-neutral-800 rounded-full">
@@ -240,7 +242,7 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
     
           {/* Impact Section - Clean Grid */}
           {impactSection && impactSection.cards && impactSection.cards.length > 0 && (
-            <section className="mb-20 md:mb-28">
+            <section className="mb-20 md:mb-28 max-w-5xl mx-auto">
                {impactSection.title && (
                  <FadeIn>
                     <SectionHeading title={impactSection.title} subtitle="Impacto" highlight="Real" />
@@ -290,7 +292,7 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
     
           {/* Features Grid - Small Cards */}
           {features && features.length > 0 && (
-            <section className="mb-20 md:mb-28">
+            <section className="mb-20 md:mb-28 max-w-5xl mx-auto">
                <FadeIn>
                   <SectionHeading 
                     title={featuresTitle || "Características"} 
@@ -317,7 +319,7 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
 
           {/* Team Section */}
           {team && team.length > 0 && (
-            <section className="mb-20 md:mb-28">
+            <section className="mb-20 md:mb-28 max-w-4xl mx-auto">
                 <FadeIn>
                    <SectionHeading 
                      title={teamTitle || "Nuestro Equipo"} 
@@ -331,7 +333,7 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
 
           {/* Testimonials Section */}
           {testimonials && testimonials.length > 0 && (
-            <section className="mb-20 md:mb-28">
+            <section className="mb-20 md:mb-28 max-w-4xl mx-auto">
                 <FadeIn>
                    <SectionHeading 
                      title={testimonialsTitle || "Testimonios"} 
@@ -345,8 +347,8 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
 
           {/* Process Section (Sticky Scroll) */}
            {process && process.length > 0 && (
-             <section className="mb-20 md:mb-28">
-                <FadeIn>
+             <section className="mb-20 md:mb-28 w-full">
+                <FadeIn className="max-w-4xl mx-auto">
                    <SectionHeading 
                      title={processTitle || "Nuestro Proceso"} 
                      subtitle="Metodología" 
@@ -374,7 +376,7 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
           )}
 
           {/* CTA Section - Clean */}
-          <section className="text-center py-16 relative overflow-hidden rounded-3xl bg-neutral-900/10 border border-white/5">
+          <section className="text-center py-16 relative overflow-hidden rounded-3xl bg-neutral-900/10 border border-white/5 max-w-4xl mx-auto">
               <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none" />
               <FadeIn className="relative z-10 max-w-2xl mx-auto px-6">
                 <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tighter mb-4">

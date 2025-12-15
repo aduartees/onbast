@@ -102,6 +102,40 @@ export const InfiniteMovingCards = ({
     containerRef.current.scrollLeft = newScrollLeft;
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!containerRef.current) return;
+    setIsDragging(true);
+    setStartX(e.touches[0].pageX - containerRef.current.offsetLeft);
+    setScrollLeft(containerRef.current.scrollLeft);
+    containerRef.current.style.setProperty("animation-play-state", "paused");
+  };
+
+  const handleTouchEnd = () => {
+    if (!containerRef.current) return;
+    setIsDragging(false);
+    containerRef.current.style.removeProperty("animation-play-state");
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging || !containerRef.current) return;
+    // Don't prevent default here to allow vertical scrolling of the page
+    // e.preventDefault(); 
+    const x = e.touches[0].pageX - containerRef.current.offsetLeft;
+    const walk = (x - startX) * 2; // scroll-fast
+    
+    // Manual infinite scroll logic
+    const maxScrollLeft = containerRef.current.scrollWidth - containerRef.current.clientWidth;
+    let newScrollLeft = scrollLeft - walk;
+
+    if (newScrollLeft < 0) {
+        newScrollLeft = maxScrollLeft + newScrollLeft; // Loop to end
+    } else if (newScrollLeft > maxScrollLeft) {
+        newScrollLeft = newScrollLeft - maxScrollLeft; // Loop to start
+    }
+
+    containerRef.current.scrollLeft = newScrollLeft;
+  };
+
   const getDirection = () => {
     if (containerRef.current) {
       if (direction === "left") {
@@ -139,6 +173,9 @@ export const InfiniteMovingCards = ({
       onMouseLeave={handleMouseLeave}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       <ul
         ref={scrollerRef}

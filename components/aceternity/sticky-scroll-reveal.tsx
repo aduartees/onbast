@@ -60,12 +60,12 @@ export const StickyScroll = ({
             <div 
               key={item.title + index} 
               className={cn(
-                "min-h-[50vh] lg:min-h-[80vh] flex flex-col justify-center", // Tall enough to trigger scroll events properly
+                "min-h-[40vh] lg:min-h-[60vh] flex flex-col justify-center", // Tall enough to trigger scroll events properly
                 index === 0 
-                  ? "mt-0 mb-12 lg:mb-24" 
+                  ? "mt-0 mb-8 lg:mb-16" 
                   : index === content.length - 1 
-                  ? "mt-12 mb-12 lg:mt-24 lg:mb-24" 
-                  : "my-12 lg:my-24"
+                  ? "mt-8 mb-8 lg:mt-16 lg:mb-16" 
+                  : "my-8 lg:my-16"
               )}
             >
               <motion.h2

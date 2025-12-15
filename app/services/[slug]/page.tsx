@@ -29,6 +29,7 @@ interface SanityServiceDetail {
   heroTrustedLogos?: { name: string; logo: string; alt?: string }[];
   icon?: string;
   featuresTitle?: string;
+  featuresDescription?: string;
   features?: {
     title: string;
     description: string;
@@ -36,11 +37,14 @@ interface SanityServiceDetail {
   }[];
   benefits?: string[];
   processTitle?: string;
+  processDescription?: string;
   process?: {
     title: string;
     description: string;
   }[];
   technologies?: string[];
+  techTitle?: string;
+  techDescription?: string;
   impactSection?: {
     title?: string;
     subtitle?: string;

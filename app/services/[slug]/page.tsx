@@ -245,8 +245,6 @@ export default async function ServicePage({ params }: ServicePageProps) {
         processDescription={service.processDescription}
         longDescription={service.longDescription} 
         overviewText={service.overviewText} 
-        problem={service.problem} 
-        solution={service.solution} 
         technologies={service.technologies} 
         techTitle={service.techTitle}
         techDescription={service.techDescription}

@@ -89,7 +89,7 @@ interface ServiceContentProps {
 
 export function ServiceContent({ mainImage, features, featuresTitle, benefits, process, processTitle, longDescription, overviewText, problem, solution, technologies, impactSection, team, teamTitle, testimonials, testimonialsTitle, pricing, faqs, faqTitle }: ServiceContentProps) {
   return (
-    <div className="bg-neutral-950 min-h-screen py-8 md:py-12 px-4 md:px-6 relative z-20 overflow-x-hidden">
+    <div className="bg-neutral-950 min-h-screen py-8 md:py-12 px-4 md:px-6 relative z-20">
       
       {/* Ambient Background Glow - Subtle - Wrapped in overflow hidden container to prevent scroll */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -136,84 +136,58 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
     return (
         <div className="max-w-6xl mx-auto pt-4 antialiased relative pb-16">
           
-          {/* 1. Overview Section with Image Side-by-Side */}
-          <section className="mb-20 md:mb-28 relative max-w-4xl mx-auto">
-            <FadeIn className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center mb-12">
-              <div>
-                <SectionHeading 
-                    title="Visión General" 
-                    subtitle="Contexto" 
-                    align="left"
-                    highlight="Estratégica"
-                />
-                <div className="prose prose-invert prose-sm text-neutral-400 leading-relaxed font-light">
-                  <p className="text-sm md:text-base leading-6">{longDescription || "Este servicio está diseñado para transformar tu presencia digital mediante estrategias avanzadas y tecnología de vanguardia."}</p>
-                  
-                  {overviewText && (
-                    <p className="mt-4 border-l-2 border-indigo-500 pl-4 text-neutral-300 text-sm italic font-serif font-normal">
-                      "{overviewText}"
-                    </p>
-                  )}
-
-                  {/* Benefits List Compact */}
-                  {benefits && (
-                    <div className="mt-6">
-                      <h4 className="text-white font-medium mb-3 text-xs uppercase tracking-wider">Beneficios Clave</h4>
-                      <ul className="grid grid-cols-1 gap-2">
-                        {benefits.map((benefit, i) => (
-                          <li key={i} className="flex items-start gap-2">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400 mt-0.5 shrink-0" />
-                            <span className="text-neutral-400 text-xs md:text-sm">{benefit}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+          {/* 1. Strategic Vision & Transformation */}
+          <section className="mb-20 md:mb-32 relative max-w-5xl mx-auto px-4">
+             {/* Large Editorial Intro */}
+             <FadeIn>
+                <div className="prose prose-invert max-w-none mb-16 md:mb-24">
+                   <h2 className="text-2xl md:text-4xl lg:text-5xl font-normal leading-tight tracking-tight text-white/90 font-sans">
+                      {longDescription || "Transforming your digital presence."}
+                   </h2>
+                   {overviewText && (
+                      <p className="text-lg md:text-2xl text-neutral-400 mt-8 font-light leading-relaxed border-l-2 border-indigo-500/50 pl-6">
+                        {overviewText}
+                      </p>
+                   )}
                 </div>
-              </div>
+             </FadeIn>
 
-              {/* Image Side */}
-              <div className="relative">
-                 <div className="aspect-[4/3] rounded-xl overflow-hidden border border-white/10 relative shadow-2xl">
-                    {mainImage ? (
-                         <Image 
-                            src={mainImage} 
-                            alt="Overview" 
-                            width={600} 
-                            height={450} 
-                            className="object-cover w-full h-full hover:scale-105 transition-transform duration-700"
-                        />
-                    ) : (
-                        <div className="w-full h-full bg-neutral-900 flex items-center justify-center">
-                            <span className="text-neutral-700 text-xs">Imagen Principal</span>
-                        </div>
-                    )}
-                     <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/50 to-transparent" />
-                 </div>
-              </div>
-            </FadeIn>
+             {/* Transformation Row (Problem -> Solution) */}
+             {(problem || solution) && (
+                <FadeIn delay={0.2} className="relative">
+                   {/* Connection Line */}
+                   <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-neutral-800 to-transparent hidden md:block" />
+                   
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 relative z-10">
+                      {/* Current State (Problem) */}
+                      <div className="bg-neutral-900/30 backdrop-blur-sm border border-white/5 p-8 md:p-10 rounded-2xl relative group hover:border-red-500/20 transition-colors duration-500">
+                         <div className="absolute -top-3 left-8 px-3 py-1 bg-neutral-950 border border-white/10 text-[10px] text-neutral-500 uppercase tracking-widest rounded-full">
+                            El Desafío
+                         </div>
+                         <p className="text-neutral-400 text-lg leading-relaxed font-light">
+                            {problem || "Identificamos los cuellos de botella."}
+                         </p>
+                      </div>
 
-            {/* Problem / Solution Split - Compact Cards */}
-            {(problem || solution) && (
-                <FadeIn className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-                    <div className="p-5 rounded-xl bg-neutral-900/30 border border-white/5 relative overflow-hidden">
-                        <h3 className="text-red-400/80 font-bold mb-2 uppercase tracking-widest text-[9px] flex items-center gap-2">
-                             <div className="w-1 h-1 rounded-full bg-red-500" /> El Desafío
-                        </h3>
-                        <p className="text-neutral-300 text-xs md:text-sm leading-relaxed font-light">
-                            {problem || "Identificamos los cuellos de botella que limitan tu crecimiento."}
-                        </p>
-                    </div>
-                    <div className="p-5 rounded-xl bg-neutral-900/30 border border-white/5 relative overflow-hidden">
-                        <h3 className="text-emerald-400/80 font-bold mb-2 uppercase tracking-widest text-[9px] flex items-center gap-2">
-                            <div className="w-1 h-1 rounded-full bg-emerald-500" /> La Solución
-                        </h3>
-                        <p className="text-neutral-300 text-xs md:text-sm leading-relaxed font-light">
-                            {solution || "Implementamos estrategias data-driven para garantizar resultados."}
-                        </p>
-                    </div>
+                      {/* Future State (Solution) */}
+                      <div className="bg-neutral-900/30 backdrop-blur-sm border border-indigo-500/20 p-8 md:p-10 rounded-2xl relative group hover:border-indigo-500/40 transition-colors duration-500 shadow-lg shadow-indigo-900/5">
+                         <div className="absolute -top-3 left-8 px-3 py-1 bg-indigo-950 border border-indigo-500/30 text-[10px] text-indigo-300 uppercase tracking-widest rounded-full shadow-[0_0_10px_rgba(99,102,241,0.2)]">
+                            La Solución
+                         </div>
+                         <p className="text-white/90 text-lg leading-relaxed font-light">
+                            {solution || "Implementamos la estrategia ganadora."}
+                         </p>
+                         {/* Glowing orb effect */}
+                         <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+                      </div>
+                   </div>
+                   
+                   {/* Center Arrow Icon (Desktop) */}
+                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center justify-center w-10 h-10 rounded-full bg-neutral-950 border border-white/10 text-neutral-500 z-20 shadow-xl">
+                      <ArrowRight className="w-4 h-4" />
+                   </div>
                 </FadeIn>
-            )}
+             )}
           </section>
     
           {/* 2. Tech Stack - Ultra Minimalist */}
@@ -342,7 +316,7 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
 
           {/* Process Section (Sticky Scroll) */}
            {process && process.length > 0 && (
-             <section className="mb-20 md:mb-28 w-full">
+             <section className="mb-0 w-full">
                 <FadeIn className="max-w-4xl mx-auto">
                    <SectionHeading 
                      title={processTitle || "Nuestro Proceso"} 

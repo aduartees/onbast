@@ -48,13 +48,13 @@ export function PricingSection({ pricing }: PricingProps) {
   const formattedPrice = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 0 }).format(totalPrice);
 
   return (
-    <section className="py-20 relative">
+    <section className="py-0 relative">
       {/* Background Elements - Fixed clipping on mobile */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-screen h-[600px] bg-indigo-900/20 blur-[120px] rounded-full pointer-events-none" />
 
-      <div className="max-w-4xl mx-auto px-4 relative z-10">
+      <div className="max-w-4xl mx-auto px-4 relative z-10 pt-10 md:pt-0">
         {/* Header */}
-        <FadeIn className="text-center mb-16">
+        <FadeIn className="text-center mb-10">
           <SectionHeading
             title={pricing.title || "Pricing that's so simple."}
             subtitle="Pricing"

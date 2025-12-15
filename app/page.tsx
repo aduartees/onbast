@@ -4,7 +4,6 @@ import { TechArsenalSection } from "@/components/sections/tech-arsenal";
 import { ServicesSection } from "@/components/sections/services";
 import { ProjectsSection } from "@/components/sections/projects";
 import { ContactSection } from "@/components/sections/contact";
-import { Footer } from "@/components/layout/footer";
 
 export default function Home() {
   return (
@@ -15,7 +14,6 @@ export default function Home() {
       <ServicesSection />
       <ProjectsSection />
       <ContactSection />
-      <Footer />
     </main>
   );
 }

@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/next";
+import { Footer } from "@/components/layout/footer";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const poppins = Poppins({ 
@@ -45,6 +46,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
+            <Footer />
             <Analytics />
           </ThemeProvider>
       </body>

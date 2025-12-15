@@ -97,6 +97,15 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
     addon,
     "trustedLogos": trustedLogos[].asset->url
   },
+  relatedProjects[]->{
+    _id,
+    title,
+    description,
+    "slug": slug.current,
+    "imageUrl": mainImage.asset->url,
+    tags,
+    link
+  },
   faqTitle,
   faqDescription,
   faqs[] {

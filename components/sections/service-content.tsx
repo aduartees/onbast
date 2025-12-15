@@ -21,8 +21,17 @@ const ImpactStats = dynamic(() => import("@/components/sections/impact-stats").t
 import { WobbleCard } from "@/components/aceternity/wobble-card";
 import { TracingBeam } from "@/components/aceternity/tracing-beam";
 
+import { ParallaxScroll } from "@/components/aceternity/parallax-scroll";
+
 interface ServiceContentProps {
   mainImage?: string;
+  relatedProjects?: {
+    _id: string;
+    title: string;
+    description?: string;
+    imageUrl: string;
+    link?: string;
+  }[];
   features?: {
     title: string;
     description: string;
@@ -105,7 +114,7 @@ interface ServiceContentProps {
   };
 }
 
-export function ServiceContent({ mainImage, features, featuresTitle, featuresDescription, benefits, process, processTitle, processDescription, longDescription, overviewText, technologies, techTitle, techDescription, impactSection, team, teamTitle, teamDescription, testimonials, testimonialsTitle, testimonialsDescription, pricing, faqs, faqTitle, faqDescription, ctaSection }: ServiceContentProps) {
+export function ServiceContent({ mainImage, relatedProjects, features, featuresTitle, featuresDescription, benefits, process, processTitle, processDescription, longDescription, overviewText, technologies, techTitle, techDescription, impactSection, team, teamTitle, teamDescription, testimonials, testimonialsTitle, testimonialsDescription, pricing, faqs, faqTitle, faqDescription, ctaSection }: ServiceContentProps) {
   return (
     <div className="bg-neutral-950 min-h-screen py-12 md:py-24 px-4 md:px-6 relative z-10 rounded-t-[3rem] md:rounded-t-[5rem] shadow-[0_-50px_100px_-20px_rgba(79,70,229,0.1)] border-t border-white/10 mt-0 transform-gpu backface-hidden">
       
@@ -121,6 +130,7 @@ export function ServiceContent({ mainImage, features, featuresTitle, featuresDes
         <TracingBeam className="px-4 max-w-6xl mx-auto">
            <ContentWrapper 
              mainImage={mainImage}
+             relatedProjects={relatedProjects}
              features={features} featuresTitle={featuresTitle} featuresDescription={featuresDescription}
              benefits={benefits} process={process} processTitle={processTitle} processDescription={processDescription}
              longDescription={longDescription} overviewText={overviewText} 
@@ -138,6 +148,7 @@ export function ServiceContent({ mainImage, features, featuresTitle, featuresDes
       <div className="lg:hidden">
          <ContentWrapper 
              mainImage={mainImage}
+             relatedProjects={relatedProjects}
              features={features} featuresTitle={featuresTitle} featuresDescription={featuresDescription}
              benefits={benefits} process={process} processTitle={processTitle} processDescription={processDescription}
              longDescription={longDescription} overviewText={overviewText} 
@@ -154,7 +165,7 @@ export function ServiceContent({ mainImage, features, featuresTitle, featuresDes
 }
 
 // Extracted Content Component to reuse
-const ContentWrapper = ({ mainImage, features, featuresTitle, featuresDescription, benefits, process, processTitle, processDescription, longDescription, overviewText, technologies, techTitle, techDescription, impactSection, team, teamTitle, teamDescription, testimonials, testimonialsTitle, testimonialsDescription, pricing, faqs, faqTitle, faqDescription, ctaSection }: ServiceContentProps) => {
+const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, featuresDescription, benefits, process, processTitle, processDescription, longDescription, overviewText, technologies, techTitle, techDescription, impactSection, team, teamTitle, teamDescription, testimonials, testimonialsTitle, testimonialsDescription, pricing, faqs, faqTitle, faqDescription, ctaSection }: ServiceContentProps) => {
     return (
         <div className="max-w-6xl mx-auto pt-4 antialiased relative pb-16">
           
@@ -307,6 +318,20 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, featuresDescriptio
             <div className="mb-20 md:mb-28">
                <PricingSection pricing={pricing} />
             </div>
+          )}
+
+          {/* Related Projects Section */}
+          {relatedProjects && relatedProjects.length > 0 && (
+             <section className="mb-20 md:mb-28 w-full">
+                <FadeIn className="max-w-4xl mx-auto px-4 mb-12">
+                   <SectionHeading 
+                     title="Proyectos Relacionados" 
+                     subtitle="Casos de Éxito" 
+                     highlight="Destacados" 
+                   />
+                </FadeIn>
+                <ParallaxScroll items={relatedProjects} />
+             </section>
           )}
     
           {/* FAQs */}

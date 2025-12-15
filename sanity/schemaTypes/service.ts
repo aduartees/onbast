@@ -202,12 +202,20 @@ export default defineType({
       of: [{ type: 'reference', to: [{ type: 'testimonial' }] }]
     }),
     defineField({
-        name: 'featuresTitle',
-        title: 'Título Sección Características',
-        type: 'string',
-        group: 'content',
-        initialValue: 'Características'
+      name: 'relatedProjects',
+      title: 'Proyectos Relacionados',
+      type: 'array',
+      group: 'content',
+      description: 'Selecciona proyectos que se mostrarán en la landing de este servicio.',
+      of: [{ type: 'reference', to: [{ type: 'project' }] }]
     }),
+    defineField({
+      name: 'featuresTitle',
+      title: 'Título de Características',
+      type: 'string',
+      group: 'content',
+      initialValue: 'Características'
+    }),  }),
     defineField({
         name: 'featuresDescription',
         title: 'Descripción Sección Características',

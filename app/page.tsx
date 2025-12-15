@@ -13,7 +13,7 @@ export default async function Home() {
   const homeData = await client.fetch(HOME_PAGE_QUERY);
 
   return (
-    <main className="min-h-screen bg-neutral-950 antialiased selection:bg-cyan-500 selection:text-white">
+    <main className="min-h-screen bg-neutral-950 antialiased selection:bg-cyan-500 selection:text-white overflow-x-hidden">
       <HeroSection />
       <PhilosophySection header={homeData?.philosophy} />
       <TechArsenalSection header={homeData?.techArsenal} />

@@ -311,7 +311,7 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, featuresDescriptio
     
           {/* FAQs */}
           {faqs && faqs.length > 0 && (
-              <section className="max-w-2xl mx-auto mb-20 md:mb-28">
+              <section className="max-w-2xl mx-auto mb-20 md:mb-28 px-4">
                   <FadeIn>
                     <SectionHeading 
                       title={faqTitle || "Preguntas Frecuentes"} 

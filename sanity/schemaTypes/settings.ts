@@ -9,6 +9,7 @@ export default defineType({
       name: 'agencyInfo',
       title: 'Información de la Agencia (SEO Global)',
       type: 'object',
+      // group: 'content', // Removing group to fix error
       description: 'Datos utilizados para generar el Schema.org global de la organización.',
       fields: [
         defineField({ name: 'name', title: 'Nombre de la Agencia', type: 'string', initialValue: 'ONBAST' }),
@@ -70,7 +71,7 @@ export default defineType({
       name: 'header',
       title: 'Configuración del Header',
       type: 'object',
-      group: 'content',
+      // group: 'content',
       fields: [
         defineField({ 
           name: 'logoText', 
@@ -120,7 +121,7 @@ export default defineType({
       name: 'footer',
       title: 'Configuración del Footer',
       type: 'object',
-      group: 'content',
+      // group: 'content',
       fields: [
         defineField({ 
           name: 'brandText', 

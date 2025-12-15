@@ -89,22 +89,17 @@ export default defineType({
       group: 'general',
       description: 'Párrafo pequeño debajo del titular para dar contexto adicional.',
     }),
-    defineField({
-      name: 'heroTrustedLogos',
-      title: 'Logos de Confianza (Hero)',
-      type: 'array',
-      group: 'general',
-      of: [
-        defineArrayMember({
-          type: 'object',
-          fields: [
-            { name: 'name', type: 'string', title: 'Nombre de la Empresa' },
-            { name: 'logo', type: 'image', title: 'Logo (SVG/PNG preferiblemente blanco)' }
-          ]
-        })
-      ],
-      description: 'Lista de logos que aparecen en el carrusel infinito del Hero.',
-    }),
+    // defineField({
+    //   name: 'heroTrustedLogos',
+    //   title: 'Logos de Confianza (Hero)',
+    //   description: 'OBSOLETO: Se usan los logos de Configuración Global.',
+    //   type: 'array',
+    //   group: 'general',
+    //   readOnly: true,
+    //   hidden: true,
+    //   of: [{type: 'string'}] 
+    // }),
+
 
     // --- Contenido Detallado ---
     defineField({

@@ -6,6 +6,7 @@ import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 interface NavbarProps {
   data?: {
@@ -32,7 +33,13 @@ interface NavbarProps {
 }
 
 export function Navbar({ data }: NavbarProps) {
+  const pathname = usePathname();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+  // Don't show navbar in Sanity Studio
+  if (pathname?.startsWith("/studio")) {
+    return null;
+  }
 
   const { header, agency } = data || {};
   const menuItems = header?.menuItems || [

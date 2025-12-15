@@ -22,6 +22,11 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
   heroButtonText,
   heroButtonLink,
   heroHeadline,
+  heroIntroduction,
+  "heroTrustedLogos": heroTrustedLogos[] {
+    name,
+    "logo": logo.asset->url
+  },
   icon,
   featuresTitle,
   features[] {

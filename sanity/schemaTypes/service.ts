@@ -81,6 +81,30 @@ export default defineType({
       group: 'general',
       description: 'Frase grande e impactante para el Hero. La palabra central se pondrá automáticamente en cursiva.',
     }),
+    defineField({
+      name: 'heroIntroduction',
+      title: 'Introducción Pequeña (Hero)',
+      type: 'text',
+      rows: 2,
+      group: 'general',
+      description: 'Párrafo pequeño debajo del titular para dar contexto adicional.',
+    }),
+    defineField({
+      name: 'heroTrustedLogos',
+      title: 'Logos de Confianza (Hero)',
+      type: 'array',
+      group: 'general',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          fields: [
+            { name: 'name', type: 'string', title: 'Nombre de la Empresa' },
+            { name: 'logo', type: 'image', title: 'Logo (SVG/PNG preferiblemente blanco)' }
+          ]
+        })
+      ],
+      description: 'Lista de logos que aparecen en el carrusel infinito del Hero.',
+    }),
 
     // --- Contenido Detallado ---
     defineField({

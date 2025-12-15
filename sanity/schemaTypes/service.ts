@@ -215,7 +215,7 @@ export default defineType({
       type: 'string',
       group: 'content',
       initialValue: 'Características'
-    }),  }),
+    }),
     defineField({
         name: 'featuresDescription',
         title: 'Descripción Sección Características',

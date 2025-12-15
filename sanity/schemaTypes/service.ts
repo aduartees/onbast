@@ -74,6 +74,13 @@ export default defineType({
       description: 'Ej: /contacto, https://calendly.com/...',
       initialValue: '/contacto'
     }),
+    defineField({
+      name: 'heroHeadline',
+      title: 'Titular de Impacto (Hero)',
+      type: 'string',
+      group: 'general',
+      description: 'Frase grande e impactante para el Hero. La palabra central se pondrá automáticamente en cursiva.',
+    }),
 
     // --- Contenido Detallado ---
     defineField({

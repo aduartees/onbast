@@ -17,6 +17,22 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'assets.aceternity.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'i.pravatar.cc',
+      },
+      {
+        protocol: 'https',
+        hostname: 'assets.vercel.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'upload.wikimedia.org',
+      },
     ],
   },
   logging: {

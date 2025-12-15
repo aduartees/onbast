@@ -24,6 +24,7 @@ interface SanityServiceDetail {
   imageAlt?: string;
   heroButtonText?: string;
   heroButtonLink?: string;
+  heroHeadline?: string;
   icon?: string;
   featuresTitle?: string;
   features?: {
@@ -177,7 +178,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
       <ServiceHeader 
         title={service.title} 
-        description={service.shortDescription}
+        description={service.heroHeadline || service.shortDescription}
         buttonText={service.heroButtonText}
         buttonLink={service.heroButtonLink}
       />

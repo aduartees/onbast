@@ -89,10 +89,12 @@ interface ServiceContentProps {
 
 export function ServiceContent({ mainImage, features, featuresTitle, benefits, process, processTitle, longDescription, overviewText, problem, solution, technologies, impactSection, team, teamTitle, testimonials, testimonialsTitle, pricing, faqs, faqTitle }: ServiceContentProps) {
   return (
-    <div className="bg-neutral-950 min-h-screen py-8 md:py-12 px-4 md:px-6 relative z-20">
+    <div className="bg-neutral-950 min-h-screen py-12 md:py-24 px-4 md:px-6 relative z-10 rounded-t-[3rem] md:rounded-t-[5rem] shadow-[0_-50px_100px_-20px_rgba(79,70,229,0.1)] border-t border-white/10 mt-0 overflow-hidden transform translate-z-0 will-change-transform">
       
       {/* Ambient Background Glow - Subtle - Wrapped in overflow hidden container to prevent scroll */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-t-[3rem] md:rounded-t-[5rem]">
+          {/* Static Background Layer to prevent bleed-through */}
+          <div className="absolute inset-0 bg-neutral-950 z-[-1]" />
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-indigo-900/10 blur-[80px] rounded-full" />
       </div>
 
@@ -154,37 +156,41 @@ const ContentWrapper = ({ mainImage, features, featuresTitle, benefits, process,
 
              {/* Transformation Row (Problem -> Solution) */}
              {(problem || solution) && (
-                <FadeIn delay={0.2} className="relative">
-                   {/* Connection Line */}
-                   <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-neutral-800 to-transparent hidden md:block" />
-                   
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 relative z-10">
-                      {/* Current State (Problem) */}
-                      <div className="bg-neutral-900/30 backdrop-blur-sm border border-white/5 p-8 md:p-10 rounded-2xl relative group hover:border-red-500/20 transition-colors duration-500">
-                         <div className="absolute -top-3 left-8 px-3 py-1 bg-neutral-950 border border-white/10 text-[10px] text-neutral-500 uppercase tracking-widest rounded-full">
-                            El Desafío
-                         </div>
-                         <p className="text-neutral-400 text-lg leading-relaxed font-light">
-                            {problem || "Identificamos los cuellos de botella."}
-                         </p>
-                      </div>
+                <FadeIn delay={0.2} className="relative mt-16">
+                   <div className="bg-neutral-900/30 border border-white/5 rounded-3xl p-8 md:p-12 overflow-hidden relative">
+                      {/* Background Decoration */}
+                      <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none" />
+                      
+                      <div className="grid md:grid-cols-2 gap-12 items-center relative z-10">
+                          {/* Problem */}
+                          <div className="space-y-4">
+                             <div className="flex items-center gap-2 text-red-400/80 mb-2">
+                                <div className="w-2 h-2 rounded-full bg-red-500/50" />
+                                <span className="text-xs font-mono uppercase tracking-widest">El Desafío</span>
+                             </div>
+                             <p className="text-xl md:text-2xl text-neutral-400 font-light leading-relaxed">
+                                &quot;{problem || "Identificamos los obstáculos que frenan tu crecimiento."}&quot;
+                             </p>
+                          </div>
 
-                      {/* Future State (Solution) */}
-                      <div className="bg-neutral-900/30 backdrop-blur-sm border border-indigo-500/20 p-8 md:p-10 rounded-2xl relative group hover:border-indigo-500/40 transition-colors duration-500 shadow-lg shadow-indigo-900/5">
-                         <div className="absolute -top-3 left-8 px-3 py-1 bg-indigo-950 border border-indigo-500/30 text-[10px] text-indigo-300 uppercase tracking-widest rounded-full shadow-[0_0_10px_rgba(99,102,241,0.2)]">
-                            La Solución
-                         </div>
-                         <p className="text-white/90 text-lg leading-relaxed font-light">
-                            {solution || "Implementamos la estrategia ganadora."}
-                         </p>
-                         {/* Glowing orb effect */}
-                         <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+                          {/* Connection Arrow (Mobile: Down, Desktop: Right) */}
+                          <div className="flex justify-center md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-20">
+                             <div className="w-10 h-10 rounded-full bg-neutral-800 border border-white/10 flex items-center justify-center shadow-xl">
+                                <ArrowRight className="w-5 h-5 text-neutral-400 rotate-90 md:rotate-0" />
+                             </div>
+                          </div>
+
+                          {/* Solution */}
+                          <div className="bg-gradient-to-br from-indigo-500/10 to-purple-500/5 border border-indigo-500/20 rounded-2xl p-6 md:p-8 relative group hover:border-indigo-500/40 transition-colors">
+                             <div className="flex items-center gap-2 text-indigo-400 mb-4">
+                                <Zap className="w-4 h-4" />
+                                <span className="text-xs font-mono uppercase tracking-widest">La Solución ONBAST</span>
+                             </div>
+                             <p className="text-lg text-white font-medium leading-relaxed">
+                                {solution || "Nuestra metodología convierte obstáculos en ventajas competitivas."}
+                             </p>
+                          </div>
                       </div>
-                   </div>
-                   
-                   {/* Center Arrow Icon (Desktop) */}
-                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center justify-center w-10 h-10 rounded-full bg-neutral-950 border border-white/10 text-neutral-500 z-20 shadow-xl">
-                      <ArrowRight className="w-4 h-4" />
                    </div>
                 </FadeIn>
              )}

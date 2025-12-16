@@ -20,6 +20,7 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
   heroButtonText,
   heroButtonLink,
   heroHeadline,
+  heroHighlight,
   heroIntroduction,
   "heroTrustedLogos": *[_type == "settings"] | order(_updatedAt desc)[0].trustedLogos[] {
     name,
@@ -38,6 +39,7 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
   },
   icon,
   featuresTitle,
+  featuresHighlight,
   featuresDescription,
   features[] {
     title,
@@ -46,6 +48,7 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
   },
   benefits,
   processTitle,
+  processHighlight,
   processDescription,
   process[] {
     title,
@@ -53,6 +56,7 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
   },
   impactSection {
     title,
+    highlight,
     subtitle,
     stats[] {
       value,
@@ -63,9 +67,11 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
     }
   },
   techTitle,
+  techHighlight,
   techDescription,
   technologies,
   teamTitle,
+  teamHighlight,
   teamDescription,
   team[]->{
     name,
@@ -75,6 +81,7 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
     social
   },
   testimonialsTitle,
+  testimonialsHighlight,
   testimonialsDescription,
   testimonials[]->{
     name,
@@ -107,6 +114,7 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
     link
   },
   faqTitle,
+  faqHighlight,
   faqDescription,
   faqs[] {
     question,
@@ -184,3 +192,196 @@ export const SETTINGS_QUERY = `*[_type == "settings"][0] {
 
 // Deprecated: FOOTER_QUERY is now part of SETTINGS_QUERY, but keeping for backward compatibility if needed temporarily
 export const FOOTER_QUERY = SETTINGS_QUERY;
+
+export const AGENCY_PAGE_QUERY = `*[_type == "agencyPage"][0] {
+  hero {
+    title,
+    headline,
+    highlight,
+    description,
+    "imageUrl": image.asset->url
+  },
+  history {
+    title,
+    highlight,
+    description,
+    "imageUrl": image.asset->url
+  },
+  methodology {
+    title,
+    highlight,
+    description,
+    steps[] {
+      title,
+      description
+    }
+  },
+  teamSection {
+    title,
+    highlight,
+    description,
+    members[]->{
+      name,
+      role,
+      "imageUrl": image.asset->url,
+      social
+    }
+  },
+  location {
+    title,
+    highlight,
+    description,
+    "imageUrl": image.asset->url,
+    address,
+    coordinates,
+    googleMapsUrl
+  },
+  projects {
+    title,
+    highlight,
+    description,
+    selectedProjects[]->{
+      _id,
+      title,
+      description,
+      "slug": slug.current,
+      "imageUrl": mainImage.asset->url,
+      tags,
+      link
+    }
+  },
+  testimonials {
+    title,
+    highlight,
+    description,
+    selectedTestimonials[]->{
+      name,
+      role,
+      quote,
+      "imageUrl": image.asset->url
+    }
+  },
+  cta {
+    title,
+    description,
+    buttonText,
+    buttonLink
+  },
+  seo {
+    title,
+    description,
+    "image": image.asset->url
+  },
+  "siteSettings": *[_type == "settings"][0] {
+    "agency": agencyInfo {
+      name,
+      email,
+      phone,
+      address,
+      socialProfiles,
+      "logo": logo.asset->url
+    }
+  }
+}`;
+
+export const PROJECTS_PAGE_QUERY = `{
+  "page": *[_type == "projectsPage"][0] {
+    hero,
+    clients {
+      title,
+      highlight,
+      description,
+      "logos": logos[] {
+        name,
+        "logo": logo.asset->url
+      }
+    },
+    impact {
+      title,
+      highlight,
+      description,
+      stats[] {
+        value,
+        label,
+        suffix
+      }
+    },
+    gallery {
+      title,
+      subtitle,
+      highlight,
+      description
+    },
+    process {
+      title,
+      highlight,
+      description,
+      steps[] {
+        title,
+        description
+      }
+    },
+    faq {
+      title,
+      highlight,
+      description,
+      questions[] {
+        question,
+        answer
+      }
+    },
+    seo {
+      title,
+      description,
+      "image": image.asset->url
+    },
+    cta
+  },
+  "projects": *[_type == "project"] | order(_createdAt desc)[0...9] {
+    _id,
+    title,
+    description,
+    "slug": slug.current,
+    "imageUrl": mainImage.asset->url,
+    tags,
+    link
+  }
+}`;
+
+export const CONTACT_PAGE_QUERY = `*[_type == "contactPage"][0] {
+  hero {
+    title,
+    headline,
+    highlight,
+    description
+  },
+  contactInfo {
+    email,
+    phone,
+    schedule,
+    location
+  },
+  formTopics,
+  faq {
+    title,
+    highlight,
+    description,
+    questions[] {
+      question,
+      answer
+    }
+  },
+  seo {
+    title,
+    description,
+    "image": image.asset->url
+  },
+  "siteSettings": *[_type == "settings"][0] {
+    "agency": agencyInfo {
+      email,
+      phone,
+      address,
+      socialProfiles
+    }
+  }
+}`;

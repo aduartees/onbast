@@ -9,6 +9,7 @@ interface ImpactStatsProps {
   impact: {
     title?: string;
     subtitle?: string;
+    highlight?: string;
     stats?: {
       value: number;
       prefix?: string;
@@ -57,7 +58,7 @@ export function ImpactStats({ impact }: ImpactStatsProps) {
   if (!impact?.stats || impact.stats.length === 0) return null;
 
   return (
-    <section className="relative w-full py-10 md:py-20">
+    <section className="relative w-full py-8 md:py-16">
       {/* Background Gradients - Reduced size and complexity for performance */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] h-[400px] bg-indigo-500/5 blur-[80px] rounded-full pointer-events-none -z-10" />
       
@@ -67,7 +68,7 @@ export function ImpactStats({ impact }: ImpactStatsProps) {
                 <SectionHeading 
                     title={impact.title || "Resultados Medibles"} 
                     subtitle="Estadísticas" 
-                    highlight="Impacto"
+                    highlight={impact.highlight || "Impacto"}
                     className="justify-center"
                 />
                 {impact.subtitle && (
@@ -103,12 +104,12 @@ export function ImpactStats({ impact }: ImpactStatsProps) {
                     )}
                   </div>
                   
-                  <h3 className="text-lg font-medium text-white mb-3 group-hover:text-indigo-200 transition-colors">
+                  <h3 className="text-xl md:text-2xl font-medium text-white mb-3 group-hover:text-indigo-200 transition-colors">
                     {stat.label}
                   </h3>
                   
                   {stat.description && (
-                    <p className="text-sm text-neutral-400 font-light leading-relaxed max-w-[200px] mx-auto">
+                    <p className="text-base md:text-lg text-neutral-400 font-light leading-relaxed max-w-[250px] mx-auto">
                         {stat.description}
                     </p>
                   )}

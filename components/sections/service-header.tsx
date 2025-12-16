@@ -11,6 +11,7 @@ import { InfiniteMovingLogos } from "@/components/aceternity/infinite-moving-log
 interface ServiceHeaderProps {
   title: string;
   description: string;
+  highlight?: string;
   introduction?: string;
   buttonText?: string;
   buttonLink?: string;
@@ -28,7 +29,7 @@ const DEFAULT_LOGOS = [
   { name: "Google", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", alt: "Google" },
 ];
 
-export function ServiceHeader({ title, description, introduction, buttonText, buttonLink, trustedLogos }: ServiceHeaderProps) {
+export function ServiceHeader({ title, description, highlight, introduction, buttonText, buttonLink, trustedLogos }: ServiceHeaderProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -36,6 +37,7 @@ export function ServiceHeader({ title, description, introduction, buttonText, bu
   });
 
   // Use trustedLogos if available and not empty; otherwise use DEFAULT_LOGOS
+  // NOTE: If Sanity returns data but images are broken, we might need stricter validation here.
   const logos = (trustedLogos && trustedLogos.length > 0) ? trustedLogos : DEFAULT_LOGOS;
 
   // Parallax Effects
@@ -103,6 +105,7 @@ export function ServiceHeader({ title, description, introduction, buttonText, bu
             text={description}
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight text-white leading-[1.15] md:leading-[1.1]"
             highlightClassName="font-serif italic font-normal text-indigo-200/90"
+            highlightWord={highlight}
             delay={0.1}
           />
         </div>

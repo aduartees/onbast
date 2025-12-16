@@ -44,21 +44,21 @@ export const ParallaxScroll = ({
       >
         <div className="grid gap-10">
           {firstPart.map((el, idx) => (
-            <div key={"grid-1" + idx}>
+            <div key={"grid-1" + idx} className="h-[400px] w-full">
               <ProjectCard project={el} index={idx} />
             </div>
           ))}
         </div>
         <div className="grid gap-10">
           {secondPart.map((el, idx) => (
-            <div key={"grid-2" + idx}>
+            <div key={"grid-2" + idx} className="h-[400px] w-full">
               <ProjectCard project={el} index={idx} />
             </div>
           ))}
         </div>
         <div className="grid gap-10">
           {thirdPart.map((el, idx) => (
-            <div key={"grid-3" + idx}>
+            <div key={"grid-3" + idx} className="h-[400px] w-full">
               <ProjectCard project={el} index={idx} />
             </div>
           ))}
@@ -80,7 +80,7 @@ const ProjectCard = ({ project, index = 0 }: { project: any, index?: number }) =
             viewport={{ once: true, margin: "0px" }}
             transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
         >
-            <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-neutral-900 ring-1 ring-white/10 transition-all duration-500 group-hover:ring-indigo-500/50 group-hover:shadow-2xl group-hover:shadow-indigo-500/20">
+            <div className="relative h-full w-full overflow-hidden rounded-2xl bg-neutral-900 ring-1 ring-white/10 transition-all duration-500 group-hover:ring-indigo-500/50 group-hover:shadow-2xl group-hover:shadow-indigo-500/20">
                 <Image
                     src={project.imageUrl}
                     className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"

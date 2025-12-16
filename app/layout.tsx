@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/footer";
 import { client } from "@/sanity/lib/client";
 import { SETTINGS_QUERY } from "@/sanity/lib/queries";
 import { Navbar } from "@/components/layout/navbar";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const poppins = Poppins({ 
@@ -51,6 +52,7 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <Navbar data={settings} />
+            <Breadcrumbs />
             {children}
             <Footer data={settings} />
             <Analytics />

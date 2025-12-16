@@ -82,6 +82,13 @@ export default defineType({
       description: 'Frase grande e impactante para el Hero. La palabra central se pondrá automáticamente en cursiva.',
     }),
     defineField({
+      name: 'heroHighlight',
+      title: 'Palabra Destacada Hero (Cursiva)',
+      type: 'string',
+      group: 'general',
+      description: 'Palabra exacta dentro del titular que quieres en cursiva.',
+    }),
+    defineField({
       name: 'heroIntroduction',
       title: 'Introducción Pequeña (Hero)',
       type: 'text',
@@ -129,6 +136,7 @@ export default defineType({
                 type: 'string',
                 initialValue: 'Resultados Medibles'
             }),
+            defineField({ name: 'highlight', title: 'Palabra Destacada (Cursiva)', type: 'string' }),
             defineField({
                 name: 'subtitle',
                 title: 'Subtítulo',
@@ -161,6 +169,7 @@ export default defineType({
       group: 'content',
       initialValue: 'Equipo Asignado'
     }),
+    defineField({ name: 'teamHighlight', title: 'Palabra Destacada Equipo (Cursiva)', type: 'string', group: 'content' }),
     defineField({
       name: 'teamDescription',
       title: 'Descripción Sección Equipo',
@@ -182,6 +191,7 @@ export default defineType({
       group: 'content',
       initialValue: 'Testimonios Relacionados'
     }),
+    defineField({ name: 'testimonialsHighlight', title: 'Palabra Destacada Testimonios (Cursiva)', type: 'string', group: 'content' }),
     defineField({
       name: 'testimonialsDescription',
       title: 'Descripción Sección Testimonios',
@@ -211,6 +221,7 @@ export default defineType({
       group: 'content',
       initialValue: 'Características'
     }),
+    defineField({ name: 'featuresHighlight', title: 'Palabra Destacada Características (Cursiva)', type: 'string', group: 'content' }),
     defineField({
         name: 'featuresDescription',
         title: 'Descripción Sección Características',
@@ -246,6 +257,7 @@ export default defineType({
         group: 'content',
         initialValue: 'Nuestro Proceso'
     }),
+    defineField({ name: 'processHighlight', title: 'Palabra Destacada Proceso (Cursiva)', type: 'string', group: 'content' }),
     defineField({
         name: 'processDescription',
         title: 'Descripción Sección Proceso',
@@ -273,6 +285,7 @@ export default defineType({
         group: 'content',
         initialValue: 'Stack Tecnológico'
     }),
+    defineField({ name: 'techHighlight', title: 'Palabra Destacada Tech (Cursiva)', type: 'string', group: 'content' }),
     defineField({
         name: 'techDescription',
         title: 'Descripción Stack Tecnológico',
@@ -337,6 +350,7 @@ export default defineType({
         group: 'content',
         initialValue: 'Preguntas Frecuentes'
     }),
+    defineField({ name: 'faqHighlight', title: 'Palabra Destacada FAQ (Cursiva)', type: 'string', group: 'content' }),
     defineField({
         name: 'faqDescription',
         title: 'Descripción Sección FAQ',

@@ -7,14 +7,29 @@ interface BlurRevealProps {
   text: string;
   className?: string;
   highlightClassName?: string;
+  highlightWord?: string;
   delay?: number;
   as?: React.ElementType;
 }
 
-export const BlurReveal = ({ text, className, highlightClassName, delay = 0, as: Component = "div" }: BlurRevealProps) => {
+export const BlurReveal = ({ text, className, highlightClassName, highlightWord, delay = 0, as: Component = "div" }: BlurRevealProps) => {
   if (!text) return null;
   const words = text.split(" ");
   const midIndex = Math.floor(words.length / 2);
+
+  const shouldHighlight = (word: string, index: number) => {
+      if (!highlightClassName) return false;
+      
+      if (highlightWord) {
+          // Normalize both for comparison (remove punctuation, lower case)
+          const normalizedWord = word.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"");
+          const normalizedHighlight = highlightWord.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"");
+          return normalizedWord === normalizedHighlight;
+      }
+
+      // Default logic: middle word(s)
+      return index === midIndex || (words.length > 3 && index === midIndex + 1);
+  };
 
   const container = {
     hidden: { opacity: 0 },
@@ -56,10 +71,7 @@ export const BlurReveal = ({ text, className, highlightClassName, delay = 0, as:
             variants={child}
             className={cn(
               "inline-block mr-[0.25em] will-change-[opacity,filter,transform]",
-              // Apply highlight logic (middle word + potential next word if long phrase)
-              highlightClassName && (index === midIndex || (words.length > 3 && index === midIndex + 1))
-                ? highlightClassName
-                : ""
+              shouldHighlight(word, index) ? highlightClassName : ""
             )}
           >
             {word}

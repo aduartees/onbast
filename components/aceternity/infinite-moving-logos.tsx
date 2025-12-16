@@ -103,6 +103,7 @@ export const InfiniteMovingLogos = ({
             className="flex items-center justify-center grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
             key={item.name + idx}
           >
+             {/* Render Image if URL exists. Ensure src is valid string. */}
              {item.logo ? (
                  <div className="relative h-8 w-24 md:h-10 md:w-32">
                     <Image 
@@ -111,6 +112,11 @@ export const InfiniteMovingLogos = ({
                         fill
                         sizes="(max-width: 768px) 100px, 150px"
                         className="object-contain brightness-0 invert" 
+                        onError={(e) => {
+                            // Fallback if image fails to load?
+                            // For now just hide or log
+                            console.error("Error loading logo:", item.logo);
+                        }}
                     />
                  </div>
              ) : (

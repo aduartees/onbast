@@ -24,10 +24,12 @@ interface SanityServiceDetail {
   heroButtonText?: string;
   heroButtonLink?: string;
   heroHeadline?: string;
+  heroHighlight?: string;
   heroIntroduction?: string;
   heroTrustedLogos?: { name: string; logo: string; alt?: string }[];
   icon?: string;
   featuresTitle?: string;
+  featuresHighlight?: string;
   featuresDescription?: string;
   features?: {
     title: string;
@@ -36,6 +38,7 @@ interface SanityServiceDetail {
   }[];
   benefits?: string[];
   processTitle?: string;
+  processHighlight?: string;
   processDescription?: string;
   process?: {
     title: string;
@@ -43,9 +46,11 @@ interface SanityServiceDetail {
   }[];
   technologies?: string[];
   techTitle?: string;
+  techHighlight?: string;
   techDescription?: string;
   impactSection?: {
     title?: string;
+    highlight?: string;
     subtitle?: string;
     stats?: {
       value: number;
@@ -56,6 +61,7 @@ interface SanityServiceDetail {
     }[];
   };
   teamTitle?: string;
+  teamHighlight?: string;
   teamDescription?: string;
   team?: {
     name: string;
@@ -65,6 +71,7 @@ interface SanityServiceDetail {
     social?: { linkedin?: string; twitter?: string };
   }[];
   testimonialsTitle?: string;
+  testimonialsHighlight?: string;
   testimonialsDescription?: string;
   testimonials?: {
     name: string;
@@ -99,6 +106,7 @@ interface SanityServiceDetail {
     link?: string;
   }[];
   faqTitle?: string;
+  faqHighlight?: string;
   faqDescription?: string;
   faqs?: {
     question: string;
@@ -277,6 +285,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
       <ServiceHeader 
         title={service.title} 
         description={service.heroHeadline || service.shortDescription}
+        highlight={service.heroHighlight}
         introduction={service.heroIntroduction}
         trustedLogos={service.heroTrustedLogos}
         buttonText={service.heroButtonText}
@@ -286,27 +295,33 @@ export default async function ServicePage({ params }: ServicePageProps) {
         mainImage={service.imageUrl}
         features={service.features} 
         featuresTitle={service.featuresTitle}
+        featuresHighlight={service.featuresHighlight}
         featuresDescription={service.featuresDescription}
         benefits={service.benefits} 
         process={service.process} 
         processTitle={service.processTitle}
+        processHighlight={service.processHighlight}
         processDescription={service.processDescription}
         longDescription={service.longDescription} 
         overviewText={service.overviewText} 
         technologies={service.technologies} 
         techTitle={service.techTitle}
+        techHighlight={service.techHighlight}
         techDescription={service.techDescription}
         impactSection={service.impactSection} 
         team={service.team} 
         teamTitle={service.teamTitle}
+        teamHighlight={service.teamHighlight}
         teamDescription={service.teamDescription}
         testimonials={service.testimonials} 
         testimonialsTitle={service.testimonialsTitle}
+        testimonialsHighlight={service.testimonialsHighlight}
         testimonialsDescription={service.testimonialsDescription}
         pricing={service.pricing}
         relatedProjects={service.relatedProjects}
         faqs={service.faqs} 
         faqTitle={service.faqTitle}
+        faqHighlight={service.faqHighlight}
         faqDescription={service.faqDescription}
         ctaSection={service.ctaSection}
       />

@@ -39,6 +39,7 @@ interface ServiceContentProps {
     icon?: string;
   }[];
   featuresTitle?: string;
+  featuresHighlight?: string;
   featuresDescription?: string;
   benefits?: string[];
   process?: {
@@ -46,14 +47,17 @@ interface ServiceContentProps {
     description: string;
   }[];
   processTitle?: string;
+  processHighlight?: string;
   processDescription?: string;
   longDescription?: string;
   overviewText?: string;
   technologies?: string[];
   techTitle?: string;
+  techHighlight?: string;
   techDescription?: string;
   impactSection?: {
     title?: string;
+    highlight?: string;
     subtitle?: string;
     stats?: {
       value: number;
@@ -71,6 +75,7 @@ interface ServiceContentProps {
     social?: { linkedin?: string; twitter?: string };
   }[];
   teamTitle?: string;
+  teamHighlight?: string;
   teamDescription?: string;
   testimonials?: {
     name: string;
@@ -79,6 +84,7 @@ interface ServiceContentProps {
     imageUrl?: string;
   }[];
   testimonialsTitle?: string;
+  testimonialsHighlight?: string;
   testimonialsDescription?: string;
   pricing?: {
     title?: string;
@@ -104,6 +110,7 @@ interface ServiceContentProps {
     answer: string;
   }[];
   faqTitle?: string;
+  faqHighlight?: string;
   faqDescription?: string;
   ctaSection?: {
     title?: string;
@@ -115,7 +122,7 @@ interface ServiceContentProps {
   };
 }
 
-export function ServiceContent({ mainImage, relatedProjects, features, featuresTitle, featuresDescription, benefits, process, processTitle, processDescription, longDescription, overviewText, technologies, techTitle, techDescription, impactSection, team, teamTitle, teamDescription, testimonials, testimonialsTitle, testimonialsDescription, pricing, faqs, faqTitle, faqDescription, ctaSection }: ServiceContentProps) {
+export function ServiceContent({ mainImage, relatedProjects, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection }: ServiceContentProps) {
   return (
     <div className="bg-neutral-950 min-h-screen py-12 md:py-24 px-4 md:px-6 relative z-10 rounded-t-[3rem] md:rounded-t-[5rem] shadow-[0_-50px_100px_-20px_rgba(79,70,229,0.1)] border-t border-white/10 mt-0 transform-gpu backface-hidden">
       
@@ -132,14 +139,14 @@ export function ServiceContent({ mainImage, relatedProjects, features, featuresT
            <ContentWrapper 
              mainImage={mainImage}
              relatedProjects={relatedProjects}
-             features={features} featuresTitle={featuresTitle} featuresDescription={featuresDescription}
-             benefits={benefits} process={process} processTitle={processTitle} processDescription={processDescription}
+             features={features} featuresTitle={featuresTitle} featuresHighlight={featuresHighlight} featuresDescription={featuresDescription}
+             benefits={benefits} process={process} processTitle={processTitle} processHighlight={processHighlight} processDescription={processDescription}
              longDescription={longDescription} overviewText={overviewText} 
-             technologies={technologies} techTitle={techTitle} techDescription={techDescription}
-             impactSection={impactSection} team={team} teamTitle={teamTitle} teamDescription={teamDescription}
-             testimonials={testimonials} testimonialsTitle={testimonialsTitle} testimonialsDescription={testimonialsDescription}
+             technologies={technologies} techTitle={techTitle} techHighlight={techHighlight} techDescription={techDescription}
+             impactSection={impactSection} team={team} teamTitle={teamTitle} teamHighlight={teamHighlight} teamDescription={teamDescription}
+             testimonials={testimonials} testimonialsTitle={testimonialsTitle} testimonialsHighlight={testimonialsHighlight} testimonialsDescription={testimonialsDescription}
              pricing={pricing}
-             faqs={faqs} faqTitle={faqTitle} faqDescription={faqDescription}
+             faqs={faqs} faqTitle={faqTitle} faqHighlight={faqHighlight} faqDescription={faqDescription}
              ctaSection={ctaSection}
            />
         </TracingBeam>
@@ -150,14 +157,14 @@ export function ServiceContent({ mainImage, relatedProjects, features, featuresT
          <ContentWrapper 
              mainImage={mainImage}
              relatedProjects={relatedProjects}
-             features={features} featuresTitle={featuresTitle} featuresDescription={featuresDescription}
-             benefits={benefits} process={process} processTitle={processTitle} processDescription={processDescription}
+             features={features} featuresTitle={featuresTitle} featuresHighlight={featuresHighlight} featuresDescription={featuresDescription}
+             benefits={benefits} process={process} processTitle={processTitle} processHighlight={processHighlight} processDescription={processDescription}
              longDescription={longDescription} overviewText={overviewText} 
-             technologies={technologies} techTitle={techTitle} techDescription={techDescription}
-             impactSection={impactSection} team={team} teamTitle={teamTitle} teamDescription={teamDescription}
-             testimonials={testimonials} testimonialsTitle={testimonialsTitle} testimonialsDescription={testimonialsDescription}
+             technologies={technologies} techTitle={techTitle} techHighlight={techHighlight} techDescription={techDescription}
+             impactSection={impactSection} team={team} teamTitle={teamTitle} teamHighlight={teamHighlight} teamDescription={teamDescription}
+             testimonials={testimonials} testimonialsTitle={testimonialsTitle} testimonialsHighlight={testimonialsHighlight} testimonialsDescription={testimonialsDescription}
              pricing={pricing}
-             faqs={faqs} faqTitle={faqTitle} faqDescription={faqDescription}
+             faqs={faqs} faqTitle={faqTitle} faqHighlight={faqHighlight} faqDescription={faqDescription}
              ctaSection={ctaSection}
            />
       </div>
@@ -166,7 +173,7 @@ export function ServiceContent({ mainImage, relatedProjects, features, featuresT
 }
 
 // Extracted Content Component to reuse
-const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, featuresDescription, benefits, process, processTitle, processDescription, longDescription, overviewText, technologies, techTitle, techDescription, impactSection, team, teamTitle, teamDescription, testimonials, testimonialsTitle, testimonialsDescription, pricing, faqs, faqTitle, faqDescription, ctaSection }: ServiceContentProps) => {
+const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection }: ServiceContentProps) => {
     return (
         <div className="max-w-6xl mx-auto pt-4 antialiased relative pb-16">
           
@@ -196,7 +203,7 @@ const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, f
                     <SectionHeading 
                         title={techTitle || "Stack Tecnológico"} 
                         subtitle="Herramientas" 
-                        highlight="Core"
+                        highlight={techHighlight || "Core"}
                         className="justify-center"
                     />
                     {techDescription && (
@@ -217,7 +224,10 @@ const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, f
     
           {/* Impact Section - Clean Stats */}
           {impactSection && impactSection.stats && impactSection.stats.length > 0 && (
-             <ImpactStats impact={impactSection} />
+             <ImpactStats impact={{
+                ...impactSection,
+                highlight: impactSection.highlight
+             }} />
           )}
     
     
@@ -228,7 +238,7 @@ const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, f
                   <SectionHeading 
                     title={featuresTitle || "Características"} 
                     subtitle="Detalles" 
-                    highlight="Premium" 
+                    highlight={featuresHighlight || "Premium"} 
                   />
                   {featuresDescription && (
                     <p className="text-neutral-400 mt-6 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed text-center">
@@ -267,7 +277,7 @@ const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, f
                    <SectionHeading 
                      title={teamTitle || "Nuestro Equipo"} 
                      subtitle="Talento" 
-                     highlight="Experto" 
+                     highlight={teamHighlight || "Experto"} 
                    />
                    {teamDescription && (
                      <p className="text-neutral-400 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed text-center">
@@ -288,7 +298,7 @@ const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, f
                    <SectionHeading 
                      title={testimonialsTitle || "Testimonios"} 
                      subtitle="Confianza" 
-                     highlight="Real" 
+                     highlight={testimonialsHighlight || "Real"} 
                    />
                    {testimonialsDescription && (
                      <p className="text-neutral-400 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed text-center">
@@ -309,7 +319,7 @@ const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, f
                    <SectionHeading 
                      title={processTitle || "Nuestro Proceso"} 
                      subtitle="Metodología" 
-                     highlight="Ágil" 
+                     highlight={processHighlight || "Ágil"} 
                    />
                    {processDescription && (
                      <p className="text-neutral-400 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed text-center mb-12">
@@ -352,7 +362,7 @@ const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, f
                     <SectionHeading 
                       title={faqTitle || "Preguntas Frecuentes"} 
                       subtitle="Dudas" 
-                      highlight="Resueltas" 
+                      highlight={faqHighlight || "Resueltas"} 
                     />
                     {faqDescription && (
                       <p className="text-neutral-400 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed text-center">

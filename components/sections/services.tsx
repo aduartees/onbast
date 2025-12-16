@@ -86,7 +86,7 @@ export const ServicesSection = async ({ header }: ServicesSectionProps) => {
               key={service._id}
               title={service.title}
               description={service.description}
-              link={`/services/${service.slug}`}
+              link={`/servicios/${service.slug}`}
               header={
                 service.imageUrl ? (
                     <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl overflow-hidden relative">

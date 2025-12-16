@@ -55,7 +55,7 @@ export function ServiceFAQ({ faqs }: { faqs: { question: string; answer: string 
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <div className="w-full max-w-3xl mx-auto">
+    <div className="w-full max-w-3xl mx-auto px-6 md:px-0">
       {faqs.map((faq, index) => (
         <FAQItem
           key={index}

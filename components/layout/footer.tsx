@@ -100,9 +100,9 @@ export function Footer({ data }: FooterProps) {
             <>
               <div className="md:col-span-2 md:col-start-7 flex flex-col gap-4 items-center md:items-start text-center md:text-left">
                 <h4 className="text-white font-medium mb-2">Explorar</h4>
-                <FooterLink href="#services">Servicios</FooterLink>
-                <FooterLink href="#projects">Proyectos</FooterLink>
-                <FooterLink href="#about">Agencia</FooterLink>
+                <FooterLink href="/servicios">Servicios</FooterLink>
+                <FooterLink href="/projects">Proyectos</FooterLink>
+                <FooterLink href="/agencia">Agencia</FooterLink>
               </div>
               <div className="md:col-span-2 flex flex-col gap-4 items-center md:items-start text-center md:text-left">
                 <h4 className="text-white font-medium mb-2">Legal</h4>

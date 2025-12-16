@@ -1,0 +1,111 @@
+"use client";
+
+import React, { useMemo } from "react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { ChevronRight, Home } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+// Map common paths to readable names
+const PATH_MAP: Record<string, string> = {
+  "agencia": "Agencia",
+  "servicios": "Servicios",
+  "proyectos": "Proyectos",
+  "projects": "Proyectos",
+  "contact": "Contacto",
+  "blog": "Blog",
+  "legal": "Legal",
+  "privacy": "Privacidad",
+  "terms": "Términos"
+};
+
+export function Breadcrumbs() {
+  const pathname = usePathname();
+
+  const breadcrumbs = useMemo(() => {
+    if (pathname === "/") return [];
+
+    const segments = pathname.split("/").filter(Boolean);
+    return segments.map((segment, index) => {
+      const href = `/${segments.slice(0, index + 1).join("/")}`;
+      // Use map or capitalize first letter and replace hyphens
+      const name = PATH_MAP[segment] || segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
+      return { name, href };
+    });
+  }, [pathname]);
+
+  // Don't render on home page
+  if (pathname === "/" || breadcrumbs.length === 0) return null;
+
+  // Generate JSON-LD
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Inicio",
+        "item": process.env.NEXT_PUBLIC_URL || "https://onbast.com"
+      },
+      ...breadcrumbs.map((crumb, index) => ({
+        "@type": "ListItem",
+        "position": index + 2,
+        "name": crumb.name,
+        "item": `${process.env.NEXT_PUBLIC_URL || "https://onbast.com"}${crumb.href}`
+      }))
+    ]
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      
+      {/* Visual Breadcrumbs - Absolute positioned to sit on top of Heros */}
+      <nav 
+        aria-label="Breadcrumb"
+        className="absolute top-24 left-0 w-full z-40 pointer-events-none"
+      >
+        <div className="max-w-7xl mx-auto px-6 pointer-events-auto">
+            <ol className="flex items-center space-x-2 text-sm text-neutral-400 bg-neutral-950/50 backdrop-blur-sm border border-white/5 py-2 px-4 rounded-full inline-flex">
+              <li>
+                <Link 
+                  href="/" 
+                  className="flex items-center hover:text-white transition-colors"
+                  aria-label="Volver al inicio"
+                >
+                  <Home className="w-3.5 h-3.5" />
+                </Link>
+              </li>
+              {breadcrumbs.map((crumb, index) => {
+                const isLast = index === breadcrumbs.length - 1;
+                return (
+                  <li key={crumb.href} className="flex items-center space-x-2">
+                    <ChevronRight className="w-3 h-3 text-neutral-600" />
+                    {isLast ? (
+                      <span 
+                        className="text-white font-medium cursor-default truncate max-w-[150px] md:max-w-xs" 
+                        aria-current="page"
+                      >
+                        {crumb.name}
+                      </span>
+                    ) : (
+                      <Link 
+                        href={crumb.href} 
+                        className="hover:text-white transition-colors truncate max-w-[100px]"
+                      >
+                        {crumb.name}
+                      </Link>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+        </div>
+      </nav>
+    </>
+  );
+}

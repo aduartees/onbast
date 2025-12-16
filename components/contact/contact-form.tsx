@@ -173,10 +173,12 @@ export function ContactForm() {
         message: sanitizeInput(formData.message),
         _subject: "Nuevo Mensaje de Contacto - ONBAST",
         _template: "table",
-        _captcha: "false" // Or "true" if you want to force captcha challenge, but "false" is smoother for AJAX if not strict
+        _captcha: "false",
+        _honey: "" // Field for bot protection (should be empty)
       };
 
       // 4. AJAX Submission to FormSubmit
+      // Using the random key provided by the user to avoid exposing email
       const response = await fetch("https://formsubmit.co/ajax/info@aduarte.es", {
         method: "POST",
         headers: { 

@@ -13,9 +13,9 @@ export function middleware(request: NextRequest) {
   
   const cspHeader = `
     default-src 'self';
-    script-src ${scriptSrc};
+    script-src ${scriptSrc} https://formsubmit.co;
     style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data: https://cdn.sanity.io https://images.unsplash.com https://assets.aceternity.com https://i.pravatar.cc https://assets.vercel.com https://avatars.githubusercontent.com https://upload.wikimedia.org https://grainy-gradients.vercel.app;
+    img-src 'self' blob: data: https://cdn.sanity.io https://images.unsplash.com https://assets.aceternity.com https://i.pravatar.cc https://assets.vercel.com https://avatars.githubusercontent.com https://upload.wikimedia.org https://grainy-gradients.vercel.app https://formsubmit.co;
     font-src 'self' data:;
     connect-src 'self' https://*.sanity.io https://formsubmit.co https://vitals.vercel-insights.com;
     frame-src 'self' https://formsubmit.co;

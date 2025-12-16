@@ -5,13 +5,16 @@ import { Navbar } from "@/components/layout/navbar";
 import { LuminousPill } from "@/components/ui/luminous-pill";
 import { BlurReveal } from "@/components/ui/blur-reveal";
 import { BackgroundBeams } from "@/components/aceternity/background-beams";
-import { HoverEffect } from "@/components/aceternity/card-hover-effect";
+import { FocusCards } from "@/components/aceternity/focus-cards";
+import { StickyScroll } from "@/components/aceternity/sticky-scroll-reveal";
+import { LampContainer } from "@/components/aceternity/lamp";
 import { FadeIn } from "@/components/ui/fade-in";
-import { TechArsenalSection } from "@/components/sections/tech-arsenal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ScrollReset } from "@/components/utils/scroll-reset";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Zap, Shield, Globe } from "lucide-react";
+import Image from "next/image";
+import { motion } from "framer-motion";
 
 export const dynamic = 'force-dynamic';
 
@@ -30,15 +33,61 @@ export default async function ServicesPage() {
     client.fetch(SERVICES_PAGE_QUERY)
   ]);
 
-  // Map services to HoverEffect format
-  const serviceItems = services.map((service: any) => ({
+  // Map services to FocusCards format
+  const focusCards = services.map((service: any) => ({
     title: service.title,
     description: service.description,
     link: `/servicios/${service.slug}`,
-    icon: service.icon,
     imageUrl: service.imageUrl,
-    colSpan: service.colSpan || 1
   }));
+
+  // Content for Sticky Scroll (Tech Stack Narrative)
+  const techContent = [
+    {
+      title: "Next.js 15 & Turbopack",
+      description: "Velocidad nuclear. Utilizamos la última versión del framework más potente del mundo. Renderizado híbrido, Server Actions y compilación instantánea para una experiencia de usuario sin fricción.",
+      content: (
+        <div className="h-full w-full flex items-center justify-center text-white bg-black">
+           <Image 
+              src="https://assets.vercel.com/image/upload/v1662130559/nextjs/Icon_dark_background.png"
+              width={300}
+              height={300}
+              className="object-contain p-10"
+              alt="Next.js Logo"
+           />
+        </div>
+      ),
+    },
+    {
+      title: "Sanity Headless CMS",
+      description: "Control total en tiempo real. Un gestor de contenidos que se adapta a ti, no al revés. Edición colaborativa, previsualización en vivo y distribución de contenido omnicanal estructurado.",
+      content: (
+        <div className="h-full w-full flex items-center justify-center text-white bg-[#F03E2F]">
+           <span className="text-6xl font-bold tracking-tighter">Sanity</span>
+        </div>
+      ),
+    },
+    {
+      title: "Vercel Edge Network",
+      description: "Despliegue global instantáneo. Tu web vive en el borde (Edge), replicada en servidores de todo el mundo para que cargue en milisegundos, sin importar dónde esté tu usuario.",
+      content: (
+        <div className="h-full w-full flex items-center justify-center text-white bg-black">
+            <svg viewBox="0 0 1155 1000" className="w-40 h-40 fill-white" xmlns="http://www.w3.org/2000/svg">
+                <path d="M577.344 0L1154.69 1000H0L577.344 0Z" />
+            </svg>
+        </div>
+      ),
+    },
+    {
+        title: "AI Integration",
+        description: "Inteligencia Artificial nativa. Integramos modelos de OpenAI y Anthropic directamente en tu flujo de trabajo para automatizar SEO, generar contenido y personalizar experiencias.",
+        content: (
+          <div className="h-full w-full flex items-center justify-center text-white bg-gradient-to-br from-indigo-500 to-purple-600">
+             <Zap className="w-24 h-24 text-white" />
+          </div>
+        ),
+      },
+  ];
 
   return (
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-indigo-500 selection:text-white pt-0">
@@ -78,10 +127,10 @@ export default async function ServicesPage() {
       </section>
 
       {/* Main Content - Overlapping Hero */}
-      <section className="relative z-10 bg-neutral-950 min-h-screen border-t border-white/10 rounded-t-[3rem] md:rounded-t-[5rem] -mt-[10vh] pt-20 pb-32 shadow-[0_-50px_100px_-20px_rgba(0,0,0,0.5)]">
+      <section className="relative z-10 bg-neutral-950 min-h-screen border-t border-white/10 rounded-t-[3rem] md:rounded-t-[5rem] -mt-[10vh] pt-20 pb-0 shadow-[0_-50px_100px_-20px_rgba(0,0,0,0.5)]">
           
-          {/* Services List */}
-          <div className="max-w-7xl mx-auto px-6">
+          {/* Services List - New Focus Cards */}
+          <div className="max-w-7xl mx-auto px-6 mb-32">
               <FadeIn className="mb-16 text-center">
                   <SectionHeading 
                       title={pageData?.catalog?.title || "Nuestro Catálogo"}
@@ -95,40 +144,62 @@ export default async function ServicesPage() {
               </FadeIn>
 
               <FadeIn delay={0.2}>
-                <HoverEffect items={serviceItems} />
+                <FocusCards cards={focusCards} />
               </FadeIn>
           </div>
 
-          {/* Tech Arsenal Reuse */}
-          <div className="mt-20 border-t border-white/5 pt-20">
-             <TechArsenalSection header={{
-                title: pageData?.tech?.title || "Tecnología de Vanguardia",
-                pill: pageData?.tech?.pill || "Stack",
-                highlight: pageData?.tech?.highlight || "Vanguardia",
-                description: pageData?.tech?.description || "Utilizamos las herramientas más avanzadas del mercado para garantizar velocidad, seguridad y escalabilidad."
-             }} />
+          {/* Tech Arsenal - New Sticky Scroll Reveal */}
+          <div className="border-t border-white/5 bg-neutral-950">
+             <div className="py-20 text-center max-w-4xl mx-auto px-6">
+                <SectionHeading 
+                    title={pageData?.tech?.title || "Tecnología de Vanguardia"}
+                    subtitle={pageData?.tech?.pill || "Stack"}
+                    highlight={pageData?.tech?.highlight || "Vanguardia"}
+                    className="justify-center"
+                />
+                <p className="text-neutral-400 mt-6 text-lg">
+                    {pageData?.tech?.description || "Utilizamos las herramientas más avanzadas del mercado para garantizar velocidad, seguridad y escalabilidad."}
+                </p>
+             </div>
+             <StickyScroll content={techContent} />
           </div>
 
-          {/* CTA Section */}
-          <div className="max-w-4xl mx-auto px-6 mt-32">
-             <FadeIn className="relative overflow-hidden rounded-3xl bg-neutral-900/10 border border-white/5 py-16 px-6 text-center">
-                 <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none" />
-                 <div className="relative z-10">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tighter mb-4">
-                      {pageData?.cta?.title || "¿No encuentras lo que buscas?"}
-                    </h2>
-                    <p className="text-neutral-400 text-base mb-8 max-w-lg mx-auto font-light">
-                      {pageData?.cta?.description || "Ofrecemos soluciones personalizadas adaptadas a tus necesidades específicas. Hablemos de tu proyecto."}
-                    </p>
-                    <Button size="lg" className="bg-white text-black hover:bg-neutral-200 text-sm font-medium h-12 px-8 rounded-full shadow-lg hover:shadow-xl transition-all" asChild>
-                         <a href={pageData?.cta?.buttonLink || "/contacto"}>
-                            {pageData?.cta?.buttonText || "Contáctanos"} 
-                            <ArrowRight className="ml-2 w-4 h-4" />
-                         </a>
-                    </Button>
-                 </div>
-             </FadeIn>
-          </div>
+          {/* CTA Section - New Lamp Effect */}
+          <LampContainer className="min-h-[60vh]">
+            <motion.h1
+                initial={{ opacity: 0.5, y: 100 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{
+                delay: 0.3,
+                duration: 0.8,
+                ease: "easeInOut",
+                }}
+                className="mt-8 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl"
+            >
+                {pageData?.cta?.title || "¿No encuentras lo que buscas?"}
+            </motion.h1>
+            <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+                className="text-neutral-400 max-w-lg mx-auto mt-4 text-center text-lg"
+            >
+                {pageData?.cta?.description || "Ofrecemos soluciones personalizadas adaptadas a tus necesidades específicas. Hablemos de tu proyecto."}
+            </motion.p>
+            <motion.div
+                 initial={{ opacity: 0, scale: 0.5 }}
+                 whileInView={{ opacity: 1, scale: 1 }}
+                 transition={{ delay: 0.7, duration: 0.5 }}
+                 className="mt-8"
+            >
+                <Button size="lg" className="bg-cyan-500 text-black hover:bg-cyan-400 text-base font-semibold h-12 px-8 rounded-full shadow-[0_0_20px_rgba(6,182,212,0.5)] hover:shadow-[0_0_30px_rgba(6,182,212,0.7)] transition-all" asChild>
+                    <a href={pageData?.cta?.buttonLink || "/contacto"}>
+                    {pageData?.cta?.buttonText || "Contáctanos"} 
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                    </a>
+                </Button>
+            </motion.div>
+          </LampContainer>
 
       </section>
     </main>

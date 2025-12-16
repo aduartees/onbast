@@ -121,7 +121,7 @@ const SelectTopic = ({
   );
 };
 
-export function ContactForm() {
+export function ContactForm({ email }: { email?: string }) {
   const [isPending, setIsPending] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);

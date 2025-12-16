@@ -60,7 +60,7 @@ export default async function AgencyPage() {
   }
 
   const { hero, methodology, teamSection, location, projects, testimonials, cta } = data;
-  const jsonLd = generateOrganizationSchema(data);
+  const jsonLd = generateOrganizationSchema(data, "AboutPage");
 
   return (
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-indigo-500 selection:text-white pt-0">

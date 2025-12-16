@@ -6,6 +6,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { ServiceHeader } from "@/components/sections/service-header";
 import { ServiceContent } from "@/components/sections/service-content";
 import { ScrollReset } from "@/components/utils/scroll-reset";
+import { generateServiceSchema } from "@/lib/seo";
 
 // --- Types ---
 interface ServicePageProps {
@@ -190,97 +191,20 @@ export default async function ServicePage({ params }: ServicePageProps) {
       next: { revalidate: 0 } // No cache, always fresh
   });
 
-  if (!service) {
-    notFound();
-  }
+  if (!service) return notFound();
 
-  // --- Price Logic for Schema ---
-  const basePrice = service.pricing?.price ? parseFloat(service.pricing.price.replace(/[^0-9.]/g, '')) : 0;
-  const addonPrice = service.pricing?.addon?.price ? parseFloat(service.pricing.addon.price.replace(/[^0-9.]/g, '')) : 0;
-  const hasAddon = !!service.pricing?.addon;
-  const maxPrice = basePrice + addonPrice;
-
-  // --- JSON-LD (Schema.org) ---
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "name": service.title,
-    "description": service.shortDescription,
-    "image": service.imageUrl || DEFAULT_IMAGE,
-    "provider": {
-      "@type": "Organization",
-      "name": service.agency?.name || "ONBAST",
-      "url": service.agency?.url || "https://onbast.com",
-      "logo": service.agency?.logo,
-      "description": service.agency?.description,
-      "email": service.agency?.email,
-      "telephone": service.agency?.phone,
-      "address": service.agency?.address ? {
-        "@type": "PostalAddress",
-        "streetAddress": service.agency.address.street,
-        "addressLocality": service.agency.address.city,
-        "addressRegion": service.agency.address.region,
-        "postalCode": service.agency.address.postalCode,
-        "addressCountry": service.agency.address.country
-      } : undefined,
-      "sameAs": service.agency?.socialProfiles
-    },
-    "areaServed": "Global",
-    "offers": service.pricing ? {
-        "@type": "Offer",
-        "priceCurrency": "EUR",
-        "description": service.pricing.description,
-        "url": `${service.agency?.url || "https://onbast.com"}/services/${service.slug}`,
-        // Logic: If addon exists, show price range (oscillation). If not, show fixed price.
-        ...(hasAddon ? {
-            "priceSpecification": {
-                "@type": "PriceSpecification",
-                "minPrice": basePrice,
-                "maxPrice": maxPrice,
-                "priceCurrency": "EUR"
-            }
-        } : {
-            "price": basePrice
-        })
-    } : undefined,
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "Servicios Digitales",
-      "itemListElement": service.features?.map((feature, index) => ({
-        "@type": "Offer",
-        "itemOffered": {
-          "@type": "Service",
-          "name": feature.title,
-          "description": feature.description
-        },
-        "position": index + 1
-      }))
-    },
-    "mainEntity": service.faqs ? {
-        "@type": "FAQPage",
-        "mainEntity": service.faqs.map(faq => ({
-            "@type": "Question",
-            "name": faq.question,
-            "acceptedAnswer": {
-                "@type": "Answer",
-                "text": faq.answer
-            }
-        }))
-    } : undefined
-  };
+  const jsonLd = generateServiceSchema(service);
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-white selection:bg-neutral-700 selection:text-white">
-      {/* 1. SEO Injection */}
+    <main className="min-h-screen bg-neutral-950 text-white selection:bg-indigo-500 selection:text-white pt-0">
+      <ScrollReset />
+      <Navbar />
+
+      {/* Inject JSON-LD Schema */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      
-      {/* Scroll Reset on Mount */}
-      <ScrollReset />
-
-      <Navbar />
 
       <ServiceHeader 
         key={slug} // Force re-mount on slug change to trigger animations

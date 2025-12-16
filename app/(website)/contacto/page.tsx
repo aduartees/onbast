@@ -55,7 +55,7 @@ export default async function ContactPage() {
       schedule: data?.contactInfo?.schedule // Schedule typically remains specific to contact page
   };
 
-  const jsonLd = generateOrganizationSchema(data);
+  const jsonLd = generateOrganizationSchema(data, "ContactPage");
 
   return (
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-indigo-500 selection:text-white pt-0">

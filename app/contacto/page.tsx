@@ -12,6 +12,7 @@ import { ContactForm } from "@/components/contact/contact-form";
 import { InfoCards } from "@/components/contact/info-cards";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ServiceFAQ } from "@/components/sections/service-faq";
+import { generateOrganizationSchema } from "@/lib/seo";
 
 export const dynamic = 'force-dynamic';
 
@@ -38,15 +39,35 @@ export default async function ContactPage() {
     description: "Estamos listos para llevar tu visión al siguiente nivel."
   };
 
+  // Format global address to string for InfoCards if available
+  const globalAddress = data?.siteSettings?.agency?.address;
+  const formattedAddress = globalAddress 
+    ? [globalAddress.city, globalAddress.country].filter(Boolean).join(", ")
+    : undefined;
+
   const contactInfo = {
-      ...data?.contactInfo,
-      ...data?.siteSettings?.agency
+      // Prioritize global settings as requested
+      email: data?.siteSettings?.agency?.email || data?.contactInfo?.email,
+      phone: data?.siteSettings?.agency?.phone || data?.contactInfo?.phone,
+      location: formattedAddress || data?.contactInfo?.location,
+      socialProfiles: data?.siteSettings?.agency?.socialProfiles || data?.contactInfo?.socialProfiles,
+      schedule: data?.contactInfo?.schedule // Schedule typically remains specific to contact page
   };
+
+  const jsonLd = generateOrganizationSchema(data);
 
   return (
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-indigo-500 selection:text-white pt-0">
       <ScrollReset />
       <Navbar />
+      
+      {/* Inject JSON-LD Schema */}
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
 
       {/* Hero Section - Sticky & Immersive */}
       <section className="h-[100dvh] w-full sticky top-0 z-0 flex flex-col items-center justify-center bg-neutral-950 overflow-hidden">

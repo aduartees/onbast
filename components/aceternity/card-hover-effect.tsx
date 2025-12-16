@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
+import * as LucideIcons from "lucide-react";
 
 export const HoverEffect = ({
   items,
@@ -96,8 +97,12 @@ export const CardTitle = ({
   children: React.ReactNode;
   icon?: string;
 }) => {
+  // Dynamic Icon Rendering
+  const IconComponent = icon && (LucideIcons as any)[icon];
+
   return (
-    <h4 className={cn("text-zinc-100 font-bold tracking-wide mt-4 flex items-center gap-2", className)}>
+    <h4 className={cn("text-zinc-100 font-bold tracking-wide mt-4 flex items-center gap-3 text-xl", className)}>
+      {IconComponent && <IconComponent className="w-6 h-6 text-indigo-500" />}
       {children}
     </h4>
   );

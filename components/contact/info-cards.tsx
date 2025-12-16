@@ -39,18 +39,19 @@ export function InfoCards({ info }: { info?: ContactInfo }) {
       </motion.a>
 
       {/* Phone Card */}
-      <motion.div
+      <motion.a
+        href={`tel:${info?.phone?.replace(/\s+/g, '') || ""}`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="p-8 rounded-[2rem] bg-neutral-900/30 border border-white/5 hover:border-white/10 transition-colors"
+        className="p-8 rounded-[2rem] bg-neutral-900/30 border border-white/5 hover:border-white/10 transition-colors block group"
       >
-        <p className="text-neutral-400 font-medium mb-4 flex items-center gap-2">
+        <p className="text-neutral-400 font-medium mb-4 flex items-center gap-2 group-hover:text-white transition-colors">
             <Phone className="w-4 h-4" /> Teléfono
         </p>
         <p className="text-xl text-white font-medium">{info?.phone || "+34 900 000 000"}</p>
         <p className="text-sm text-neutral-500 mt-2">{info?.schedule || "Lunes a Viernes, 9h - 18h"}</p>
-      </motion.div>
+      </motion.a>
 
       {/* Location Card */}
       <motion.div

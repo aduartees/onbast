@@ -378,10 +378,12 @@ export const CONTACT_PAGE_QUERY = `*[_type == "contactPage"][0] {
   },
   "siteSettings": *[_type == "settings"][0] {
     "agency": agencyInfo {
+      name,
       email,
       phone,
       address,
-      socialProfiles
+      socialProfiles,
+      "logo": logo.asset->url
     }
   }
 }`;

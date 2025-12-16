@@ -127,9 +127,10 @@ export function ContactForm() {
   const [error, setError] = useState<string | null>(null);
   
   // Check for success param in URL (native form submission return)
-  if (typeof window !== "undefined" && window.location.search.includes("success=true") && !success) {
+  // Removed URL check since we are using AJAX
+  /* if (typeof window !== "undefined" && window.location.search.includes("success=true") && !success) {
     setSuccess(true);
-  }
+  } */
 
   // Form State
   const [formData, setFormData] = useState({

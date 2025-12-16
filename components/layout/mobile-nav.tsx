@@ -128,12 +128,12 @@ export function MobileNav({ menuItems = [], cta }: MobileNavProps) {
               <motion.ul variants={listVariants} className="flex flex-col gap-6 w-full max-w-md mx-auto relative z-10">
                 {items.map((item, index) => (
                   <motion.li key={index} variants={itemVariants} className="w-full">
-                    <div className="flex flex-col">
-                      <div className="flex items-center justify-between">
+                    <div className="flex flex-col items-center">
+                      <div className="flex items-center justify-center gap-2">
                         <Link
                           href={item.url}
                           onClick={() => !item.submenu && toggleMenu()}
-                          className="text-3xl font-bold text-white hover:text-neutral-400 transition-colors tracking-tight"
+                          className="text-3xl font-bold text-white hover:text-neutral-400 transition-colors tracking-tight text-center"
                         >
                           {item.label}
                         </Link>
@@ -155,15 +155,15 @@ export function MobileNav({ menuItems = [], cta }: MobileNavProps) {
                             animate={{ height: "auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
                             transition={{ duration: 0.3, ease: "easeInOut" }}
-                            className="overflow-hidden"
+                            className="overflow-hidden w-full"
                           >
-                            <div className="flex flex-col gap-4 pl-4 pt-4 border-l border-white/10 mt-2 ml-2">
+                            <div className="flex flex-col gap-4 pt-4 mt-2 items-center">
                               {item.submenu.map((subItem, subIdx) => (
                                 <Link
                                   key={subIdx}
                                   href={subItem.url}
                                   onClick={toggleMenu}
-                                  className="text-lg text-neutral-400 hover:text-white transition-colors flex flex-col"
+                                  className="text-lg text-neutral-400 hover:text-white transition-colors flex flex-col items-center text-center"
                                 >
                                   <span className="font-medium text-indigo-300">{subItem.label}</span>
                                   {subItem.description && (

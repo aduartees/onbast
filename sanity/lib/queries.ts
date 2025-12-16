@@ -21,7 +21,7 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
   heroButtonLink,
   heroHeadline,
   heroIntroduction,
-  "heroTrustedLogos": *[_type == "settings"][0].trustedLogos[] {
+  "heroTrustedLogos": *[_type == "settings"] | order(_updatedAt desc)[0].trustedLogos[defined(logo.asset)] {
     name,
     "logo": logo.asset->url,
     "alt": logo.alt

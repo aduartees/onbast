@@ -2,22 +2,15 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
-  
   // Sanity Studio usually requires looser CSP (unsafe-eval)
   const isStudio = request.nextUrl.pathname.startsWith('/studio')
   
   // Construct CSP
-  // - script-src: We use 'nonce-...' and remove 'unsafe-inline' for the main site.
-  // - style-src: We keep 'unsafe-inline' as many UI libraries/Tailwind tools might need it, and it's less critical than script.
+  // - script-src: We use 'unsafe-inline' and 'unsafe-eval' to ensure compatibility with Vercel Analytics and other scripts
+  // - style-src: We keep 'unsafe-inline' as many UI libraries/Tailwind tools might need it
   
-  let scriptSrc = `'self' 'nonce-${nonce}' https://va.vercel-scripts.com`
+  let scriptSrc = `'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com`
   
-  if (isStudio) {
-     // Studio needs eval and inline often
-     scriptSrc += " 'unsafe-eval' 'unsafe-inline'"
-  }
-
   const cspHeader = `
     default-src 'self';
     script-src ${scriptSrc};
@@ -36,7 +29,6 @@ export function middleware(request: NextRequest) {
     .trim()
 
   const requestHeaders = new Headers(request.headers)
-  requestHeaders.set('x-nonce', nonce)
   requestHeaders.set('Content-Security-Policy', contentSecurityPolicyHeaderValue)
 
   const response = NextResponse.next({

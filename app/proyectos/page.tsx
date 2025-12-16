@@ -13,6 +13,8 @@ import { ScrollReset } from "@/components/utils/scroll-reset";
 import { generateOrganizationSchema } from "@/lib/seo";
 import { ImpactStats } from "@/components/sections/impact-stats";
 import { ServiceProcess } from "@/components/sections/service-process";
+// import { ServiceProcess } from "@/components/sections/service-process"; // Replacing with custom component for Projects
+import { ProjectsProcess } from "@/components/sections/projects-process";
 import { ServiceFAQ } from "@/components/sections/service-faq";
 import { InfiniteMovingLogos } from "@/components/aceternity/infinite-moving-logos";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -183,7 +185,7 @@ export default async function ProjectsPage() {
                     )}
                 </FadeIn>
             </div>
-            <ServiceProcess steps={process.steps || []} />
+            <ProjectsProcess steps={process.steps || []} />
         </section>
       )}
 

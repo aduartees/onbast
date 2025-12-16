@@ -177,7 +177,7 @@ export function ContactForm() {
       };
 
       // 4. AJAX Submission to FormSubmit
-      const response = await fetch("https://formsubmit.co/ajax/c1188bf4882d9992df32e82aa16ecb3c", {
+      const response = await fetch("https://formsubmit.co/ajax/info@aduarte.es", {
         method: "POST",
         headers: { 
           'Content-Type': 'application/json',
@@ -231,7 +231,7 @@ export function ContactForm() {
     <div className="relative">
       <form 
           onSubmit={handleSubmit}
-          action="https://formsubmit.co/c1188bf4882d9992df32e82aa16ecb3c"
+          action="https://formsubmit.co/info@aduarte.es"
           method="POST"
           className="bg-neutral-900/20 border border-white/5 backdrop-blur-sm p-8 md:p-12 rounded-[2rem] h-full pt-16 relative overflow-hidden"
       >

@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface ProcessStep {
@@ -9,80 +9,86 @@ interface ProcessStep {
 }
 
 export function ServiceProcess({ steps }: { steps: ProcessStep[] }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end end"]
+    target: containerRef,
+    offset: ["start start", "end end"],
   });
 
+  const heightTransform = useTransform(scrollYProgress, [0, 1], [0, 1000]); // Ajuste dinámico sería ideal, pero usaremos % o vh en estilo
+  const height = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
   return (
-    <div ref={ref} className="w-full relative py-20 md:py-40">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 flex flex-col gap-8 md:gap-12">
+    <div ref={containerRef} className="w-full relative py-20 md:py-40 overflow-hidden">
+      
+      {/* Línea Central de Luz (The Beam) */}
+      <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-[2px] bg-neutral-800 transform md:-translate-x-1/2">
+        <motion.div
+          style={{ height }}
+          className="absolute top-0 left-0 w-full bg-gradient-to-b from-indigo-500 via-purple-500 to-cyan-500 shadow-[0_0_20px_2px_rgba(99,102,241,0.5)]"
+        />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10">
         {steps.map((step, index) => (
-          <StickyCard key={index} step={step} index={index} total={steps.length} range={[index * 0.25, 1]} targetScale={1 - (steps.length - index) * 0.05} />
+          <TimelineItem 
+            key={index} 
+            step={step} 
+            index={index} 
+            isLast={index === steps.length - 1} 
+          />
         ))}
       </div>
     </div>
   );
 }
 
-const StickyCard = ({ step, index, total, range, targetScale }: { step: ProcessStep, index: number, total: number, range: number[], targetScale: number }) => {
-  const container = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: container,
-    offset: ['start end', 'start start']
-  })
-
-  const imageScale = useTransform(scrollYProgress, [0, 1], [2, 1])
-  const scale = useTransform(scrollYProgress, range, [1, targetScale]);
+const TimelineItem = ({ step, index, isLast }: { step: ProcessStep, index: number, isLast: boolean }) => {
+  const isEven = index % 2 === 0;
   
-  // Alternar colores de gradiente para cada tarjeta
-  const gradients = [
-    "from-indigo-500/20 to-purple-500/20",
-    "from-cyan-500/20 to-blue-500/20",
-    "from-rose-500/20 to-orange-500/20",
-    "from-emerald-500/20 to-teal-500/20"
-  ];
-  const gradient = gradients[index % gradients.length];
-
   return (
-    <div ref={container} className="h-auto md:h-[80vh] min-h-[600px] flex items-center justify-center sticky top-[10vh] md:top-[10vh] py-8 md:py-0">
-      <motion.div 
-        style={{ scale, top: `calc(-5vh + ${index * 25}px)` }} 
-        className="relative w-full max-w-5xl h-auto md:h-[600px] min-h-[500px] rounded-[2rem] md:rounded-[3rem] bg-neutral-900 border border-white/10 overflow-hidden shadow-2xl origin-top flex flex-col md:flex-row"
-      >
-          {/* Lado Izquierdo - Texto */}
-          <div className="w-full md:w-1/2 p-6 md:p-16 flex flex-col justify-center relative z-10 order-2 md:order-1">
-             <div className="absolute top-6 left-6 md:top-12 md:left-12">
-                <span className="text-xs md:text-sm font-mono text-neutral-500 uppercase tracking-widest border border-white/10 px-3 py-1 rounded-full bg-black/50 backdrop-blur-md">
-                    Paso {String(index + 1).padStart(2, '0')}
-                </span>
-             </div>
-             
-             <h3 className="text-2xl md:text-5xl font-bold text-white mb-4 md:mb-6 leading-tight mt-8 md:mt-0">
-                {step.title}
-             </h3>
-             <p className="text-neutral-400 text-base md:text-xl leading-relaxed font-light">
-                {step.description}
-             </p>
-          </div>
+    <div className={cn(
+        "flex flex-col md:flex-row items-start md:items-center justify-between w-full mb-24 last:mb-0 relative",
+        isEven ? "md:flex-row" : "md:flex-row-reverse"
+    )}>
+        
+        {/* Espaciador para centrar en Desktop */}
+        <div className="hidden md:block w-5/12" />
 
-          {/* Lado Derecho - Visual Abstracto */}
-          <div className="w-full md:w-1/2 h-[250px] md:h-full relative overflow-hidden bg-neutral-950 order-1 md:order-2">
-             <div className={cn("absolute inset-0 bg-gradient-to-br opacity-40", gradient)} />
-             <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
-             
-             {/* Círculo decorativo animado */}
-             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-neutral-950/50 rounded-full border border-white/5" />
-             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-gradient-to-tr from-white/5 to-transparent rounded-full blur-3xl animate-pulse duration-[4000ms]" />
-             
-             <motion.div style={{ scale: imageScale }} className="relative w-full h-full flex items-center justify-center">
-                 <span className="text-[10rem] md:text-[15rem] font-bold text-white/5 font-serif italic select-none">
-                    {index + 1}
-                 </span>
-             </motion.div>
-          </div>
-      </motion.div>
+        {/* Punto Central (Nodo) */}
+        <div className="absolute left-4 md:left-1/2 w-4 h-4 rounded-full bg-neutral-950 border-2 border-indigo-500 z-20 transform md:-translate-x-1/2 mt-1.5 md:mt-0 shadow-[0_0_10px_rgba(99,102,241,0.5)] flex items-center justify-center">
+            <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-pulse" />
+        </div>
+
+        {/* Tarjeta de Contenido */}
+        <motion.div 
+            initial={{ opacity: 0, x: isEven ? -50 : 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className={cn(
+                "w-full md:w-5/12 pl-12 md:pl-0 relative",
+                isEven ? "md:pr-12 md:text-right" : "md:pl-12 md:text-left"
+            )}
+        >
+            <div className="bg-neutral-900/40 backdrop-blur-sm border border-white/5 p-6 md:p-8 rounded-2xl hover:bg-neutral-900/60 hover:border-indigo-500/30 transition-all duration-500 group">
+                <div className={cn(
+                    "flex items-center gap-4 mb-4",
+                    isEven ? "md:flex-row-reverse" : "md:flex-row"
+                )}>
+                    <span className="text-4xl md:text-5xl font-bold text-white/10 font-serif italic group-hover:text-indigo-500/20 transition-colors">
+                        {String(index + 1).padStart(2, '0')}
+                    </span>
+                    <h3 className="text-xl md:text-2xl font-bold text-white tracking-tight">
+                        {step.title}
+                    </h3>
+                </div>
+                <p className="text-neutral-400 leading-relaxed text-sm md:text-base">
+                    {step.description}
+                </p>
+            </div>
+        </motion.div>
+
     </div>
-  )
+  );
 }

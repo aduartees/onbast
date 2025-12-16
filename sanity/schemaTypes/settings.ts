@@ -174,5 +174,12 @@ export default defineType({
         })
       ]
     })
-  ]
+  ],
+  preview: {
+    prepare() {
+      return {
+        title: 'Configuración Global del Sitio'
+      }
+    }
+  }
 })

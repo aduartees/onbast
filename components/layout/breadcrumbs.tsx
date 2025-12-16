@@ -34,8 +34,14 @@ export function Breadcrumbs() {
     });
   }, [pathname]);
 
-  // Don't render on home page
-  if (pathname === "/" || breadcrumbs.length === 0) return null;
+  // Don't render on home page, studio, or if empty
+  if (
+    pathname === "/" || 
+    pathname.startsWith("/studio") || 
+    breadcrumbs.length === 0
+  ) {
+    return null;
+  }
 
   // Generate JSON-LD
   const jsonLd = {

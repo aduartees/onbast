@@ -50,6 +50,7 @@ export default async function ContactPage() {
       email: data?.siteSettings?.agency?.email || data?.contactInfo?.email,
       phone: data?.siteSettings?.agency?.phone || data?.contactInfo?.phone,
       location: formattedAddress || data?.contactInfo?.location,
+      // Ensure social profiles come from global settings if available
       socialProfiles: data?.siteSettings?.agency?.socialProfiles || data?.contactInfo?.socialProfiles,
       schedule: data?.contactInfo?.schedule // Schedule typically remains specific to contact page
   };

@@ -34,8 +34,8 @@ export default async function ServicesPage() {
   ]);
 
   // Map services to FocusCards format
-  const focusCards = services
-    .filter((service: any) => service.imageUrl) // Filter out services without images
+  const focusCards = (services || [])
+    .filter((service: any) => service?.imageUrl) // Filter out services without images
     .map((service: any) => ({
       title: service.title,
       description: service.description,

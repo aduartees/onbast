@@ -151,11 +151,13 @@ export function ContactForm() {
     setFormData(prev => ({ ...prev, topic }));
   };
 
-  // NOTE: Switched to Native Form Submission to force FormSubmit activation/captcha if needed
-  const handleSubmit = (e: React.FormEvent) => {
+  // NOTE: Switched to AJAX Form Submission to prevent reload loops and ensure data serialization
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
     // 1. Security Check: Honeypot
     if (formData.confirmEmail) {
-      e.preventDefault();
       // If the hidden field is filled, it's a bot. Fake success.
       setSuccess(true);
       return;
@@ -163,13 +165,49 @@ export function ContactForm() {
 
     // 2. Validation
     if (!formData.name || !formData.email || !formData.message) {
-      e.preventDefault();
       setError("Por favor completa todos los campos requeridos.");
       return;
     }
 
     setIsPending(true);
-    // Allow native submission to proceed to FormSubmit
+
+    try {
+      // 3. Sanitization
+      const sanitizedData = {
+        name: sanitizeInput(formData.name),
+        email: sanitizeInput(formData.email),
+        topic: sanitizeInput(formData.topic || "General"),
+        message: sanitizeInput(formData.message),
+        _subject: "Nuevo Mensaje de Contacto - ONBAST",
+        _template: "table",
+        _captcha: "false",
+        _honey: "" // Field for bot protection (should be empty)
+      };
+
+      // 4. AJAX Submission to FormSubmit
+      const response = await fetch("https://formsubmit.co/ajax/c1188bf4882d9992df32e82aa16ecb3c", {
+        method: "POST",
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(sanitizedData)
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setSuccess(true);
+        setFormData({ name: "", email: "", topic: "", message: "", confirmEmail: "" });
+      } else {
+        throw new Error(result.message || "Hubo un error al enviar el formulario.");
+      }
+    } catch (err) {
+      setError("Error al enviar. Por favor intenta de nuevo o escríbenos directamente a info@aduarte.es");
+      console.error(err);
+    } finally {
+      setIsPending(false);
+    }
   };
 
   if (success) {

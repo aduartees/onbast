@@ -7,6 +7,7 @@ import { Menu, X, ArrowRight, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
 interface MenuItem {
   label: string;
@@ -30,6 +31,7 @@ export function MobileNav({ menuItems = [], cta }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [openSubmenuIndex, setOpenSubmenuIndex] = useState<number | null>(null);
+  const pathname = usePathname();
 
   // Fallback items if none provided
   const items = menuItems.length > 0 ? menuItems : [
@@ -44,6 +46,11 @@ export function MobileNav({ menuItems = [], cta }: MobileNavProps) {
     setMounted(true);
   }, []);
 
+  // Close menu when route changes
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -57,6 +64,15 @@ export function MobileNav({ menuItems = [], cta }: MobileNavProps) {
   }, [isOpen]);
 
   const toggleMenu = () => setIsOpen(!isOpen);
+
+  const handleLinkClick = (url: string) => {
+    // Only manually close for hash links (smooth scroll on same page)
+    // For page navigation, we let the pathname useEffect handle closing
+    // to prevent unmounting the Link component before navigation starts (ERR_ABORTED)
+    if (url.startsWith("#")) {
+        setIsOpen(false);
+    }
+  };
 
   const toggleSubmenu = (index: number) => {
     setOpenSubmenuIndex(openSubmenuIndex === index ? null : index);
@@ -132,7 +148,7 @@ export function MobileNav({ menuItems = [], cta }: MobileNavProps) {
                       <div className="flex items-center justify-center gap-2">
                         <Link
                           href={item.url}
-                          onClick={() => !item.submenu && toggleMenu()}
+                          onClick={() => !item.submenu && handleLinkClick(item.url)}
                           className="text-3xl font-bold text-white hover:text-neutral-400 transition-colors tracking-tight text-center"
                         >
                           {item.label}
@@ -162,7 +178,7 @@ export function MobileNav({ menuItems = [], cta }: MobileNavProps) {
                                 <Link
                                   key={subIdx}
                                   href={subItem.url}
-                                  onClick={toggleMenu}
+                                  onClick={() => handleLinkClick(subItem.url)}
                                   className="text-lg text-neutral-400 hover:text-white transition-colors flex flex-col items-center text-center"
                                 >
                                   <span className="font-medium text-indigo-300">{subItem.label}</span>
@@ -180,7 +196,7 @@ export function MobileNav({ menuItems = [], cta }: MobileNavProps) {
                 ))}
                 
                 <motion.li variants={itemVariants} className="mt-8 w-full">
-                   <Link href={ctaButton.url} onClick={toggleMenu} className="block w-full">
+                   <Link href={ctaButton.url} onClick={() => handleLinkClick(ctaButton.url)} className="block w-full">
                       <Button size="lg" className="w-full bg-white text-black hover:bg-neutral-200 text-lg py-6 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all">
                           {ctaButton.text} <ArrowRight className="ml-2 w-5 h-5" />
                       </Button>

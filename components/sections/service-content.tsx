@@ -1,6 +1,7 @@
 "use client";
-import React from "react";
+import { motion } from "framer-motion";
 import { CheckCircle2, ArrowRight, BarChart3, Users, Zap, MessageSquare, Star } from "lucide-react";
+import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -178,37 +179,37 @@ const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, f
                       <BlurReveal text={longDescription || "Transforming your digital presence."} />
                    </div>
                    {overviewText && (
-                      <p className="text-lg md:text-2xl text-neutral-400 mt-8 font-light leading-relaxed border-l-2 border-indigo-500/50 pl-6">
-                        {overviewText}
-                      </p>
+                      <BlurReveal 
+                        text={overviewText} 
+                        className="text-lg md:text-2xl text-neutral-400 mt-8 font-light leading-relaxed border-l-2 border-indigo-500/50 pl-6" 
+                        delay={0.2}
+                      />
                    )}
                 </div>
              </FadeIn>
           </section>
     
-          {/* 2. Tech Stack - Ultra Minimalist */}
+          {/* Tech Stack */}
           {technologies && technologies.length > 0 && (
-              <FadeIn className="mb-10 md:mb-16 py-8 relative max-w-4xl mx-auto">
-                  <div className="text-center mb-8 relative z-10">
-                    <div className="relative flex justify-center items-center mb-6">
-                        <div className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-neutral-800 to-transparent opacity-50" />
-                        <div className="relative z-10 bg-neutral-950 px-2">
-                            <span className="inline-block px-3 py-1 rounded-full border border-indigo-500/20 bg-indigo-500/10 text-indigo-300 text-xs font-medium uppercase tracking-wider">
-                                {techTitle || "Stack Tecnológico"}
-                            </span>
-                        </div>
-                    </div>
+              <FadeIn className="mb-20 md:mb-28 max-w-5xl mx-auto">
+                  <div className="text-center mb-10">
+                    <SectionHeading 
+                        title={techTitle || "Stack Tecnológico"} 
+                        subtitle="Herramientas" 
+                        highlight="Core"
+                        className="justify-center"
+                    />
                     {techDescription && (
-                        <p className="text-neutral-400 text-sm max-w-lg mx-auto font-light leading-relaxed">
+                        <p className="text-neutral-400 mt-6 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed text-center">
                             {techDescription}
                         </p>
                     )}
                   </div>
                   <div className="flex flex-wrap justify-center gap-3 relative z-10 max-w-3xl mx-auto">
                       {technologies.map((tech, i) => (
-                          <span key={i} className="px-4 py-1.5 rounded-full bg-neutral-900/50 border border-white/5 text-neutral-400 font-mono text-xs hover:text-white hover:border-neutral-700 transition-colors cursor-default">
+                          <div key={i} className="px-4 py-2 rounded-full bg-neutral-900/50 border border-white/5 text-neutral-300 font-mono text-sm hover:text-white hover:border-neutral-600 transition-colors cursor-default">
                               {tech}
-                          </span>
+                          </div>
                       ))}
                   </div>
               </FadeIn>
@@ -238,7 +239,14 @@ const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, f
                
                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-12">
                   {features.map((feature, i) => (
-                    <FadeIn delay={i * 0.1} key={i} noVertical className="p-6 rounded-2xl bg-neutral-900/10 border border-white/5 hover:bg-neutral-900/30 transition-all duration-300 group">
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "0px" }}
+                      transition={{ duration: 0.4, delay: i * 0.05 }}
+                      className="p-6 rounded-2xl bg-neutral-900/10 border border-white/5 hover:bg-neutral-900/30 transition-all duration-300 group"
+                    >
                        <div className="mb-4 w-10 h-10 rounded-lg bg-neutral-800/50 flex items-center justify-center text-indigo-400 group-hover:text-indigo-300 group-hover:bg-indigo-500/10 transition-colors">
                           <Zap className="w-5 h-5" />
                        </div>
@@ -246,7 +254,7 @@ const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, f
                        <p className="text-neutral-400 text-sm leading-relaxed font-light">
                          {feature.description}
                        </p>
-                    </FadeIn>
+                    </motion.div>
                   ))}
                </div>
             </section>

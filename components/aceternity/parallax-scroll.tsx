@@ -45,21 +45,21 @@ export const ParallaxScroll = ({
         <div className="grid gap-10">
           {firstPart.map((el, idx) => (
             <div key={"grid-1" + idx}>
-              <ProjectCard project={el} />
+              <ProjectCard project={el} index={idx} />
             </div>
           ))}
         </div>
         <div className="grid gap-10">
           {secondPart.map((el, idx) => (
             <div key={"grid-2" + idx}>
-              <ProjectCard project={el} />
+              <ProjectCard project={el} index={idx} />
             </div>
           ))}
         </div>
         <div className="grid gap-10">
           {thirdPart.map((el, idx) => (
             <div key={"grid-3" + idx}>
-              <ProjectCard project={el} />
+              <ProjectCard project={el} index={idx} />
             </div>
           ))}
         </div>
@@ -70,9 +70,16 @@ export const ParallaxScroll = ({
 
 import { ArrowUpRight } from "lucide-react";
 
-const ProjectCard = ({ project }: { project: any }) => {
+const ProjectCard = ({ project, index = 0 }: { project: any, index?: number }) => {
     return (
-        <a href={project.link || "#"} className="group block w-full">
+        <motion.a 
+            href={project.link || "#"} 
+            className="group block w-full"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "0px" }}
+            transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
+        >
             <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-neutral-900 ring-1 ring-white/10 transition-all duration-500 group-hover:ring-indigo-500/50 group-hover:shadow-2xl group-hover:shadow-indigo-500/20">
                 <Image
                     src={project.imageUrl}
@@ -99,6 +106,6 @@ const ProjectCard = ({ project }: { project: any }) => {
                     {project.description}
                 </p>
             )}
-        </a>
-    )
-}
+        </motion.a>
+    );
+};

@@ -35,7 +35,8 @@ export function ServiceHeader({ title, description, introduction, buttonText, bu
     offset: ["start start", "end start"],
   });
 
-  const logos = trustedLogos || DEFAULT_LOGOS;
+  // Use trustedLogos if available and not empty; otherwise use DEFAULT_LOGOS
+  const logos = (trustedLogos && trustedLogos.length > 0) ? trustedLogos : DEFAULT_LOGOS;
 
   // Parallax Effects
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);

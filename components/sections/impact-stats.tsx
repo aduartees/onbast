@@ -32,7 +32,7 @@ const Counter = ({
     damping: 100,
     stiffness: 100,
   });
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, margin: "0px" });
 
   useEffect(() => {
     if (isInView) {
@@ -58,8 +58,8 @@ export function ImpactStats({ impact }: ImpactStatsProps) {
 
   return (
     <section className="relative w-full py-10 md:py-20">
-      {/* Background Gradients - Adjusted to flow over sections */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1200px] h-[600px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+      {/* Background Gradients - Reduced size and complexity for performance */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] h-[400px] bg-indigo-500/5 blur-[80px] rounded-full pointer-events-none -z-10" />
       
       <div className="max-w-7xl mx-auto px-4 relative z-10">
         {(impact.title || impact.subtitle) && (

@@ -52,12 +52,12 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
         />
-        {/* Subtle Gradient for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/20 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-80" />
+        {/* Subtle Gradient for text readability - Fixed for Mobile */}
+        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
       </div>
 
-      {/* Floating Glass Info Card */}
-      <div className="absolute bottom-4 left-4 right-4 p-5 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] translate-y-2 transition-transform duration-500 group-hover:translate-y-0 will-change-transform">
+      {/* Floating Glass Info Card - Always visible logic adjusted for mobile */}
+      <div className="absolute bottom-4 left-4 right-4 p-5 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] translate-y-0 transition-transform duration-500 group-hover:translate-y-0 will-change-transform">
          <div className="flex flex-col gap-1">
             <h3 className="text-xl font-bold text-white tracking-tight leading-tight">
               {member.name}
@@ -67,8 +67,8 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
             </p>
          </div>
 
-         {/* Divider & Socials (Reveal on Hover) */}
-         <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-out">
+         {/* Divider & Socials (Always visible on mobile to prevent tap issues) */}
+         <div className="grid grid-rows-[1fr] lg:grid-rows-[0fr] lg:group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-out">
             <div className="overflow-hidden">
                <div className="pt-4 mt-4 border-t border-white/10 flex items-center gap-3">
                   {member.social?.linkedin && (

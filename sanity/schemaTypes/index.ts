@@ -7,8 +7,9 @@ import settings from './settings'
 import homePage from './homePage'
 import agencyPage from './agencyPage'
 import projectsPage from './projectsPage'
+import servicesPage from './servicesPage'
 import contactPage from './contactPage'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [service, project, teamMember, testimonial, settings, homePage, agencyPage, projectsPage, contactPage],
+  types: [service, project, teamMember, testimonial, settings, homePage, agencyPage, projectsPage, servicesPage, contactPage],
 }

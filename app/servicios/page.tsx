@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { client } from "@/sanity/lib/client";
-import { SERVICES_QUERY } from "@/sanity/lib/queries";
+import { SERVICES_QUERY, SERVICES_PAGE_QUERY } from "@/sanity/lib/queries";
 import { Navbar } from "@/components/layout/navbar";
 import { LuminousPill } from "@/components/ui/luminous-pill";
 import { BlurReveal } from "@/components/ui/blur-reveal";
@@ -15,13 +15,20 @@ import { ArrowRight } from "lucide-react";
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: "Servicios | ONBAST",
-  description: "Soluciones digitales de alto impacto. Desarrollo Web, SEO Avanzado y Estrategia Digital.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const pageData = await client.fetch(SERVICES_PAGE_QUERY);
+  
+  return {
+    title: pageData?.seoTitle || "Servicios | ONBAST",
+    description: pageData?.seoDescription || "Soluciones digitales de alto impacto. Desarrollo Web, SEO Avanzado y Estrategia Digital.",
+  };
+}
 
 export default async function ServicesPage() {
-  const services = await client.fetch(SERVICES_QUERY);
+  const [services, pageData] = await Promise.all([
+    client.fetch(SERVICES_QUERY),
+    client.fetch(SERVICES_PAGE_QUERY)
+  ]);
 
   // Map services to HoverEffect format
   const serviceItems = services.map((service: any) => ({
@@ -50,18 +57,18 @@ export default async function ServicesPage() {
 
          <div className="relative z-10 flex flex-col items-center justify-center h-full w-full text-center px-8 md:px-20 max-w-5xl mx-auto pt-24 pb-safe md:pt-20 md:pb-12">
             
-            <LuminousPill title="Servicios" />
+            <LuminousPill title={pageData?.hero?.pill || "Servicios"} />
 
             <BlurReveal 
-                text="Soluciones Digitales 360º." 
+                text={pageData?.hero?.title || "Soluciones Digitales 360º."}
                 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight text-white leading-[1.15] md:leading-[1.1]"
                 highlightClassName="font-serif italic font-normal text-indigo-200/90"
-                highlightWord="360º."
+                highlightWord={pageData?.hero?.highlight || "360º."}
             />
             
             <div className="max-w-xl mx-auto mb-10 md:mb-16 px-4 mt-8">
                <BlurReveal
-                 text="Transformamos ideas complejas en experiencias digitales de alto rendimiento. Desde el código hasta el posicionamiento."
+                 text={pageData?.hero?.description || "Transformamos ideas complejas en experiencias digitales de alto rendimiento. Desde el código hasta el posicionamiento."}
                  className="text-sm md:text-base text-neutral-400 leading-relaxed"
                  delay={0.3}
                  as="p"
@@ -77,13 +84,13 @@ export default async function ServicesPage() {
           <div className="max-w-7xl mx-auto px-6">
               <FadeIn className="mb-16 text-center">
                   <SectionHeading 
-                      title="Nuestro Catálogo" 
-                      subtitle="Expertise" 
-                      highlight="Catálogo"
+                      title={pageData?.catalog?.title || "Nuestro Catálogo"}
+                      subtitle={pageData?.catalog?.subtitle || "Expertise"}
+                      highlight={pageData?.catalog?.highlight || "Catálogo"}
                       className="justify-center"
                   />
                   <p className="text-neutral-400 max-w-2xl mx-auto mt-4 text-lg">
-                      Selecciona un servicio para ver cómo podemos ayudarte a escalar.
+                      {pageData?.catalog?.description || "Selecciona un servicio para ver cómo podemos ayudarte a escalar."}
                   </p>
               </FadeIn>
 
@@ -95,10 +102,10 @@ export default async function ServicesPage() {
           {/* Tech Arsenal Reuse */}
           <div className="mt-20 border-t border-white/5 pt-20">
              <TechArsenalSection header={{
-                title: "Tecnología de Vanguardia",
-                pill: "Stack",
-                highlight: "Vanguardia",
-                description: "Utilizamos las herramientas más avanzadas del mercado para garantizar velocidad, seguridad y escalabilidad."
+                title: pageData?.tech?.title || "Tecnología de Vanguardia",
+                pill: pageData?.tech?.pill || "Stack",
+                highlight: pageData?.tech?.highlight || "Vanguardia",
+                description: pageData?.tech?.description || "Utilizamos las herramientas más avanzadas del mercado para garantizar velocidad, seguridad y escalabilidad."
              }} />
           </div>
 
@@ -108,13 +115,16 @@ export default async function ServicesPage() {
                  <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none" />
                  <div className="relative z-10">
                     <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tighter mb-4">
-                      ¿No encuentras lo que buscas?
+                      {pageData?.cta?.title || "¿No encuentras lo que buscas?"}
                     </h2>
                     <p className="text-neutral-400 text-base mb-8 max-w-lg mx-auto font-light">
-                      Ofrecemos soluciones personalizadas adaptadas a tus necesidades específicas. Hablemos de tu proyecto.
+                      {pageData?.cta?.description || "Ofrecemos soluciones personalizadas adaptadas a tus necesidades específicas. Hablemos de tu proyecto."}
                     </p>
                     <Button size="lg" className="bg-white text-black hover:bg-neutral-200 text-sm font-medium h-12 px-8 rounded-full shadow-lg hover:shadow-xl transition-all" asChild>
-                         <a href="/contacto">Contáctanos <ArrowRight className="ml-2 w-4 h-4" /></a>
+                         <a href={pageData?.cta?.buttonLink || "/contacto"}>
+                            {pageData?.cta?.buttonText || "Contáctanos"} 
+                            <ArrowRight className="ml-2 w-4 h-4" />
+                         </a>
                     </Button>
                  </div>
              </FadeIn>

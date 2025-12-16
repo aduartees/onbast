@@ -152,6 +152,15 @@ export const HOME_PAGE_QUERY = `*[_type == "homePage"][0] {
   contact
 }`;
 
+export const SERVICES_PAGE_QUERY = `*[_type == "servicesPage"][0] {
+  hero,
+  catalog,
+  tech,
+  cta,
+  seoTitle,
+  seoDescription
+}`;
+
 export const SETTINGS_QUERY = `*[_type == "settings"][0] {
   "agency": agencyInfo {
     name,

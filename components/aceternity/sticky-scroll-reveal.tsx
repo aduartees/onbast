@@ -107,44 +107,23 @@ export const StickyScroll = ({
                   opacity: activeCard === index ? 1 : 0.3,
                 }}
                 transition={{ duration: 0.5 }}
-                className="text-sm md:text-base text-neutral-400 max-w-lg leading-relaxed font-light mb-6"
+                className="text-neutral-500 max-w-sm mt-4 text-base md:text-lg"
               >
                 {item.description}
               </motion.div>
-              
-              {/* Imagen visible SOLO en móvil */}
-              <div className="block lg:hidden w-full rounded-xl overflow-hidden aspect-[16/9] border border-white/10 shadow-2xl relative">
-                {item.content}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
-              </div>
             </div>
           ))}
-          
-          {/* Espaciador final para asegurar que se pueda hacer scroll hasta el último elemento en pantallas grandes */}
-          <div className="h-[20vh] w-full hidden lg:block" />
+          <div className="h-40" />
         </div>
       </div>
-      
-      {/* Sticky Panel VISIBLE en Desktop */}
-      {/* CAMBIO 4: height screen para centrado, pero el contenedor padre maneja el flujo */}
-      <div className="hidden lg:flex w-full lg:w-1/2 sticky top-0 h-screen items-center justify-center">
-        <div
-          className={cn(
-            "w-full rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10 aspect-[16/10] border border-white/5 bg-neutral-950",
-            contentClassName
-          )}
-        >
-           <motion.div
-               key={activeCard}
-               initial={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
-               animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-               transition={{ duration: 0.5, ease: "easeInOut" }}
-               className="w-full h-full relative"
-           >
-              {content[activeCard].content ?? null}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-           </motion.div>
-        </div>
+      <div
+        style={{ background: backgroundColors[activeCard % backgroundColors.length] as any }}
+        className={cn(
+          "hidden lg:block h-80 w-[30rem] rounded-md bg-white sticky top-10 overflow-hidden",
+          contentClassName
+        )}
+      >
+        {content[activeCard].content ?? null}
       </div>
     </motion.div>
   );

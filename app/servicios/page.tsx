@@ -14,7 +14,7 @@ import { ScrollReset } from "@/components/utils/scroll-reset";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, Shield, Globe } from "lucide-react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion"; // Removed unused import
 
 export const dynamic = 'force-dynamic';
 
@@ -168,39 +168,23 @@ export default async function ServicesPage() {
 
           {/* CTA Section - New Lamp Effect */}
           <LampContainer className="min-h-[60vh]">
-            <motion.h1
-                initial={{ opacity: 0.5, y: 100 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{
-                delay: 0.3,
-                duration: 0.8,
-                ease: "easeInOut",
-                }}
-                className="mt-8 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl"
-            >
-                {pageData?.cta?.title || "¿No encuentras lo que buscas?"}
-            </motion.h1>
-            <motion.p 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.8 }}
-                className="text-neutral-400 max-w-lg mx-auto mt-4 text-center text-lg"
-            >
-                {pageData?.cta?.description || "Ofrecemos soluciones personalizadas adaptadas a tus necesidades específicas. Hablemos de tu proyecto."}
-            </motion.p>
-            <motion.div
-                 initial={{ opacity: 0, scale: 0.5 }}
-                 whileInView={{ opacity: 1, scale: 1 }}
-                 transition={{ delay: 0.7, duration: 0.5 }}
-                 className="mt-8"
-            >
-                <Button size="lg" className="bg-cyan-500 text-black hover:bg-cyan-400 text-base font-semibold h-12 px-8 rounded-full shadow-[0_0_20px_rgba(6,182,212,0.5)] hover:shadow-[0_0_30px_rgba(6,182,212,0.7)] transition-all" asChild>
-                    <a href={pageData?.cta?.buttonLink || "/contacto"}>
-                    {pageData?.cta?.buttonText || "Contáctanos"} 
-                    <ArrowRight className="ml-2 w-5 h-5" />
-                    </a>
-                </Button>
-            </motion.div>
+             {/* Note: LampContainer children are rendered as client components, but simple HTML is fine */}
+             <div className="flex flex-col items-center">
+                <h1 className="mt-8 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl">
+                    {pageData?.cta?.title || "¿No encuentras lo que buscas?"}
+                </h1>
+                <p className="text-neutral-400 max-w-lg mx-auto mt-4 text-center text-lg">
+                    {pageData?.cta?.description || "Ofrecemos soluciones personalizadas adaptadas a tus necesidades específicas. Hablemos de tu proyecto."}
+                </p>
+                <div className="mt-8">
+                    <Button size="lg" className="bg-cyan-500 text-black hover:bg-cyan-400 text-base font-semibold h-12 px-8 rounded-full shadow-[0_0_20px_rgba(6,182,212,0.5)] hover:shadow-[0_0_30px_rgba(6,182,212,0.7)] transition-all" asChild>
+                        <a href={pageData?.cta?.buttonLink || "/contacto"}>
+                        {pageData?.cta?.buttonText || "Contáctanos"} 
+                        <ArrowRight className="ml-2 w-5 h-5" />
+                        </a>
+                    </Button>
+                </div>
+             </div>
           </LampContainer>
 
       </section>

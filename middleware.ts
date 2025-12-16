@@ -41,13 +41,6 @@ export function middleware(request: NextRequest) {
     contentSecurityPolicyHeaderValue
   )
   
-  // Strict-Transport-Security (HSTS)
-  // Forces browser to use HTTPS for the next 2 years, includes subdomains, and allows preloading.
-  response.headers.set(
-    'Strict-Transport-Security',
-    'max-age=63072000; includeSubDomains; preload'
-  )
-  
   // Other Security Headers
   response.headers.set('X-Content-Type-Options', 'nosniff')
   response.headers.set('X-Frame-Options', 'SAMEORIGIN')

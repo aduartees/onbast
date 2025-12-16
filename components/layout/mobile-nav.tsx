@@ -125,7 +125,7 @@ export function MobileNav({ menuItems = [], cta }: MobileNavProps) {
               animate="open"
               exit="closed"
               variants={menuVariants}
-              className="fixed inset-0 bg-neutral-950/20 backdrop-blur-xl z-[9999] flex flex-col pt-24 pb-8 px-6 overflow-y-auto"
+              className="fixed inset-0 bg-neutral-950/20 backdrop-blur-xl z-[9999] flex flex-col items-center justify-center px-6 overflow-hidden"
             >
                {/* Close Button inside Portal */}
               <Button
@@ -195,9 +195,9 @@ export function MobileNav({ menuItems = [], cta }: MobileNavProps) {
                   </motion.li>
                 ))}
                 
-                <motion.li variants={itemVariants} className="mt-8 w-full">
-                   <Link href={ctaButton.url} onClick={() => handleLinkClick(ctaButton.url)} className="block w-full">
-                      <Button size="lg" className="w-full bg-white text-black hover:bg-neutral-200 text-lg py-6 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all">
+                <motion.li variants={itemVariants} className="mt-8 w-full flex justify-center">
+                   <Link href={ctaButton.url} onClick={() => handleLinkClick(ctaButton.url)} className="block w-auto">
+                      <Button size="lg" className="px-8 bg-white text-black hover:bg-neutral-200 text-lg py-6 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all">
                           {ctaButton.text} <ArrowRight className="ml-2 w-5 h-5" />
                       </Button>
                    </Link>
@@ -207,7 +207,7 @@ export function MobileNav({ menuItems = [], cta }: MobileNavProps) {
               <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1, transition: { delay: 0.6 } }}
-                  className="mt-auto pt-8 text-center text-neutral-400 text-sm font-medium z-20 relative"
+                  className="absolute bottom-8 left-0 right-0 text-center text-neutral-400 text-sm font-medium z-20"
               >
                   © 2024 ONBAST Agency.
               </motion.div>

@@ -203,7 +203,7 @@ export function ContactForm() {
         throw new Error(result.message || "Hubo un error al enviar el formulario.");
       }
     } catch (err) {
-      setError("Error al enviar. Por favor intenta de nuevo o escríbenos directamente a info@aduarte.es");
+      setError(`Error al enviar. Por favor intenta de nuevo o escríbenos directamente a ${email || "info@onbast.com"}`);
       console.error(err);
     } finally {
       setIsPending(false);

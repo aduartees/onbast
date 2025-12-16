@@ -114,7 +114,7 @@ export default async function ContactPage() {
                           Cuéntanos sobre tu proyecto y te responderemos en menos de 24 horas.
                       </p>
                   </div>
-                  <ContactForm />
+                  <ContactForm email={contactInfo.email} />
               </FadeIn>
 
               <FadeIn delay={0.2}>

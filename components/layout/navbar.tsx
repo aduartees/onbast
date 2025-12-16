@@ -41,7 +41,7 @@ export function Navbar({ data }: NavbarProps) {
     return null;
   }
 
-  const { header, agency } = data || {};
+  const { header, agency, footer } = data || {};
   const menuItems = header?.menuItems || [
     { label: "Servicios", url: "#services" },
     { label: "Proyectos", url: "#projects" },

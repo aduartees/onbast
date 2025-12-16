@@ -17,11 +17,10 @@ export function middleware(request: NextRequest) {
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data: https://cdn.sanity.io https://images.unsplash.com https://assets.aceternity.com https://i.pravatar.cc https://assets.vercel.com https://avatars.githubusercontent.com https://upload.wikimedia.org https://grainy-gradients.vercel.app https://formsubmit.co;
     font-src 'self' data:;
-    connect-src 'self' https://*.sanity.io https://formsubmit.co https://vitals.vercel-insights.com;
+    connect-src 'self' https://*.sanity.io https://rfqphjqe.api.sanity.io https://formsubmit.co https://vitals.vercel-insights.com;
     frame-src 'self' https://formsubmit.co;
     base-uri 'self';
     form-action 'self' https://formsubmit.co;
-    upgrade-insecure-requests;
   `
   // Replace newlines with spaces
   const contentSecurityPolicyHeaderValue = cspHeader

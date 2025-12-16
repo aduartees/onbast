@@ -283,6 +283,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
       <Navbar />
 
       <ServiceHeader 
+        key={slug} // Force re-mount on slug change to trigger animations
         title={service.title} 
         description={service.heroHeadline || service.shortDescription}
         highlight={service.heroHighlight}
@@ -292,6 +293,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
         buttonLink={service.heroButtonLink}
       />
       <ServiceContent 
+        key={`content-${slug}`} // Force re-mount for content animations too
         mainImage={service.imageUrl}
         features={service.features} 
         featuresTitle={service.featuresTitle}

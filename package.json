@@ -48,8 +48,9 @@
     "typescript": "^5"
   },
   "browserslist": [
-    "defaults",
-    "not ie 11",
-    "not op_mini all"
+    "chrome >= 100",
+    "firefox >= 100",
+    "safari >= 15",
+    "ios >= 15"
   ]
 }

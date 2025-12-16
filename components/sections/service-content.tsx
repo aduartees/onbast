@@ -19,7 +19,6 @@ const PricingSection = dynamic(() => import("@/components/sections/pricing-secti
 const ImpactStats = dynamic(() => import("@/components/sections/impact-stats").then(mod => mod.ImpactStats));
 
 // Removed imports that are now dynamic
-import { WobbleCard } from "@/components/aceternity/wobble-card";
 import { TracingBeam } from "@/components/aceternity/tracing-beam";
 
 import { ParallaxScroll } from "@/components/aceternity/parallax-scroll";

@@ -29,6 +29,9 @@ interface NavbarProps {
         url: string;
       };
     };
+    footer?: {
+      copyrightText?: string;
+    };
   };
 }
 

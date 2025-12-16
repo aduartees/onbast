@@ -79,7 +79,7 @@ export const StickyScroll = ({
           {content.map((item, index) => (
             <div 
               key={item.title + index} 
-              ref={(el) => { cardRefs.current[index] = el; }}
+              ref={(el) => { if (el) cardRefs.current[index] = el; }} // Ensure we don't store nulls
               className={cn(
                 "flex flex-col",
                 // First item starts higher to avoid huge gap with section title

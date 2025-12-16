@@ -34,12 +34,14 @@ export default async function ServicesPage() {
   ]);
 
   // Map services to FocusCards format
-  const focusCards = services.map((service: any) => ({
-    title: service.title,
-    description: service.description,
-    link: `/servicios/${service.slug}`,
-    imageUrl: service.imageUrl,
-  }));
+  const focusCards = services
+    .filter((service: any) => service.imageUrl) // Filter out services without images
+    .map((service: any) => ({
+      title: service.title,
+      description: service.description,
+      link: `/servicios/${service.slug}`,
+      imageUrl: service.imageUrl,
+    }));
 
   // Content for Sticky Scroll (Tech Stack Narrative)
   const techContent = [

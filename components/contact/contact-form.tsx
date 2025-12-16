@@ -126,6 +126,11 @@ export function ContactForm() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
+  // Check for success param in URL (native form submission return)
+  if (typeof window !== "undefined" && window.location.search.includes("success=true") && !success) {
+    setSuccess(true);
+  }
+
   // Form State
   const [formData, setFormData] = useState({
     name: "",
@@ -145,12 +150,11 @@ export function ContactForm() {
     setFormData(prev => ({ ...prev, topic }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-
+  // NOTE: Switched to Native Form Submission to force FormSubmit activation/captcha if needed
+  const handleSubmit = (e: React.FormEvent) => {
     // 1. Security Check: Honeypot
     if (formData.confirmEmail) {
+      e.preventDefault();
       // If the hidden field is filled, it's a bot. Fake success.
       setSuccess(true);
       return;
@@ -158,169 +162,145 @@ export function ContactForm() {
 
     // 2. Validation
     if (!formData.name || !formData.email || !formData.message) {
+      e.preventDefault();
       setError("Por favor completa todos los campos requeridos.");
       return;
     }
 
     setIsPending(true);
-
-    try {
-      // 3. Sanitization
-      const sanitizedData = {
-        name: sanitizeInput(formData.name),
-        email: sanitizeInput(formData.email),
-        topic: sanitizeInput(formData.topic || "General"),
-        message: sanitizeInput(formData.message),
-        _subject: "Nuevo Mensaje de Contacto - ONBAST",
-        _template: "table",
-        _captcha: "false",
-        _honey: "" // Field for bot protection (should be empty)
-      };
-
-      // 4. AJAX Submission to FormSubmit
-      // Using the random key provided by the user to avoid exposing email
-      const response = await fetch("https://formsubmit.co/ajax/info@aduarte.es", {
-        method: "POST",
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(sanitizedData)
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setSuccess(true);
-        setFormData({ name: "", email: "", topic: "", message: "", confirmEmail: "" });
-      } else {
-        throw new Error(result.message || "Hubo un error al enviar el formulario.");
-      }
-    } catch (err) {
-      setError("Error al enviar. Por favor intenta de nuevo o escríbenos directamente a info@aduarte.es");
-      console.error(err);
-    } finally {
-      setIsPending(false);
-    }
+    // Allow native submission to proceed to FormSubmit
   };
 
   if (success) {
     return (
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="bg-neutral-900/20 border border-white/5 backdrop-blur-sm p-12 rounded-[2rem] h-full flex flex-col items-center justify-center text-center min-h-[400px]"
-      >
-        <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center mb-6">
+      <div className="h-full flex flex-col items-center justify-center text-center p-8 bg-neutral-900/50 border border-white/10 rounded-2xl backdrop-blur-sm">
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mb-6"
+        >
           <CheckCircle2 className="w-10 h-10 text-green-500" />
-        </div>
-        <h3 className="text-3xl font-bold text-white mb-4">¡Mensaje Recibido!</h3>
-        <p className="text-neutral-400 max-w-md mx-auto mb-8">
-          Gracias por contactarnos. Hemos recibido tu mensaje correctamente y te responderemos en breve a <strong>{formData.email}</strong>.
+        </motion.div>
+        <h3 className="text-2xl font-bold text-white mb-2">¡Mensaje Enviado!</h3>
+        <p className="text-neutral-400 max-w-sm">
+          Hemos recibido tu solicitud correctamente. Nos pondremos en contacto contigo lo antes posible.
         </p>
         <Button 
-          onClick={() => setSuccess(false)}
-          variant="outline"
-          className="rounded-full border-white/10 text-white hover:bg-white/5"
+          variant="outline" 
+          className="mt-8 border-white/10 text-white hover:bg-white/5"
+          onClick={() => {
+            setSuccess(false);
+            // Clear URL param without refresh
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }}
         >
           Enviar otro mensaje
         </Button>
-      </motion.div>
+      </div>
     );
   }
 
   return (
-    <div className="relative">
-      <form 
-          onSubmit={handleSubmit}
-          action="https://formsubmit.co/info@aduarte.es"
-          method="POST"
-          className="bg-neutral-900/20 border border-white/5 backdrop-blur-sm p-8 md:p-12 rounded-[2rem] h-full pt-16 relative overflow-hidden"
-      >
-        {/* Decorative gradient */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+    <form 
+      action="https://formsubmit.co/c1188bf4882d9992df32e82aa16ecb3c" 
+      method="POST"
+      onSubmit={handleSubmit}
+      className="relative"
+    >
+      {/* Hidden Configuration Fields for FormSubmit */}
+      <input type="hidden" name="_subject" value="Nuevo Mensaje de Contacto - ONBAST" />
+      <input type="hidden" name="_template" value="table" />
+      <input type="hidden" name="_captcha" value="false" />
+      <input type="hidden" name="_next" value="https://onbast.com/contacto?success=true" />
+      {/* Honeypot for FormSubmit internal check */}
+      <input type="text" name="_honey" style={{display: 'none'}} />
 
-        <div className="space-y-8 relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <InputField 
-              label="Tu Nombre" 
-              name="name" 
-              required 
-              value={formData.name}
-              onChange={handleChange}
-              disabled={isPending}
-            />
-            <InputField 
-              label="Email Corporativo" 
-              name="email" 
-              type="email" 
-              required 
-              value={formData.email}
-              onChange={handleChange}
-              disabled={isPending}
-            />
-          </div>
+      {/* Custom Honeypot for React state check */}
+      <input 
+        type="text" 
+        name="confirmEmail" 
+        value={formData.confirmEmail}
+        onChange={handleChange}
+        style={{ display: 'none' }} 
+        tabIndex={-1} 
+        autoComplete="off"
+      />
+      
+      {/* Hidden input to sync 'topic' state to form submission */}
+      <input type="hidden" name="topic" value={formData.topic || "General"} />
 
-          {/* Honeypot Field - Hidden visually but present in DOM */}
-          <div className="opacity-0 absolute -z-10 h-0 w-0 overflow-hidden">
-            <input 
-              type="text" 
-              name="confirmEmail" 
-              tabIndex={-1} 
-              autoComplete="off"
-              value={formData.confirmEmail}
-              onChange={handleChange}
-            />
-          </div>
-          
-          <SelectTopic 
-            name="topic" 
-            value={formData.topic}
-            onChange={handleTopicChange}
-            disabled={isPending}
-          />
-          
-          <InputField 
-            label="Cuéntanos sobre el proyecto" 
-            name="message" 
-            textarea 
-            required 
-            value={formData.message}
-            onChange={handleChange}
-            disabled={isPending}
-          />
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <InputField 
+          label="Nombre" 
+          name="name" 
+          required 
+          value={formData.name}
+          onChange={handleChange}
+          disabled={isPending}
+        />
+        <InputField 
+          label="Email Corporativo" 
+          name="email" 
+          type="email" 
+          required 
+          value={formData.email}
+          onChange={handleChange}
+          disabled={isPending}
+        />
+      </div>
 
+      <SelectTopic 
+        name="topic" 
+        value={formData.topic} 
+        onChange={handleTopicChange}
+        disabled={isPending}
+      />
+
+      <InputField 
+        label="Cuéntanos sobre tu proyecto" 
+        name="message" 
+        textarea 
+        required 
+        value={formData.message}
+        onChange={handleChange}
+        disabled={isPending}
+      />
+
+      <AnimatePresence>
         {error && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center gap-3 text-red-200 text-sm"
+            exit={{ opacity: 0, y: -10 }}
+            className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center gap-3 text-red-400 text-sm"
           >
-            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <AlertCircle className="w-5 h-5 shrink-0" />
             {error}
           </motion.div>
         )}
+      </AnimatePresence>
 
-        <div className="mt-10 flex justify-end">
-          <Button 
-            type="submit" 
-            disabled={isPending}
-            size="lg"
-            className="bg-white text-black hover:bg-neutral-200 rounded-full px-8 h-12 font-medium shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] transition-all duration-300 w-full md:w-auto"
-          >
-            {isPending ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Enviando...
-              </>
-            ) : (
-              <>
-                Enviar Mensaje <Send className="ml-2 h-4 w-4" />
-              </>
-            )}
-          </Button>
-        </div>
-      </form>
-    </div>
+      <Button 
+        type="submit" 
+        disabled={isPending}
+        className="w-full h-14 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl text-lg shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] transition-all duration-300 group"
+      >
+        {isPending ? (
+          <>
+            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+            Enviando...
+          </>
+        ) : (
+          <>
+            Enviar Mensaje
+            <Send className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </>
+        )}
+      </Button>
+      
+      <p className="mt-4 text-center text-xs text-neutral-500">
+        Al enviar este formulario aceptas nuestra política de privacidad.
+      </p>
+    </form>
   );
 }

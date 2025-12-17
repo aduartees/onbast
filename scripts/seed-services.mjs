@@ -43,28 +43,28 @@ const services = [
   {
     title: 'AI-First Development',
     description: 'We integrate Generative AI into the core of your product, automating complex workflows and creating personalized experiences.',
-    icon: 'Bot',
+    // icon: 'Bot', // DISABLED: Schema expects iconPicker object, manual selection required.
     colSpan: 2,
     imageKeyword: 'artificial-intelligence'
   },
   {
     title: 'Hyper-Performance',
     description: 'Zero-latency interfaces powered by Edge Computing and Rust-based tooling. We optimize for Core Web Vitals.',
-    icon: 'Zap',
+    // icon: 'Zap', // DISABLED: Schema expects iconPicker object, manual selection required.
     colSpan: 1,
     imageKeyword: 'speed'
   },
   {
     title: 'Scalable Architecture',
     description: 'Systems designed to handle millions of requests. Microservices, Serverless, and Event-Driven patterns.',
-    icon: 'Layers',
+    // icon: 'Layers', // DISABLED: Schema expects iconPicker object, manual selection required.
     colSpan: 1,
     imageKeyword: 'server'
   },
   {
     title: 'Radical UX/UI',
     description: 'Award-winning aesthetics that capture attention. Motion design, 3D elements, and intuitive interactions.',
-    icon: 'Palette',
+    // icon: 'Palette', // DISABLED: Schema expects iconPicker object, manual selection required.
     colSpan: 1,
     imageKeyword: 'design'
   }

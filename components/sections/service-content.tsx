@@ -181,37 +181,44 @@ const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, f
           <section className="mb-20 md:mb-32 relative max-w-6xl mx-auto px-4">
              {/* Large Editorial Intro */}
              <FadeIn>
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-                   <div className="lg:col-span-7 prose prose-invert max-w-none">
-                      <div className="text-2xl md:text-4xl lg:text-5xl font-normal leading-tight tracking-tight text-white/90 font-sans mb-8 md:mb-12">
+                <div className="flex flex-col gap-12 lg:gap-16">
+                   {/* Párrafo 1: Full Width */}
+                   <div className="prose prose-invert max-w-none">
+                      <div className="text-2xl md:text-4xl lg:text-5xl font-normal leading-tight tracking-tight text-white/90 font-sans">
                          <BlurReveal text={longDescription || "Transforming your digital presence."} />
                       </div>
-                      {overviewText && (
-                         <BlurReveal 
-                           text={overviewText} 
-                           className="text-lg md:text-xl text-neutral-400 font-light leading-relaxed border-l-2 border-indigo-500/50 pl-6" 
-                           delay={0.2}
-                         />
-                      )}
                    </div>
-                   
-                   {/* Main Image */}
-                   {mainImage && (
-                      <div className="lg:col-span-5 relative mt-8 lg:mt-0">
-                         <div className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl group">
-                            <Image 
-                               src={mainImage}
-                               alt="Service Overview"
-                               fill
-                               className="object-cover transition-transform duration-700 group-hover:scale-105"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/60 to-transparent pointer-events-none" />
-                         </div>
-                         {/* Decorative Element */}
-                         <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl -z-10" />
-                         <div className="absolute -top-6 -left-6 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl -z-10" />
-                      </div>
-                   )}
+
+                   {/* Párrafo 2 + Imagen: Side by Side (50/50 Split) */}
+                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                       <div className="prose prose-invert max-w-none">
+                          {overviewText && (
+                             <BlurReveal 
+                               text={overviewText} 
+                               className="text-lg md:text-xl text-neutral-400 font-light leading-relaxed border-l-2 border-indigo-500/50 pl-6" 
+                               delay={0.2}
+                             />
+                          )}
+                       </div>
+                       
+                       {/* Main Image - Aligned with Paragraph 2 */}
+                       {mainImage && (
+                          <div className="relative mt-8 lg:mt-0">
+                             <div className="relative aspect-[3/2] w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl group">
+                                <Image 
+                                   src={mainImage}
+                                   alt="Service Overview"
+                                   fill
+                                   className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/60 to-transparent pointer-events-none" />
+                             </div>
+                             {/* Decorative Element */}
+                             <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl -z-10" />
+                             <div className="absolute -top-6 -left-6 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl -z-10" />
+                          </div>
+                       )}
+                   </div>
                 </div>
              </FadeIn>
           </section>

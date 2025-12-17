@@ -6,7 +6,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { ServiceHeader } from "@/components/sections/service-header";
 import { ServiceContent } from "@/components/sections/service-content";
 import { ScrollReset } from "@/components/utils/scroll-reset";
-import { generateServiceSchema } from "@/lib/seo";
+import { generateServiceSchema, generateFAQSchema } from "@/lib/seo";
 
 // --- Types ---
 interface ServicePageProps {
@@ -193,7 +193,16 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
   if (!service) return notFound();
 
-  const jsonLd = generateServiceSchema(service, service.agency);
+  const serviceSchema = generateServiceSchema(service, service.agency);
+  const faqSchema = generateFAQSchema(service.faqs || []);
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      serviceSchema,
+      ...(faqSchema ? [faqSchema] : [])
+    ]
+  };
 
   return (
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-indigo-500 selection:text-white pt-0">

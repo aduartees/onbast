@@ -12,7 +12,7 @@ import { ContactForm } from "@/components/contact/contact-form";
 import { InfoCards } from "@/components/contact/info-cards";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ServiceFAQ } from "@/components/sections/service-faq";
-import { generateOrganizationSchema } from "@/lib/seo";
+import { generateOrganizationSchema, generateFAQSchema } from "@/lib/seo";
 
 export const dynamic = 'force-dynamic';
 
@@ -60,7 +60,16 @@ export default async function ContactPage() {
       schedule: data?.contactInfo?.schedule // Schedule typically remains specific to contact page
   };
 
-  const jsonLd = generateOrganizationSchema(data, "ContactPage");
+  const organizationSchema = generateOrganizationSchema(data, "ContactPage");
+  const faqSchema = generateFAQSchema(data?.faq?.questions || []);
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      organizationSchema,
+      ...(faqSchema ? [faqSchema] : [])
+    ]
+  };
 
   return (
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-indigo-500 selection:text-white pt-0">

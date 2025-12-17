@@ -81,15 +81,5 @@ export default defineType({
   ],
   groups: [
       { name: 'seo', title: 'SEO & Metadatos' }
-  ],
-  preview: {
-    select: {
-      title: 'hero.title'
-    },
-    prepare({ title }) {
-      return {
-        title: title || 'Página de Servicios'
-      }
-    }
-  }
+  ]
 })

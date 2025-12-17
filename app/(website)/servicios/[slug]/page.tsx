@@ -194,12 +194,6 @@ export default async function ServicePage({ params }: ServicePageProps) {
   if (!service) return notFound();
 
   const jsonLd = generateServiceSchema(service, service.agency);
-  
-  const breadcrumbLd = generateBreadcrumbSchema([
-    { name: "Inicio", item: "https://onbast.com" },
-    { name: "Servicios", item: "https://onbast.com/servicios" },
-    { name: service.title, item: `https://onbast.com/servicios/${service.slug}` }
-  ]);
 
   return (
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-indigo-500 selection:text-white pt-0">
@@ -209,7 +203,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
       {/* Inject JSON-LD Schema */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([jsonLd, breadcrumbLd]) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
       <ServiceHeader 

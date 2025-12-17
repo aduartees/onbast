@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import { client } from "@/sanity/lib/client";
 import { SERVICES_QUERY, SERVICES_PAGE_QUERY } from "@/sanity/lib/queries";
-import { Navbar } from "@/components/layout/navbar";
 import { LuminousPill } from "@/components/ui/luminous-pill";
 import { BlurReveal } from "@/components/ui/blur-reveal";
 import { BackgroundBeams } from "@/components/aceternity/background-beams";
@@ -50,7 +49,6 @@ export default async function ServicesPage() {
   return (
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-indigo-500 selection:text-white pt-0">
       <ScrollReset />
-      <Navbar />
 
       {/* Hero Section */}
       <section className="h-[80vh] w-full sticky top-0 z-0 flex flex-col items-center justify-center bg-neutral-950 overflow-hidden">

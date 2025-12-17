@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import { client } from "@/sanity/lib/client";
 import { SERVICE_BY_SLUG_QUERY } from "@/sanity/lib/queries";
 import { notFound } from "next/navigation";
-import { Navbar } from "@/components/layout/navbar";
 import { ServiceHeader } from "@/components/sections/service-header";
 import { ServiceContent } from "@/components/sections/service-content";
 import { ScrollReset } from "@/components/utils/scroll-reset";
@@ -207,7 +206,6 @@ export default async function ServicePage({ params }: ServicePageProps) {
   return (
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-indigo-500 selection:text-white pt-0">
       <ScrollReset />
-      <Navbar />
 
       {/* Inject JSON-LD Schema */}
       <script

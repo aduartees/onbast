@@ -102,6 +102,7 @@ export function ServiceHeader({ title, description, highlight, introduction, but
         {/* Big Phrase with Cursive */}
         <div className="mb-8 md:mb-10 max-w-4xl shrink-0">
           <BlurReveal
+            as="h2"
             text={description}
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight text-white leading-[1.15] md:leading-[1.1]"
             highlightClassName="font-serif italic font-normal text-indigo-200/90"

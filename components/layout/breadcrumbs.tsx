@@ -54,12 +54,15 @@ export function Breadcrumbs() {
         "name": "Inicio",
         "item": process.env.NEXT_PUBLIC_URL || "https://onbast.com"
       },
-      ...breadcrumbs.map((crumb, index) => ({
-        "@type": "ListItem",
-        "position": index + 2,
-        "name": crumb.name,
-        "item": `${process.env.NEXT_PUBLIC_URL || "https://onbast.com"}${crumb.href}`
-      }))
+      ...breadcrumbs.map((crumb, index) => {
+        const isLast = index === breadcrumbs.length - 1;
+        return {
+          "@type": "ListItem",
+          "position": index + 2,
+          "name": crumb.name,
+          ...(isLast ? {} : { "item": `${process.env.NEXT_PUBLIC_URL || "https://onbast.com"}${crumb.href}` })
+        };
+      })
     ]
   };
 

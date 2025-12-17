@@ -22,12 +22,14 @@ export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
   const data = await client.fetch(AGENCY_PAGE_QUERY);
-  if (!data) return { title: "Agencia | ONBAST" };
+  
+  const heroTitle = data?.hero?.title || "Agencia";
+  const title = data?.seo?.title || `${heroTitle} | ONBAST`;
 
   return {
-    title: data.seo?.title || "Agencia | ONBAST",
-    description: data.seo?.description || "Conoce más sobre ONBAST.",
-    openGraph: data.seo?.image ? {
+    title,
+    description: data?.seo?.description || "Conoce más sobre ONBAST.",
+    openGraph: data?.seo?.image ? {
         images: [{ url: data.seo.image }]
     } : undefined
   };

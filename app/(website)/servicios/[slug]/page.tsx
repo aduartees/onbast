@@ -158,7 +158,7 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
   const shareImage = service.seoImage || service.imageUrl || DEFAULT_IMAGE;
 
   return {
-    title: service.seoTitle || `${service.title} | ONBAST Agencia`,
+    title: service.seoTitle || `${service.title} | ONBAST`,
     description: service.seoDescription || service.shortDescription,
     openGraph: {
       title: service.seoTitle || service.title,

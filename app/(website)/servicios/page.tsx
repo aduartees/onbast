@@ -19,8 +19,11 @@ export const dynamic = 'force-dynamic';
 export async function generateMetadata(): Promise<Metadata> {
   const pageData = await client.fetch(SERVICES_PAGE_QUERY);
   
+  const heroTitle = pageData?.hero?.title || "Servicios";
+  const title = pageData?.seoTitle || `${heroTitle} | ONBAST`;
+
   return {
-    title: pageData?.seoTitle || "Servicios | ONBAST",
+    title,
     description: pageData?.seoDescription || "Soluciones digitales de alto impacto. Desarrollo Web, SEO Avanzado y Estrategia Digital.",
   };
 }

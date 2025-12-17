@@ -18,12 +18,16 @@ export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
   const data = await client.fetch(CONTACT_PAGE_QUERY);
-  if (!data?.seo) return { title: "Contacto | ONBAST" };
+  
+  // Fallback title logic: SEO Title -> Hero Title + " | ONBAST" -> Default
+  const heroTitle = data?.hero?.title || "Contacto";
+  const title = data?.seo?.title || `${heroTitle} | ONBAST`;
+  const description = data?.seo?.description || "Hablemos sobre tu próximo proyecto.";
 
   return {
-    title: data.seo.title || "Contacto | ONBAST",
-    description: data.seo.description || "Hablemos sobre tu próximo proyecto.",
-    openGraph: data.seo.image ? {
+    title,
+    description,
+    openGraph: data?.seo?.image ? {
         images: [{ url: data.seo.image }]
     } : undefined
   };

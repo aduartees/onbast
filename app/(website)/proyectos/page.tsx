@@ -10,7 +10,7 @@ import { ParallaxScroll } from "@/components/aceternity/parallax-scroll";
 import { FadeIn } from "@/components/ui/fade-in";
 import { Button } from "@/components/ui/button";
 import { ScrollReset } from "@/components/utils/scroll-reset";
-import { generateOrganizationSchema } from "@/lib/seo";
+import { generateOrganizationSchema, generateFAQSchema } from "@/lib/seo";
 import { ImpactStats } from "@/components/sections/impact-stats";
 import { ServiceProcess } from "@/components/sections/service-process";
 // import { ServiceProcess } from "@/components/sections/service-process"; // Replacing with custom component for Projects
@@ -71,7 +71,16 @@ export default async function ProjectsPage() {
   const showClients = clients?.logos && clients.logos.length > 0;
   const showImpact = impact?.stats && impact.stats.length > 0;
 
-  const jsonLd = generateOrganizationSchema(data, "Organization");
+  const organizationSchema = generateOrganizationSchema(data, "Organization");
+  const faqSchema = generateFAQSchema(faq?.questions || []);
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      organizationSchema,
+      ...(faqSchema ? [faqSchema] : [])
+    ]
+  };
 
   return (
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-indigo-500 selection:text-white pt-0">
@@ -238,7 +247,7 @@ export default async function ProjectsPage() {
                     </p>
                     <div className="flex flex-col sm:flex-row justify-center gap-4">
                       <Button size="lg" className="bg-white text-black hover:bg-neutral-200 text-sm font-medium h-12 px-8 rounded-full shadow-lg hover:shadow-xl transition-all" asChild>
-                         <a href={cta.buttonLink || "/contacto"}>{cta.buttonText || "Contactar Ahora"}</a>
+                         <a href={cta.buttonLink || "/contacto"} title={cta.buttonText || "Contactar Ahora"}>{cta.buttonText || "Contactar Ahora"}</a>
                       </Button>
                     </div>
                   </FadeIn>

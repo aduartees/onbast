@@ -28,8 +28,8 @@ export function Breadcrumbs() {
     const segments = pathname.split("/").filter(Boolean);
     return segments.map((segment, index) => {
       const href = `/${segments.slice(0, index + 1).join("/")}`;
-      // Use map or capitalize first letter and replace hyphens
-      const name = PATH_MAP[segment] || segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
+      // Use map or capitalize first letter of each word and replace hyphens
+      const name = PATH_MAP[segment] || segment.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
       return { name, href };
     });
   }, [pathname]);

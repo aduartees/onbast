@@ -6,7 +6,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { ServiceHeader } from "@/components/sections/service-header";
 import { ServiceContent } from "@/components/sections/service-content";
 import { ScrollReset } from "@/components/utils/scroll-reset";
-import { generateServiceSchema, generateBreadcrumbSchema } from "@/lib/seo";
+import { generateServiceSchema } from "@/lib/seo";
 
 // --- Types ---
 interface ServicePageProps {

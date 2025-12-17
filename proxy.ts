@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // Sanity Studio usually requires looser CSP (unsafe-eval)
   const isStudio = request.nextUrl.pathname.startsWith('/studio')
   

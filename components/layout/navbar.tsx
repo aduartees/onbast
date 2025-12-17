@@ -59,9 +59,6 @@ export function Navbar({ data }: NavbarProps) {
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 backdrop-blur-md bg-neutral-950/80 border-b border-white/5 supports-[backdrop-filter]:bg-neutral-950/50">
       <div className="flex items-center gap-2 relative z-50">
         <Link href="/" title="Volver al inicio" className="text-2xl font-bold tracking-tighter text-white font-inter hover:opacity-80 transition-opacity flex items-center gap-2">
-           {agency?.logo ? (
-              <Image src={agency.logo} alt="Logo" title="Logo" width={32} height={32} className="w-8 h-8 object-contain" />
-           ) : null}
            <span>{logoText}</span>
         </Link>
       </div>

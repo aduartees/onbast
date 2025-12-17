@@ -161,7 +161,7 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
     title: service.seoTitle || `${service.title} | ONBAST`,
     description: service.seoDescription || service.shortDescription,
     openGraph: {
-      title: service.seoTitle || service.title,
+      title: service.seoTitle || `${service.title} | ONBAST`,
       description: service.seoDescription || service.shortDescription,
       url: `https://onbast.com/services/${service.slug}`,
       images: [

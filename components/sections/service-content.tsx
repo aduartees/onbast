@@ -9,6 +9,7 @@ import dynamic from "next/dynamic";
 import { FadeIn } from "@/components/ui/fade-in";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { BlurReveal } from "@/components/ui/blur-reveal";
+import Link from "next/link";
 
 // Lazy load heavy components
 const ServiceFAQ = dynamic(() => import("./service-faq").then(mod => mod.ServiceFAQ), { ssr: false });

@@ -178,19 +178,39 @@ const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, f
         <div className="max-w-6xl mx-auto pt-4 antialiased relative pb-16">
           
           {/* 1. Strategic Vision & Transformation */}
-          <section className="mb-20 md:mb-32 relative max-w-5xl mx-auto px-4">
+          <section className="mb-20 md:mb-32 relative max-w-6xl mx-auto px-4">
              {/* Large Editorial Intro */}
              <FadeIn>
-                <div className="prose prose-invert max-w-none mb-16 md:mb-24">
-                   <div className="text-2xl md:text-4xl lg:text-5xl font-normal leading-tight tracking-tight text-white/90 font-sans">
-                      <BlurReveal text={longDescription || "Transforming your digital presence."} />
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+                   <div className="lg:col-span-7 prose prose-invert max-w-none">
+                      <div className="text-2xl md:text-4xl lg:text-5xl font-normal leading-tight tracking-tight text-white/90 font-sans mb-8 md:mb-12">
+                         <BlurReveal text={longDescription || "Transforming your digital presence."} />
+                      </div>
+                      {overviewText && (
+                         <BlurReveal 
+                           text={overviewText} 
+                           className="text-lg md:text-xl text-neutral-400 font-light leading-relaxed border-l-2 border-indigo-500/50 pl-6" 
+                           delay={0.2}
+                         />
+                      )}
                    </div>
-                   {overviewText && (
-                      <BlurReveal 
-                        text={overviewText} 
-                        className="text-lg md:text-2xl text-neutral-400 mt-8 font-light leading-relaxed border-l-2 border-indigo-500/50 pl-6" 
-                        delay={0.2}
-                      />
+                   
+                   {/* Main Image */}
+                   {mainImage && (
+                      <div className="lg:col-span-5 relative mt-8 lg:mt-0">
+                         <div className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl group">
+                            <Image 
+                               src={mainImage}
+                               alt="Service Overview"
+                               fill
+                               className="object-cover transition-transform duration-700 group-hover:scale-105"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/60 to-transparent pointer-events-none" />
+                         </div>
+                         {/* Decorative Element */}
+                         <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl -z-10" />
+                         <div className="absolute -top-6 -left-6 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl -z-10" />
+                      </div>
                    )}
                 </div>
              </FadeIn>

@@ -27,7 +27,7 @@ Aquí tienes cómo estructurar la oferta comercial dentro de cada servicio.
 
 *   **Filosofía:** "No compres una web que envejece. Suscríbete a una plataforma viva."
 *   **El Plan Único:** **Suscripción Corporate**
-    *   **Precio:** **200€ / mes** (Permanencia 18 meses).
+    *   **Precio:** **150€ / mes** (Permanencia 18 meses).
     *   **Qué incluye:**
         *   Arquitectura Next.js 15 (Ultra-rápida).
         *   Diseño UI Premium (Sistema de diseño propio).

@@ -386,12 +386,16 @@ const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, f
                   {ctaSection?.description || "Agenda una llamada estratégica con nuestro equipo y descubre cómo podemos transformar tu negocio."}
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
-                  <Button size="lg" className="bg-white text-black hover:bg-neutral-200 text-sm font-medium h-12 px-8 rounded-full shadow-lg hover:shadow-xl transition-all">
-                     {ctaSection?.buttonText || "Agendar Llamada"}
-                  </Button>
-                  <Button size="lg" variant="outline" className="text-neutral-300 hover:text-white hover:bg-white/5 border-neutral-800 text-sm h-12 px-8 rounded-full">
-                     {ctaSection?.secondaryButtonText || "Ver Portfolio"} <ArrowRight className="ml-2 w-4 h-4" />
-                  </Button>
+                  <Link href={ctaSection?.buttonLink || "/contacto"} title={ctaSection?.buttonText || "Agendar Llamada"}>
+                      <Button size="lg" className="bg-white text-black hover:bg-neutral-200 text-sm font-medium h-12 px-8 rounded-full shadow-lg hover:shadow-xl transition-all">
+                        {ctaSection?.buttonText || "Agendar Llamada"}
+                      </Button>
+                  </Link>
+                  <Link href={ctaSection?.secondaryButtonLink || "/proyectos"} title={ctaSection?.secondaryButtonText || "Ver Portfolio"}>
+                      <Button size="lg" variant="outline" className="text-neutral-300 hover:text-white hover:bg-white/5 border-neutral-800 text-sm h-12 px-8 rounded-full">
+                        {ctaSection?.secondaryButtonText || "Ver Portfolio"} <ArrowRight className="ml-2 w-4 h-4" />
+                      </Button>
+                  </Link>
                 </div>
               </FadeIn>
           </section>

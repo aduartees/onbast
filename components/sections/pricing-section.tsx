@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { FadeIn } from "@/components/ui/fade-in";
 import { SectionHeading } from "@/components/ui/section-heading";
+import Link from "next/link";
 
 interface PricingProps {
   pricing: {
@@ -110,12 +111,16 @@ export function PricingSection({ pricing }: PricingProps) {
 
               {/* Buttons */}
               <div className="flex flex-col gap-3 mb-8">
-                <Button className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium h-12 rounded-full shadow-[0_0_20px_-5px_rgba(79,70,229,0.5)] transition-all">
-                  {pricing.buttonText || "Subscribe"}
-                </Button>
-                <Button variant="outline" className="w-full bg-transparent border-white/10 text-white hover:bg-white/5 font-medium h-12 rounded-full">
-                  {pricing.secondaryButtonText || "Book a call"}
-                </Button>
+                <Link href={pricing.buttonLink || "/contacto"} title={pricing.buttonText || "Subscribe"} className="w-full">
+                    <Button className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium h-12 rounded-full shadow-[0_0_20px_-5px_rgba(79,70,229,0.5)] transition-all">
+                    {pricing.buttonText || "Subscribe"}
+                    </Button>
+                </Link>
+                <Link href={pricing.secondaryButtonLink || "/contacto"} title={pricing.secondaryButtonText || "Book a call"} className="w-full">
+                    <Button variant="outline" className="w-full bg-transparent border-white/10 text-white hover:bg-white/5 font-medium h-12 rounded-full">
+                    {pricing.secondaryButtonText || "Book a call"}
+                    </Button>
+                </Link>
               </div>
 
               {/* Addon Switch */}

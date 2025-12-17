@@ -151,6 +151,7 @@ export function Footer({ data }: FooterProps) {
 const FooterLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
   <Link 
     href={href} 
+    title={typeof children === 'string' ? children : 'Link'}
     className="text-neutral-400 hover:text-white text-sm transition-colors duration-200 w-fit"
   >
     {children}

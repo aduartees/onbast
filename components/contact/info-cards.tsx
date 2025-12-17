@@ -43,6 +43,7 @@ export function InfoCards({ info }: { info?: ContactInfo }) {
       {/* Phone Card */}
       <motion.a
         href={`tel:${info?.phone?.replace(/\s+/g, '') || ""}`}
+        title="Llamar por teléfono"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}

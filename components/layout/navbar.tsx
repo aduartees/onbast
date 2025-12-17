@@ -121,7 +121,7 @@ export function Navbar({ data }: NavbarProps) {
           </div>
         ))}
 
-        <Link href={ctaUrl}>
+        <Link href={ctaUrl} title={ctaText}>
           <Button variant="secondary" className="bg-white text-black hover:bg-neutral-200 rounded-full px-6 shadow-[0_0_10px_rgba(255,255,255,0.05)] hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-all">
             {ctaText}
           </Button>

@@ -67,7 +67,7 @@ export function Navbar({ data }: NavbarProps) {
       </div>
       
       {/* Desktop Menu */}
-      <div className="hidden md:flex items-center gap-8" onMouseLeave={() => setHoveredIndex(null)}>
+      <div className="hidden md:flex items-center gap-8 ml-auto" onMouseLeave={() => setHoveredIndex(null)}>
         {menuItems.map((item, index) => (
           <div 
             key={index} 

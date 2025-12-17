@@ -79,7 +79,7 @@ export function Breadcrumbs() {
         className="absolute top-20 md:top-24 left-0 w-full z-40 pointer-events-none"
       >
         <div className="max-w-7xl mx-auto px-6 pointer-events-auto flex justify-center md:justify-start">
-            <ol className="flex items-center space-x-2 text-xs md:text-sm text-neutral-400 bg-neutral-950/50 backdrop-blur-sm border border-white/5 py-1.5 px-3 md:py-2 md:px-4 rounded-full inline-flex">
+            <ol className="flex items-center space-x-2 text-[10px] md:text-xs text-neutral-500 bg-neutral-950/30 backdrop-blur-sm border border-white/5 py-1 px-3 rounded-full inline-flex uppercase tracking-wider">
               <li>
                 <Link 
                   href="/" 
@@ -87,7 +87,7 @@ export function Breadcrumbs() {
                   className="flex items-center hover:text-white transition-colors"
                   aria-label="Volver al inicio"
                 >
-                  <Home className="w-3.5 h-3.5" />
+                  <Home className="w-3 h-3" />
                 </Link>
               </li>
               {breadcrumbs.map((crumb, index) => {

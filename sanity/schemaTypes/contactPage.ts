@@ -30,6 +30,7 @@ export default defineType({
       fields: [
         defineField({ name: 'email', title: 'Email Visible', type: 'string' }),
         defineField({ name: 'phone', title: 'Teléfono Visible', type: 'string' }),
+        defineField({ name: 'whatsapp', title: 'Número de WhatsApp', type: 'string', description: 'Número internacional sin espacios ni símbolos (ej: 34600000000)' }),
         defineField({ name: 'schedule', title: 'Horario de Atención', type: 'string' }),
         defineField({ name: 'location', title: 'Ubicación Corta', type: 'string', description: 'Ej: Madrid, España' }),
       ]

@@ -39,10 +39,12 @@ export default defineType({
     }),
     defineField({
       name: 'icon',
-      title: 'Icono (Lucide)',
-      type: 'string',
+      title: 'Icono',
+      type: 'iconPicker',
       group: 'general',
-      description: 'Nombre del icono de Lucide React (ej: "Search", "Code", "Zap")',
+      options: {
+        storeSvg: true
+      }
     }),
     defineField({
       name: 'mainImage',

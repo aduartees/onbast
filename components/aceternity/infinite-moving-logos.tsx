@@ -109,6 +109,7 @@ export const InfiniteMovingLogos = ({
                     <Image 
                         src={item.logo} 
                         alt={item.alt || item.name} 
+                        title={item.alt || item.name}
                         fill
                         sizes="(max-width: 768px) 100px, 150px"
                         className="object-contain brightness-0 invert" 

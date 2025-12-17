@@ -133,6 +133,7 @@ const TeamCard = ({ member }: { member: TeamMember }) => {
         <Image
           src={member.imageUrl}
           alt={member.imageAlt || member.name}
+          title={member.imageAlt || member.name}
           fill
           className="object-cover transition-transform duration-700 will-change-transform group-hover:scale-105 pointer-events-none"
         />
@@ -160,6 +161,7 @@ const TeamCard = ({ member }: { member: TeamMember }) => {
                       href={member.social.linkedin} 
                       target="_blank" 
                       rel="noopener noreferrer"
+                      title="LinkedIn Profile"
                       className="text-neutral-400 hover:text-white transition-colors pointer-events-auto"
                       onPointerDown={(e) => e.stopPropagation()}
                       aria-label="LinkedIn Profile"

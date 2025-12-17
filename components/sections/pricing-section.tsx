@@ -171,7 +171,8 @@ export function PricingSection({ pricing }: PricingProps) {
                   <Image 
                     src={logo} 
                     alt={`Trusted company ${i}`} 
-                    fill 
+                    title={`Trusted company ${i}`}
+                    fill  
                     className="object-contain"
                   />
                 </div>

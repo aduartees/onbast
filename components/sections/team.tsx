@@ -48,6 +48,7 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
         <Image
           src={member.imageUrl}
           alt={member.imageAlt || member.name}
+          title={member.imageAlt || member.name}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
@@ -87,6 +88,7 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
                       href={member.social.twitter} 
                       target="_blank" 
                       rel="noopener noreferrer"
+                      title="Twitter Profile"
                       className="text-neutral-400 hover:text-white transition-colors"
                       aria-label="Twitter Profile"
                     >

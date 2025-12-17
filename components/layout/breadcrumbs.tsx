@@ -80,6 +80,7 @@ export function Breadcrumbs() {
               <li>
                 <Link 
                   href="/" 
+                  title="Volver al inicio"
                   className="flex items-center hover:text-white transition-colors"
                   aria-label="Volver al inicio"
                 >

@@ -69,7 +69,7 @@ export const BentoGridItem = ({
   );
 
   return link ? (
-    <Link href={link} className="block h-full">
+    <Link href={link} title={typeof title === 'string' ? title : undefined} className="block h-full">
       <Content />
     </Link>
   ) : (

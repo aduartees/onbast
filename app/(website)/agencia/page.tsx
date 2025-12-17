@@ -198,6 +198,7 @@ export default async function AgencyPage() {
                       <Image 
                           src={location.imageUrl} 
                           alt="Office Location" 
+                          title="Office Location" 
                           fill 
                           className="object-cover grayscale hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
                       />

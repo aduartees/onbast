@@ -52,6 +52,7 @@ export function TechArsenalSection({ header }: TechArsenalSectionProps) {
               height={500}
               sizes="(max-width: 768px) 100vw, 50vw"
               alt="Fast Speed"
+              title="Fast Speed"
               className="absolute -right-4 lg:-right-[40%] grayscale filter -bottom-10 object-contain rounded-2xl"
             />
           </WobbleCard>
@@ -78,6 +79,7 @@ export function TechArsenalSection({ header }: TechArsenalSectionProps) {
               height={500}
               sizes="(max-width: 768px) 100vw, 50vw"
               alt="Global Network"
+              title="Global Network"
               className="absolute -right-10 md:-right-[40%] lg:-right-[20%] -bottom-10 object-contain rounded-2xl"
             />
           </WobbleCard>

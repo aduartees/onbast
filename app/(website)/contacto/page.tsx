@@ -49,6 +49,7 @@ export default async function ContactPage() {
       // Prioritize global settings as requested
       email: data?.siteSettings?.agency?.email || data?.contactInfo?.email,
       phone: data?.siteSettings?.agency?.phone || data?.contactInfo?.phone,
+      whatsapp: data?.contactInfo?.whatsapp, // Add whatsapp field
       location: formattedAddress || data?.contactInfo?.location,
       // Ensure social profiles come from global settings if available
       socialProfiles: data?.siteSettings?.agency?.socialProfiles || data?.contactInfo?.socialProfiles,

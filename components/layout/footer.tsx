@@ -137,9 +137,9 @@ export function Footer({ data }: FooterProps) {
 
       {/* GIANT BLURRED LOGO BACKGROUND */}
       <div className="absolute bottom-0 md:bottom-0 left-1/2 -translate-x-1/2 translate-y-0 md:translate-y-[35%] w-full flex justify-center pointer-events-none select-none z-0 overflow-hidden">
-        <h1 className="text-[28vw] md:text-[25vw] font-bold text-white/[0.1] font-inter tracking-tighter leading-none whitespace-nowrap blur-[1px] md:blur-sm transform translate-y-0">
+        <span className="text-[28vw] md:text-[25vw] font-bold text-white/[0.1] font-inter tracking-tighter leading-none whitespace-nowrap blur-[1px] md:blur-sm transform translate-y-0">
           {agency?.name || "ONBAST"}
-        </h1>
+        </span>
       </div>
       
       {/* Decorative Gradient Glow */}
@@ -161,6 +161,7 @@ const SocialLink = ({ href, icon, label }: { href: string; icon: React.ReactNode
   <a 
     href={href} 
     aria-label={label}
+    title={label}
     className="w-10 h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center text-neutral-400 hover:bg-white/10 hover:text-white hover:border-white/10 transition-all duration-300"
   >
     {icon}

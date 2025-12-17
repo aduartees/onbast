@@ -133,7 +133,7 @@ export function ServiceHeader({ title, description, highlight, introduction, but
             className="h-9 md:h-10 px-5 md:px-7 text-xs md:text-sm bg-white text-black hover:bg-neutral-200 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] transition-all duration-300 w-full sm:w-auto font-medium"
             asChild
           >
-            <a href={buttonLink || "#contact"}>
+            <a href={buttonLink || "#contact"} title={buttonText || "Comenzar Ahora"}>
               {buttonText || "Comenzar Ahora"}
             </a>
           </Button>

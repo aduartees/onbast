@@ -48,6 +48,28 @@ export default defineType({
         defineField({ name: 'title', title: 'Título', type: 'string', initialValue: 'Tecnología de Vanguardia' }),
         defineField({ name: 'highlight', title: 'Palabra Destacada (Cursiva)', type: 'string', initialValue: 'Vanguardia' }),
         defineField({ name: 'description', title: 'Descripción', type: 'text', rows: 2, initialValue: 'Utilizamos las herramientas más avanzadas del mercado para garantizar velocidad, seguridad y escalabilidad.' }),
+        defineField({
+          name: 'stackCards',
+          title: 'Tarjetas de Tecnología',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                defineField({ name: 'title', title: 'Título (Tecnología)', type: 'string' }),
+                defineField({ name: 'description', title: 'Descripción', type: 'text', rows: 3 }),
+                defineField({ name: 'icon', title: 'Icono', type: 'iconPicker', options: { storeSvg: true } }),
+                defineField({ name: 'image', title: 'Logo/Imagen (Opcional)', type: 'image' })
+              ],
+              preview: {
+                select: {
+                  title: 'title',
+                  media: 'image'
+                }
+              }
+            }
+          ]
+        })
       ]
     }),
 

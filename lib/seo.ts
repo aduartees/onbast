@@ -49,7 +49,7 @@ export function generateOrganizationSchema(data: any, type: "Organization" | "Lo
     "logo": agency.logo,
     "description": data.seo?.description || "Agencia de Desarrollo Web y Posicionamiento SEO y GEO. Desarrollo de paginas web impresionantes y posicionamiento digital para empresas en toda España.",
     "email": agency.email,
-    "sameAs": agency.socialProfiles?.map((profile: any) => profile.url) || [],
+    "sameAs": agency.socialProfiles || [],
     "areaServed": {
       "@type": "Country",
       "name": "España",
@@ -124,17 +124,23 @@ export function generateOrganizationSchema(data: any, type: "Organization" | "Lo
   };
 }
 
-export function generateServiceSchema(service: any) {
+export function generateServiceSchema(service: any, agency?: any) {
     const baseUrl = process.env.NEXT_PUBLIC_URL || "https://onbast.com";
+    const serviceImage = service.seoImage || service.imageUrl;
     
     return {
         "@context": "https://schema.org",
         "@type": "Service",
         "serviceType": service.title,
+        "name": service.title,
+        "description": service.seoDescription || service.shortDescription,
+        ...(serviceImage ? { "image": serviceImage } : {}),
         "provider": {
             "@type": "Organization",
-            "name": "ONBAST",
-            "url": baseUrl
+            "name": agency?.name || "ONBAST",
+            "url": baseUrl,
+            ...(agency?.logo ? { "logo": agency.logo } : {}),
+            ...(agency?.socialProfiles ? { "sameAs": agency.socialProfiles } : {})
         },
         "areaServed": {
             "@type": "Country",
@@ -147,7 +153,8 @@ export function generateServiceSchema(service: any) {
                 "@type": "Offer",
                 "itemOffered": {
                     "@type": "Service",
-                    "name": feature.title
+                    "name": feature.title,
+                    "description": feature.description
                 }
             })) || []
         },

@@ -60,7 +60,7 @@ export function Navbar({ data }: NavbarProps) {
       <div className="flex items-center gap-2 relative z-50">
         <Link href="/" className="text-2xl font-bold tracking-tighter text-white font-inter hover:opacity-80 transition-opacity flex items-center gap-2">
            {agency?.logo ? (
-              <Image src={agency.logo} alt="Logo" width={32} height={32} className="w-8 h-8 object-contain" />
+              <Image src={agency.logo} alt="Logo" title="Logo" width={32} height={32} className="w-8 h-8 object-contain" />
            ) : null}
            <span>{logoText}</span>
         </Link>
@@ -98,9 +98,10 @@ export function Navbar({ data }: NavbarProps) {
                      <div className="flex flex-col gap-1">
                         {item.submenu.map((subItem, subIdx) => (
                            <Link 
-                             key={subIdx} 
+                             key={subIdx}
                              href={subItem.url}
-                             className="group flex flex-col p-3 rounded-xl hover:bg-white/5 transition-colors"
+                             title={subItem.label}
+                             className="group block p-3 rounded-xl hover:bg-white/5 transition-colors"
                            >
                               <span className="text-sm font-medium text-white group-hover:text-indigo-300 transition-colors">
                                 {subItem.label}

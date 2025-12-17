@@ -193,7 +193,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
   if (!service) return notFound();
 
-  const jsonLd = generateServiceSchema(service);
+  const jsonLd = generateServiceSchema(service, service.agency);
 
   return (
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-indigo-500 selection:text-white pt-0">

@@ -1,13 +1,14 @@
 "use client";
 
 import React from "react";
-import { Mail, Phone, MapPin, Clock, ArrowUpRight } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, ArrowUpRight, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface ContactInfo {
   email?: string;
   phone?: string;
+  whatsapp?: string;
   schedule?: string;
   location?: string;
   socialProfiles?: string[];
@@ -19,6 +20,7 @@ export function InfoCards({ info }: { info?: ContactInfo }) {
       {/* Email Card - Large */}
       <motion.a
         href={`mailto:${info?.email || "hola@onbast.com"}`}
+        title="Enviar Email"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
@@ -53,12 +55,34 @@ export function InfoCards({ info }: { info?: ContactInfo }) {
         <p className="text-sm text-neutral-500 mt-2">{info?.schedule || "Lunes a Viernes, 9h - 18h"}</p>
       </motion.a>
 
+      {/* WhatsApp Card */}
+      {info?.whatsapp && (
+        <motion.a
+          href={`https://wa.me/${info.whatsapp.replace(/\s+/g, '')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          className="p-8 rounded-[2rem] bg-[#25D366]/10 border border-[#25D366]/20 hover:bg-[#25D366]/20 transition-colors block group"
+        >
+          <p className="text-[#25D366] font-medium mb-4 flex items-center gap-2">
+              <MessageCircle className="w-4 h-4" /> WhatsApp
+          </p>
+          <p className="text-xl text-white font-medium">Chatea con nosotros</p>
+          <p className="text-sm text-neutral-500 mt-2">Respuesta rápida</p>
+        </motion.a>
+      )}
+
       {/* Location Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="p-8 rounded-[2rem] bg-neutral-900/30 border border-white/5 hover:border-white/10 transition-colors"
+        className={cn(
+          "p-8 rounded-[2rem] bg-neutral-900/30 border border-white/5 hover:border-white/10 transition-colors",
+          info?.whatsapp ? "col-span-1 md:col-span-2" : "col-span-1"
+        )}
       >
         <p className="text-neutral-400 font-medium mb-4 flex items-center gap-2">
             <MapPin className="w-4 h-4" /> Ubicación
@@ -85,6 +109,7 @@ export function InfoCards({ info }: { info?: ContactInfo }) {
                     href={social} 
                     target="_blank" 
                     rel="noopener noreferrer"
+                    title={social.replace('https://', '').split('/')[0]}
                     className="px-6 py-3 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 text-white text-sm font-medium transition-all hover:-translate-y-1"
                 >
                     {social.replace('https://', '').split('/')[0]}

@@ -74,6 +74,7 @@ const ProjectCard = ({ project, index = 0 }: { project: any, index?: number }) =
     return (
         <motion.a 
             href={project.link || "#"} 
+            title={project.title}
             className="group block w-full"
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -87,6 +88,7 @@ const ProjectCard = ({ project, index = 0 }: { project: any, index?: number }) =
                     height="600"
                     width="800"
                     alt={project.title}
+                    title={project.title}
                 />
                 <div className="absolute inset-0 bg-indigo-500/0 transition-colors duration-500 group-hover:bg-indigo-500/10" />
             </div>

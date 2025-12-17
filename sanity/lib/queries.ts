@@ -155,7 +155,18 @@ export const HOME_PAGE_QUERY = `*[_type == "homePage"][0] {
 export const SERVICES_PAGE_QUERY = `*[_type == "servicesPage"][0] {
   hero,
   catalog,
-  tech,
+  tech {
+    pill,
+    title,
+    highlight,
+    description,
+    stackCards[] {
+      title,
+      description,
+      icon,
+      "imageUrl": image.asset->url
+    }
+  },
   cta,
   seoTitle,
   seoDescription
@@ -377,6 +388,7 @@ export const CONTACT_PAGE_QUERY = `*[_type == "contactPage"][0] {
   contactInfo {
     email,
     phone,
+    whatsapp,
     schedule,
     location
   },

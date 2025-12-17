@@ -196,7 +196,7 @@ export function MobileNav({ menuItems = [], cta }: MobileNavProps) {
                 ))}
                 
                 <motion.li variants={itemVariants} className="mt-8 w-full flex justify-center">
-                   <Link href={ctaButton.url} onClick={() => handleLinkClick(ctaButton.url)} className="block w-auto">
+                   <Link href={ctaButton.url} title={ctaButton.text} onClick={() => handleLinkClick(ctaButton.url)} className="block w-auto">
                       <Button size="lg" className="px-8 bg-white text-black hover:bg-neutral-200 text-lg py-6 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all">
                           {ctaButton.text} <ArrowRight className="ml-2 w-5 h-5" />
                       </Button>

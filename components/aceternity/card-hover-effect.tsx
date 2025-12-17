@@ -33,6 +33,7 @@ export const HoverEffect = ({
         <Link
           href={item?.link || "#"}
           key={item?.title + idx}
+          title={item.title}
           className={cn(
             "relative group  block p-2 h-full w-full",
              item.colSpan === 2 ? "md:col-span-2" : "col-span-1"

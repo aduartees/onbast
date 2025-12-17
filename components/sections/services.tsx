@@ -93,6 +93,7 @@ export const ServicesSection = async ({ header }: ServicesSectionProps) => {
                          <Image 
                             src={service.imageUrl}
                             alt={service.title}
+                            title={service.title}
                             width={400}
                             height={300}
                             className="object-cover w-full h-full absolute inset-0 opacity-60 group-hover/bento:opacity-100 group-hover/bento:scale-105 transition-all duration-500"

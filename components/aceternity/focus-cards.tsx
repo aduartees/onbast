@@ -30,6 +30,7 @@ export const Card = React.memo(
         <Image
           src={card.imageUrl}
           alt={card.title}
+          title={card.title}
           fill
           className="object-cover absolute inset-0"
         />
@@ -47,6 +48,7 @@ export const Card = React.memo(
             </p>
             <Link 
                href={card.link}
+               title="Ver Servicio"
                className={cn(
                  "inline-flex items-center gap-2 text-indigo-400 font-medium text-sm md:text-base transition-all duration-300",
                  hovered === index ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0"

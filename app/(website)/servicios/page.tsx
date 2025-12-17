@@ -5,16 +5,14 @@ import { Navbar } from "@/components/layout/navbar";
 import { LuminousPill } from "@/components/ui/luminous-pill";
 import { BlurReveal } from "@/components/ui/blur-reveal";
 import { BackgroundBeams } from "@/components/aceternity/background-beams";
-import { FocusCards } from "@/components/aceternity/focus-cards";
-import { StickyScroll } from "@/components/aceternity/sticky-scroll-reveal";
-import { LampContainer } from "@/components/aceternity/lamp";
+import { HoverEffect } from "@/components/aceternity/card-hover-effect";
 import { FadeIn } from "@/components/ui/fade-in";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ScrollReset } from "@/components/utils/scroll-reset";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap, Shield, Globe } from "lucide-react";
+import { ArrowRight, Code2, Zap, Shield, Globe, Database, Smartphone } from "lucide-react";
 import Image from "next/image";
-// import { motion } from "framer-motion"; // Removed unused import
+import * as LucideIcons from "lucide-react";
 
 export const dynamic = 'force-dynamic';
 
@@ -33,71 +31,26 @@ export default async function ServicesPage() {
     client.fetch(SERVICES_PAGE_QUERY)
   ]);
 
-  // Map services to FocusCards format
-  const focusCards = (services || [])
-    .filter((service: any) => service?.imageUrl) // Filter out services without images
-    .map((service: any) => ({
-      title: service.title,
-      description: service.description,
-      link: `/servicios/${service.slug}`,
-      imageUrl: service.imageUrl,
-    }));
+  // Map services to HoverEffect format
+  const hoverItems = (services || []).map((service: any) => ({
+    title: service.title,
+    description: service.shortDescription || service.description,
+    link: `/servicios/${service.slug}`,
+    icon: service.icon // Assuming icon string name is passed, e.g., "Code2"
+  }));
 
-  // Content for Sticky Scroll (Tech Stack Narrative)
-  const techContent = [
-    {
-      title: "Next.js 15 & Turbopack",
-      description: "Velocidad nuclear. Utilizamos la última versión del framework más potente del mundo. Renderizado híbrido, Server Actions y compilación instantánea para una experiencia de usuario sin fricción.",
-      content: (
-        <div className="h-full w-full flex items-center justify-center text-white bg-black">
-           <Image 
-              src="https://assets.vercel.com/image/upload/v1662130559/nextjs/Icon_dark_background.png"
-              width={300}
-              height={300}
-              className="object-contain p-10"
-              alt="Next.js Logo"
-           />
-        </div>
-      ),
-    },
-    {
-      title: "Sanity Headless CMS",
-      description: "Control total en tiempo real. Un gestor de contenidos que se adapta a ti, no al revés. Edición colaborativa, previsualización en vivo y distribución de contenido omnicanal estructurado.",
-      content: (
-        <div className="h-full w-full flex items-center justify-center text-white bg-[#F03E2F]">
-           <span className="text-6xl font-bold tracking-tighter">Sanity</span>
-        </div>
-      ),
-    },
-    {
-      title: "Vercel Edge Network",
-      description: "Despliegue global instantáneo. Tu web vive en el borde (Edge), replicada en servidores de todo el mundo para que cargue en milisegundos, sin importar dónde esté tu usuario.",
-      content: (
-        <div className="h-full w-full flex items-center justify-center text-white bg-black">
-            <svg viewBox="0 0 1155 1000" className="w-40 h-40 fill-white" xmlns="http://www.w3.org/2000/svg">
-                <path d="M577.344 0L1154.69 1000H0L577.344 0Z" />
-            </svg>
-        </div>
-      ),
-    },
-    {
-        title: "AI Integration",
-        description: "Inteligencia Artificial nativa. Integramos modelos de OpenAI y Anthropic directamente en tu flujo de trabajo para automatizar SEO, generar contenido y personalizar experiencias.",
-        content: (
-          <div className="h-full w-full flex items-center justify-center text-white bg-gradient-to-br from-indigo-500 to-purple-600">
-             <Zap className="w-24 h-24 text-white" />
-          </div>
-        ),
-      },
-  ];
+  // Dynamic Tech Stack from Sanity
+  const techStack = pageData?.tech?.stackCards || [];
+  
+  const cta = pageData?.cta;
 
   return (
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-indigo-500 selection:text-white pt-0">
       <ScrollReset />
       <Navbar />
 
-      {/* Hero Section - Matched to Agency/Contact */}
-      <section className="h-[100dvh] w-full sticky top-0 z-0 flex flex-col items-center justify-center bg-neutral-950 overflow-hidden">
+      {/* Hero Section */}
+      <section className="h-[80vh] w-full sticky top-0 z-0 flex flex-col items-center justify-center bg-neutral-950 overflow-hidden">
          {/* Background Elements */}
          <div className="absolute inset-0 w-full h-full bg-neutral-950 overflow-hidden pointer-events-none">
             <div className="absolute top-[-20%] left-[-10%] w-[120vw] h-[120vw] md:w-[90vw] md:h-[90vw] bg-indigo-900/20 rounded-full blur-[60px] md:blur-[80px] transform-gpu will-change-transform" />
@@ -131,61 +84,86 @@ export default async function ServicesPage() {
       {/* Main Content - Overlapping Hero */}
       <section className="relative z-10 bg-neutral-950 min-h-screen border-t border-white/10 rounded-t-[3rem] md:rounded-t-[5rem] -mt-[10vh] pt-20 pb-0 shadow-[0_-50px_100px_-20px_rgba(0,0,0,0.5)]">
           
-          {/* Services List - New Focus Cards */}
-          <div className="max-w-7xl mx-auto px-6 mb-32">
-              <FadeIn className="mb-16 text-center">
+          {/* Services List - New Hover Effect Grid */}
+          <div className="max-w-7xl mx-auto px-6 mb-0">
+              <FadeIn className="mb-12 text-center">
                   <SectionHeading 
                       title={pageData?.catalog?.title || "Nuestro Catálogo"}
                       subtitle={pageData?.catalog?.subtitle || "Expertise"}
                       highlight={pageData?.catalog?.highlight || "Catálogo"}
                       className="justify-center"
                   />
-                  <p className="text-neutral-400 max-w-2xl mx-auto mt-4 text-lg">
+                  <p className="text-neutral-400 max-w-2xl mx-auto mt-4 text-lg font-light">
                       {pageData?.catalog?.description || "Selecciona un servicio para ver cómo podemos ayudarte a escalar."}
                   </p>
               </FadeIn>
 
               <FadeIn delay={0.2}>
-                <FocusCards cards={focusCards} />
+                <HoverEffect items={hoverItems} />
               </FadeIn>
           </div>
 
-          {/* Tech Arsenal - New Sticky Scroll Reveal */}
-          <div className="border-t border-white/5 bg-neutral-950">
-             <div className="py-20 text-center max-w-4xl mx-auto px-6">
-                <SectionHeading 
-                    title={pageData?.tech?.title || "Tecnología de Vanguardia"}
-                    subtitle={pageData?.tech?.pill || "Stack"}
-                    highlight={pageData?.tech?.highlight || "Vanguardia"}
-                    className="justify-center"
-                />
-                <p className="text-neutral-400 mt-6 text-lg">
-                    {pageData?.tech?.description || "Utilizamos las herramientas más avanzadas del mercado para garantizar velocidad, seguridad y escalabilidad."}
-                </p>
+          {/* Tech Arsenal - Clean Grid Layout */}
+          <div className="border-t border-white/5 bg-neutral-900/20 py-24">
+             <div className="max-w-7xl mx-auto px-6">
+                 <div className="text-center max-w-3xl mx-auto mb-16">
+                    <SectionHeading 
+                        title={pageData?.tech?.title || "Tecnología de Vanguardia"}
+                        subtitle={pageData?.tech?.pill || "Stack"}
+                        highlight={pageData?.tech?.highlight || "Vanguardia"}
+                        className="justify-center"
+                    />
+                    <p className="text-neutral-400 mt-6 text-lg font-light">
+                        {pageData?.tech?.description || "Utilizamos las herramientas más avanzadas del mercado para garantizar velocidad, seguridad y escalabilidad."}
+                    </p>
+                 </div>
+
+                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {techStack.map((item: any, idx: number) => {
+                       // Resolve Icon
+                       const IconComponent = item.icon?.name ? (LucideIcons as any)[item.icon.name] : null;
+                       
+                       return (
+                        <div key={idx} className="bg-neutral-950 border border-white/10 rounded-3xl p-8 hover:border-indigo-500/30 transition-colors group">
+                            <div className="h-12 w-12 rounded-xl bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                {item.imageUrl ? (
+                                    <Image src={item.imageUrl} width={24} height={24} alt={item.title} title={item.title} className="object-contain" />
+                                ) : IconComponent ? (
+                                    <IconComponent className="w-6 h-6 text-white" />
+                                ) : (
+                                    <div className="text-white font-bold text-xs">APP</div>
+                                )}
+                            </div>
+                            <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
+                            <p className="text-neutral-400 text-sm leading-relaxed">
+                                {item.description}
+                            </p>
+                        </div>
+                       );
+                    })}
+                 </div>
              </div>
-             <StickyScroll content={techContent} />
           </div>
 
-          {/* CTA Section - New Lamp Effect */}
-          <LampContainer className="min-h-[60vh]">
-             {/* Note: LampContainer children are rendered as client components, but simple HTML is fine */}
-             <div className="flex flex-col items-center">
-                <h1 className="mt-8 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl">
-                    {pageData?.cta?.title || "¿No encuentras lo que buscas?"}
-                </h1>
-                <p className="text-neutral-400 max-w-lg mx-auto mt-4 text-center text-lg">
-                    {pageData?.cta?.description || "Ofrecemos soluciones personalizadas adaptadas a tus necesidades específicas. Hablemos de tu proyecto."}
-                </p>
-                <div className="mt-8">
-                    <Button size="lg" className="bg-cyan-500 text-black hover:bg-cyan-400 text-base font-semibold h-12 px-8 rounded-full shadow-[0_0_20px_rgba(6,182,212,0.5)] hover:shadow-[0_0_30px_rgba(6,182,212,0.7)] transition-all" asChild>
-                        <a href={pageData?.cta?.buttonLink || "/contacto"}>
-                        {pageData?.cta?.buttonText || "Contáctanos"} 
-                        <ArrowRight className="ml-2 w-5 h-5" />
-                        </a>
-                    </Button>
-                </div>
-             </div>
-          </LampContainer>
+          {/* CTA Section - Standardized */}
+          <section className="py-20 md:py-32 relative z-10 px-6 bg-neutral-950 border-t border-white/5">
+              <div className="max-w-4xl mx-auto text-center relative overflow-hidden rounded-3xl bg-neutral-900/20 border border-white/5 py-16 px-6">
+                  <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none" />
+                  <FadeIn className="relative z-10 max-w-2xl mx-auto">
+                    <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tighter mb-4">
+                      {cta?.title || "¿No encuentras lo que buscas?"}
+                    </h2>
+                    <p className="text-neutral-400 text-base mb-8 max-w-lg mx-auto font-light">
+                      {cta?.description || "Ofrecemos soluciones personalizadas adaptadas a tus necesidades específicas. Hablemos de tu proyecto."}
+                    </p>
+                    <div className="flex flex-col sm:flex-row justify-center gap-4">
+                      <Button size="lg" className="bg-white text-black hover:bg-neutral-200 text-sm font-medium h-12 px-8 rounded-full shadow-lg hover:shadow-xl transition-all" asChild>
+                         <a href={cta?.buttonLink || "/contacto"}>{cta?.buttonText || "Contáctanos"}</a>
+                      </Button>
+                    </div>
+                  </FadeIn>
+              </div>
+          </section>
 
       </section>
     </main>

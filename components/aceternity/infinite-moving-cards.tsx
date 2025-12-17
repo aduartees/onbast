@@ -130,6 +130,7 @@ export const InfiniteMovingCards = ({
                         <Image 
                             src={item.imageUrl}
                             alt={item.name}
+                            title={item.name}
                             fill
                             sizes="40px"
                             className="rounded-full object-cover grayscale opacity-80"

@@ -18,6 +18,7 @@ const content = [
           height={600}
           className="h-full w-full object-cover"
           alt="AI Brain"
+          title="AI Brain"
         />
       </div>
     ),
@@ -50,6 +51,7 @@ const content = [
           height={600}
           className="h-full w-full object-cover"
           alt="Automation"
+          title="Automation"
         />
       </div>
     ),

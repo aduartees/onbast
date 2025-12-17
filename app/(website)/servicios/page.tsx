@@ -161,7 +161,7 @@ export default async function ServicesPage() {
                     </p>
                     <div className="flex flex-col sm:flex-row justify-center gap-4">
                       <Button size="lg" className="bg-white text-black hover:bg-neutral-200 text-sm font-medium h-12 px-8 rounded-full shadow-lg hover:shadow-xl transition-all" asChild>
-                         <a href={cta?.buttonLink || "/contacto"}>{cta?.buttonText || "Contáctanos"}</a>
+                         <a href={cta?.buttonLink || "/contacto"} title={cta?.buttonText || "Contáctanos"}>{cta?.buttonText || "Contáctanos"}</a>
                       </Button>
                     </div>
                   </FadeIn>

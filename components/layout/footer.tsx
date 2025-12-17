@@ -121,7 +121,7 @@ export function Footer({ data }: FooterProps) {
             <span className="text-neutral-400 text-sm">
               Toda España
             </span>
-            <Link href="/contacto" className="inline-flex items-center gap-1 text-indigo-400 hover:text-indigo-300 text-sm transition-colors mt-2">
+            <Link href="/contacto" title="Iniciar Proyecto" className="inline-flex items-center gap-1 text-indigo-400 hover:text-indigo-300 text-sm transition-colors mt-2">
               Iniciar Proyecto <ArrowUpRight className="w-3 h-3" />
             </Link>
           </div>

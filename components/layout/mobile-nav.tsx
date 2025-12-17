@@ -148,6 +148,7 @@ export function MobileNav({ menuItems = [], cta }: MobileNavProps) {
                       <div className="flex items-center justify-center gap-2">
                         <Link
                           href={item.url}
+                          title={item.label}
                           onClick={() => !item.submenu && handleLinkClick(item.url)}
                           className="text-3xl font-bold text-white hover:text-neutral-400 transition-colors tracking-tight text-center"
                         >
@@ -156,6 +157,7 @@ export function MobileNav({ menuItems = [], cta }: MobileNavProps) {
                         {item.submenu && item.submenu.length > 0 && (
                           <button 
                             onClick={() => toggleSubmenu(index)}
+                            title={`Abrir submenú de ${item.label}`}
                             className="p-2 text-white/50 hover:text-white transition-colors"
                           >
                             <ChevronDown className={cn("w-6 h-6 transition-transform duration-300", openSubmenuIndex === index ? "rotate-180" : "")} />
@@ -178,6 +180,7 @@ export function MobileNav({ menuItems = [], cta }: MobileNavProps) {
                                 <Link
                                   key={subIdx}
                                   href={subItem.url}
+                                  title={subItem.label}
                                   onClick={() => handleLinkClick(subItem.url)}
                                   className="text-lg text-neutral-400 hover:text-white transition-colors flex flex-col items-center text-center"
                                 >

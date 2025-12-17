@@ -35,12 +35,12 @@ export function MobileNav({ menuItems = [], cta }: MobileNavProps) {
 
   // Fallback items if none provided
   const items = menuItems.length > 0 ? menuItems : [
-    { label: "Servicios", url: "#services" },
-    { label: "Proyectos", url: "#projects" },
-    { label: "Agencia", url: "#about" },
+    { label: "Servicios", url: "/servicios" },
+    { label: "Proyectos", url: "/proyectos" },
+    { label: "Agencia", url: "/agencia" },
   ];
 
-  const ctaButton = cta || { text: "Contacto", url: "#contact" };
+  const ctaButton = cta || { text: "Contacto", url: "/contacto" };
 
   useEffect(() => {
     setMounted(true);

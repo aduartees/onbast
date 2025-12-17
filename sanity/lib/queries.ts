@@ -354,6 +354,16 @@ export const PROJECTS_PAGE_QUERY = `{
     "imageUrl": mainImage.asset->url,
     tags,
     link
+  },
+  "siteSettings": *[_type == "settings"][0] {
+    "agency": agencyInfo {
+      name,
+      email,
+      phone,
+      address,
+      socialProfiles,
+      "logo": logo.asset->url
+    }
   }
 }`;
 

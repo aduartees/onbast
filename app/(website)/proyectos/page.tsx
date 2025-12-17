@@ -68,10 +68,20 @@ export default async function ProjectsPage() {
   const showClients = clients?.logos && clients.logos.length > 0;
   const showImpact = impact?.stats && impact.stats.length > 0;
 
+  const jsonLd = generateOrganizationSchema(data, "Organization");
+
   return (
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-indigo-500 selection:text-white pt-0">
       <ScrollReset />
       <Navbar />
+
+      {/* Inject JSON-LD Schema */}
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
 
       {/* Hero Section */}
       <section className="h-[100dvh] w-full sticky top-0 z-0 flex flex-col items-center justify-center bg-neutral-950 overflow-hidden">

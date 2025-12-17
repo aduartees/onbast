@@ -119,18 +119,18 @@ export function Footer({ data }: FooterProps) {
               {agency?.email || "hello@onbast.agency"}
             </FooterLink>
             <span className="text-neutral-400 text-sm">
-              {agency?.address?.city || "Madrid"}, {agency?.address?.country || "España"}
+              Toda España
             </span>
-            <Link href="/contact" className="inline-flex items-center gap-1 text-indigo-400 hover:text-indigo-300 text-sm transition-colors mt-2">
+            <Link href="/contacto" className="inline-flex items-center gap-1 text-indigo-400 hover:text-indigo-300 text-sm transition-colors mt-2">
               Iniciar Proyecto <ArrowUpRight className="w-3 h-3" />
             </Link>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/5 gap-4 relative z-20 pb-12 md:pb-0">
-          <p className="text-neutral-400 text-xs text-center md:text-left">
-            {footer?.copyrightText?.replace("{year}", currentYear.toString()) || `© ${currentYear} ${agency?.name || "ONBAST Agency"}. Todos los derechos reservados.`}
+        <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/5 gap-4 relative z-20 pb-12 md:pb-0 w-full">
+          <p className="text-neutral-400 text-xs text-center md:text-left w-full">
+            © {currentYear} {agency?.name || "ONBAST Agency"}. {footer?.copyrightText || "Todos los derechos reservados."}
           </p>
         </div>
       </div>

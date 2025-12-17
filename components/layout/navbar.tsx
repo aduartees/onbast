@@ -46,14 +46,14 @@ export function Navbar({ data }: NavbarProps) {
 
   const { header, agency, footer } = data || {};
   const menuItems = header?.menuItems || [
-    { label: "Servicios", url: "#services" },
-    { label: "Proyectos", url: "#projects" },
-    { label: "Agencia", url: "#about" },
+    { label: "Servicios", url: "/servicios" },
+    { label: "Proyectos", url: "/proyectos" },
+    { label: "Agencia", url: "/agencia" },
   ];
 
   const logoText = header?.logoText || "onbast.";
   const ctaText = header?.ctaButton?.text || "Contacto";
-  const ctaUrl = header?.ctaButton?.url || "#contact";
+  const ctaUrl = header?.ctaButton?.url || "/contacto";
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 backdrop-blur-md bg-neutral-950/80 border-b border-white/5 supports-[backdrop-filter]:bg-neutral-950/50">

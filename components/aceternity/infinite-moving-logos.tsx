@@ -112,7 +112,8 @@ export const InfiniteMovingLogos = ({
                         fill
                         sizes="(max-width: 768px) 100px, 150px"
                         className="object-contain brightness-0 invert" 
-                        priority={true}
+                        priority={idx < 6}
+                        loading={idx < 6 ? "eager" : "lazy"}
                         onError={(e) => {
                             // Fallback if image fails to load?
                             // For now just hide or log

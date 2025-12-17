@@ -1,8 +1,45 @@
+export function parseScheduleToSchema(schedule: string | undefined) {
+  if (!schedule) return undefined;
+  
+  const s = schedule.toLowerCase();
+  
+  // Case: "24 horas", "24/7", "always"
+  if (s.includes('24') || s.includes('siempre') || s.includes('always')) {
+    return [
+        {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            "opens": "00:00",
+            "closes": "23:59"
+        }
+    ];
+  }
+
+  // Simple parser for "Lunes a Viernes 9-18" or "Mon-Fri 9am-6pm"
+  // This is a basic implementation and can be expanded
+  if (s.includes('lunes') || s.includes('viernes') || s.includes('mon') || s.includes('fri')) {
+     return [
+        {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            "opens": "09:00",
+            "closes": "18:00"
+        }
+     ];
+  }
+  
+  return undefined;
+}
+
 export function generateOrganizationSchema(data: any, type: "Organization" | "LocalBusiness" | "AboutPage" | "ContactPage" = "Organization") {
   if (!data || !data.siteSettings || !data.siteSettings.agency) return null;
 
   const { agency } = data.siteSettings;
   const baseUrl = process.env.NEXT_PUBLIC_URL || "https://onbast.com";
+  
+  // Attempt to find schedule in contactInfo or fallback
+  const schedule = data.contactInfo?.schedule;
+  const hoursAvailable = parseScheduleToSchema(schedule);
 
   // Base Properties
   const organizationProps = {
@@ -10,7 +47,7 @@ export function generateOrganizationSchema(data: any, type: "Organization" | "Lo
     "name": agency.name || "ONBAST",
     "url": baseUrl,
     "logo": agency.logo,
-    "description": data.seo?.description || "Agencia de ingeniería de software y SEO. Desarrollo de aplicaciones y estrategias digitales para empresas en toda España.",
+    "description": data.seo?.description || "Agencia de Desarrollo Web y Posicionamiento SEO y GEO. Desarrollo de paginas web impresionantes y posicionamiento digital para empresas en toda España.",
     "email": agency.email,
     "sameAs": agency.socialProfiles?.map((profile: any) => profile.url) || [],
     "areaServed": {
@@ -23,15 +60,16 @@ export function generateOrganizationSchema(data: any, type: "Organization" | "Lo
       "@type": "PostalAddress",
       "addressCountry": "ES",
       "addressLocality": agency.address?.city || "Santander",
-      "postalCode": agency.address?.zip || "39001",
-      "streetAddress": agency.address?.street || "Calle Castelar"
+      "postalCode": agency.address?.zip || "39012",
+      "streetAddress": agency.address?.street || "C. la Tesilla, 6"
     },
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": agency.phone,
       "contactType": "sales",
       "areaServed": "ES",
-      "availableLanguage": ["Spanish", "English"]
+      "availableLanguage": ["Spanish", "English"],
+      ...(hoursAvailable ? { "hoursAvailable": hoursAvailable } : {})
     }
   };
 
@@ -50,12 +88,12 @@ export function generateOrganizationSchema(data: any, type: "Organization" | "Lo
       "@type": "AboutPage",
       "mainEntity": {
         ...organizationProps,
-        "foundingDate": "2024",
-        "knowsAbout": ["Ingeniería de Software", "Next.js", "SEO Programático", "Inteligencia Artificial"],
+        "foundingDate": "2025",
+        "knowsAbout": ["Desarrollo Web", "Next.js", "Posicionamiento SEO", "Posicionamiento GEO", "Inteligencia Artificial"],
         "numberOfEmployees": {
           "@type": "QuantitativeValue",
-          "minValue": 5,
-          "maxValue": 20
+          "minValue": 2,
+          "maxValue": 10
         }
       }
     };
@@ -73,7 +111,7 @@ export function generateOrganizationSchema(data: any, type: "Organization" | "Lo
           "telephone": agency.phone,
           "contactType": "customer service",
           "areaServed": "ES",
-          "availableLanguage": "Spanish"
+          "availableLanguage": ["Spanish", "English"]
         }
       }
     };
@@ -104,7 +142,7 @@ export function generateServiceSchema(service: any) {
         },
         "hasOfferCatalog": {
             "@type": "OfferCatalog",
-            "name": "Servicios de Desarrollo",
+            "name": "Servicios de Desarrollo Web y Posicionamiento SEO y GEO",
             "itemListElement": service.features?.map((feature: any) => ({
                 "@type": "Offer",
                 "itemOffered": {

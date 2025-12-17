@@ -4,6 +4,13 @@ export default defineType({
   name: 'contactPage',
   title: 'Página de Contacto',
   type: 'document',
+  preview: {
+    prepare() {
+      return {
+        title: 'Página de Contacto'
+      }
+    }
+  },
   fields: [
     defineField({
       name: 'hero',

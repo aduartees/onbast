@@ -5,6 +5,13 @@ export default defineType({
   name: 'agencyPage',
   title: 'Página Agencia (About)',
   type: 'document',
+  preview: {
+    prepare() {
+      return {
+        title: 'Página Agencia (About)'
+      }
+    }
+  },
   fields: [
     defineField({
       name: 'hero',

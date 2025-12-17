@@ -4,6 +4,13 @@ export default defineType({
   name: 'settings',
   title: 'Configuración Global',
   type: 'document',
+  preview: {
+    prepare() {
+      return {
+        title: 'Configuración Global'
+      }
+    }
+  },
   fields: [
     defineField({
       name: 'agencyInfo',

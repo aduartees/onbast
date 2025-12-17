@@ -4,6 +4,13 @@ export default defineType({
   name: 'projectsPage',
   title: 'Página de Proyectos',
   type: 'document',
+  preview: {
+    prepare() {
+      return {
+        title: 'Página de Proyectos'
+      }
+    }
+  },
   fields: [
     defineField({
       name: 'hero',

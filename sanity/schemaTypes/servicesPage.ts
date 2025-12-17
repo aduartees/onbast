@@ -4,6 +4,13 @@ export default defineType({
   name: 'servicesPage',
   title: 'Página de Servicios',
   type: 'document',
+  preview: {
+    prepare() {
+      return {
+        title: 'Página de Servicios'
+      }
+    }
+  },
   fields: [
     // Hero Section
     defineField({

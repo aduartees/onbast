@@ -31,6 +31,13 @@ export default defineType({
   name: 'homePage',
   title: 'Página de Inicio',
   type: 'document',
+  preview: {
+    prepare() {
+      return {
+        title: 'Página de Inicio'
+      }
+    }
+  },
   fields: [
     defineField({
       name: 'hero',

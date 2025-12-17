@@ -128,6 +128,26 @@ export function generateServiceSchema(service: any, agency?: any) {
     const baseUrl = process.env.NEXT_PUBLIC_URL || "https://onbast.com";
     const serviceImage = service.seoImage || service.imageUrl;
     
+    // Parse price if available
+    let offers = undefined;
+    if (service.pricing && service.pricing.price) {
+        // Remove non-numeric chars except dot/comma, then normalize decimal
+        // Assuming format "2.500€" or "2500" -> extract digits
+        const numericPrice = service.pricing.price.replace(/[^0-9]/g, '');
+        
+        if (numericPrice) {
+             offers = {
+                "@type": "Offer",
+                "price": numericPrice,
+                "priceCurrency": "EUR",
+                "availability": "https://schema.org/InStock",
+                "url": `${baseUrl}/services/${service.slug}`,
+                "description": service.pricing.description || service.shortDescription,
+                "priceValidUntil": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0] // Valid for 1 year
+             };
+        }
+    }
+
     return {
         "@context": "https://schema.org",
         "@type": "Service",
@@ -146,18 +166,12 @@ export function generateServiceSchema(service: any, agency?: any) {
             "@type": "Country",
             "name": "España"
         },
-        "hasOfferCatalog": {
-            "@type": "OfferCatalog",
-            "name": "Servicios de Desarrollo Web y Posicionamiento SEO y GEO",
-            "itemListElement": service.features?.map((feature: any) => ({
-                "@type": "Offer",
-                "itemOffered": {
-                    "@type": "Service",
-                    "name": feature.title,
-                    "description": feature.description
-                }
-            })) || []
-        },
+        // Main Offer (Price) - CRITICAL for Rich Snippets
+        ...(offers ? { "offers": offers } : {}),
+        
+        // Removed incorrect hasOfferCatalog mapping for features as per user request.
+        // Features are properties of the service, not separate commercial offers in a catalog.
+        
         "availableChannel": {
             "@type": "ServiceChannel",
             "serviceUrl": `${baseUrl}/contacto`,

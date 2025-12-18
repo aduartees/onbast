@@ -20,6 +20,7 @@ interface SanityServiceDetail {
   longDescription?: string;
   overviewText?: string;
   imageUrl?: string;
+  imageName?: string;
   imageAlt?: string;
   heroButtonText?: string;
   heroButtonLink?: string;

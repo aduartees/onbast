@@ -102,7 +102,10 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
     secondaryButtonLink,
     features,
     addon,
-    "trustedLogos": trustedLogos[].asset->url
+    "trustedLogos": trustedLogos[] {
+        "logo": image.asset->url,
+        name
+    }
   },
   relatedProjects[]->{
     _id,

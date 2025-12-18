@@ -104,7 +104,7 @@ interface ServiceContentProps {
       price: string;
       active?: boolean;
     };
-    trustedLogos?: string[];
+    trustedLogos?: { logo: string | null; name: string }[];
   };
   faqs?: {
     question: string;
@@ -191,6 +191,7 @@ const ContentWrapper = ({ mainImage, mainImageAlt, relatedProjects, features, fe
                                 <Image 
                                    src={mainImage}
                                    alt={mainImageAlt || "Service Overview"}
+                                   title={mainImageAlt || "Service Overview"}
                                    fill
                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
                                 />
@@ -357,7 +358,7 @@ const ContentWrapper = ({ mainImage, mainImageAlt, relatedProjects, features, fe
                      subtitle="Casos de Éxito" 
                      highlight="Destacados" 
                    />
-                   <p className="text-neutral-400 mt-6 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed text-center">
+                   <p className="text-neutral-400 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed text-center">
                       Descubre cómo hemos transformado ideas en productos digitales de alto impacto.
                    </p>
                 </FadeIn>

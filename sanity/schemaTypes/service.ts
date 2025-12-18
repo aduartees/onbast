@@ -339,9 +339,23 @@ export default defineType({
             }),
             defineField({
                 name: 'trustedLogos',
-                title: 'Logos de Confianza (Imágenes)',
+                title: 'Logos de Confianza (Sección Precios)',
                 type: 'array',
-                of: [{ type: 'image' }]
+                of: [
+                    {
+                        type: 'object',
+                        fields: [
+                            defineField({ name: 'image', title: 'Logo', type: 'image' }),
+                            defineField({ name: 'name', title: 'Nombre Empresa (Alt)', type: 'string' })
+                        ],
+                        preview: {
+                            select: {
+                                title: 'name',
+                                media: 'image'
+                            }
+                        }
+                    }
+                ]
             })
         ]
     }),

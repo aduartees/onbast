@@ -27,7 +27,7 @@ interface PricingProps {
       price: string;
       active?: boolean;
     };
-    trustedLogos?: string[];
+    trustedLogos?: { logo: string | null; name: string }[];
   };
 }
 
@@ -65,7 +65,7 @@ export function PricingSection({ pricing }: PricingProps) {
             subtitle="Precios"
             highlight={pricing.title?.includes("simple") ? "simple" : undefined}
           />
-          <p className="text-neutral-400 text-sm md:text-base leading-relaxed max-w-2xl mx-auto font-light mt-[-20px]">
+          <p className="text-neutral-400 text-lg leading-relaxed max-w-2xl mx-auto font-light mt-6">
             {pricing.subtitle || "Nos gusta mantener las cosas simples con un plan único y sin límites."}
           </p>
         </FadeIn>
@@ -172,15 +172,17 @@ export function PricingSection({ pricing }: PricingProps) {
             </p>
             <div className="flex flex-wrap justify-center gap-8 md:gap-12 items-center opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
               {pricing.trustedLogos.map((logo, i) => (
-                <div key={i} className="relative h-8 w-24">
-                  <Image 
-                    src={logo} 
-                    alt={`Trusted company ${i}`} 
-                    title={`Trusted company ${i}`}
-                    fill  
-                    className="object-contain"
-                  />
-                </div>
+                logo.logo ? (
+                  <div key={i} className="relative h-8 w-24">
+                    <Image 
+                      src={logo.logo} 
+                      alt={logo.name || `Trusted company ${i}`} 
+                      title={logo.name || `Trusted company ${i}`}
+                      fill  
+                      className="object-contain"
+                    />
+                  </div>
+                ) : null
               ))}
             </div>
           </FadeIn>

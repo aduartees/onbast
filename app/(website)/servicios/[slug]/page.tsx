@@ -96,7 +96,7 @@ interface SanityServiceDetail {
       price: string;
       active?: boolean;
     };
-    trustedLogos?: string[];
+    trustedLogos?: { logo: string | null; name: string }[];
   };
   relatedProjects?: {
     _id: string;

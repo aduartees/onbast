@@ -39,9 +39,11 @@ export const TeamSection = ({ team }: { team: TeamMember[] }) => {
 
       {/* Desktop: Premium Grid - Only rendered if desktop */}
       {isDesktop && (
-        <div className="hidden lg:grid grid-cols-3 gap-8 max-w-7xl mx-auto px-8 place-items-center">
+        <div className="hidden lg:flex flex-wrap justify-center gap-8 max-w-7xl mx-auto px-8">
           {team.map((member, index) => (
-            <TeamCard key={index} member={member} index={index} />
+            <div key={index} className="w-[calc(33.333%-1.5rem)] min-w-[300px] max-w-[400px]">
+                <TeamCard member={member} index={index} />
+            </div>
           ))}
         </div>
       )}

@@ -76,13 +76,22 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
   teamTitle,
   teamHighlight,
   teamDescription,
-  team[]->{
-    name,
-    role,
-    "imageUrl": image.asset->url,
-    "imageAlt": image.alt,
-    social
-  },
+  "team": select(
+    count(team) > 0 => team[]->{
+      name,
+      role,
+      "imageUrl": image.asset->url,
+      "imageAlt": image.alt,
+      social
+    },
+    *[_type == "teamMember"] | order(_createdAt asc) {
+      name,
+      role,
+      "imageUrl": image.asset->url,
+      "imageAlt": image.alt,
+      social
+    }
+  ),
   testimonialsTitle,
   testimonialsHighlight,
   testimonialsDescription,

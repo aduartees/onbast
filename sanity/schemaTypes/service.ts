@@ -200,6 +200,7 @@ export default defineType({
       title: 'Equipo Asignado',
       type: 'array',
       group: 'content',
+      description: 'Selecciona los miembros del equipo para este servicio. Si se deja vacío, se mostrarán todos los miembros del equipo.',
       of: [{ type: 'reference', to: [{ type: 'teamMember' }] }]
     }),
     defineField({

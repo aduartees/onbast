@@ -17,19 +17,34 @@ interface TeamMember {
 }
 
 export const TeamSection = ({ team }: { team: TeamMember[] }) => {
+  const [isDesktop, setIsDesktop] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkIsDesktop = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+    checkIsDesktop();
+    window.addEventListener("resize", checkIsDesktop);
+    return () => window.removeEventListener("resize", checkIsDesktop);
+  }, []);
+
   return (
     <div className="w-full relative">
-      {/* Mobile: 3D Carousel */}
-      <div className="lg:hidden w-full flex justify-center overflow-hidden">
-        <ThreeDCarousel items={team} />
-      </div>
+      {/* Mobile: 3D Carousel - Only rendered if NOT desktop */}
+      {!isDesktop && (
+        <div className="lg:hidden w-full flex justify-center overflow-hidden">
+          <ThreeDCarousel items={team} />
+        </div>
+      )}
 
-      {/* Desktop: Premium Grid */}
-      <div className="hidden lg:grid grid-cols-3 gap-8 max-w-7xl mx-auto px-8 place-items-center">
-        {team.map((member, index) => (
-          <TeamCard key={index} member={member} index={index} />
-        ))}
-      </div>
+      {/* Desktop: Premium Grid - Only rendered if desktop */}
+      {isDesktop && (
+        <div className="hidden lg:grid grid-cols-3 gap-8 max-w-7xl mx-auto px-8 place-items-center">
+          {team.map((member, index) => (
+            <TeamCard key={index} member={member} index={index} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

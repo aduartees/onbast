@@ -104,6 +104,7 @@ interface ServiceContentProps {
       price: string;
       active?: boolean;
     };
+    trustedCompaniesTitle?: string;
     trustedLogos?: { logo: string | null; name: string }[];
   };
   faqs?: {

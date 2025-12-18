@@ -27,6 +27,7 @@ interface PricingProps {
       price: string;
       active?: boolean;
     };
+    trustedCompaniesTitle?: string;
     trustedLogos?: { logo: string | null; name: string }[];
   };
 }
@@ -168,7 +169,7 @@ export function PricingSection({ pricing }: PricingProps) {
         {pricing.trustedLogos && pricing.trustedLogos.length > 0 && (
           <FadeIn delay={0.4} className="mt-16 text-center">
             <p className="text-neutral-500 text-sm mb-6 font-light">
-              Designs trusted by companies like:
+              {pricing.trustedCompaniesTitle || "Designs trusted by companies like:"}
             </p>
             <div className="flex flex-wrap justify-center gap-8 md:gap-12 items-center opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
               {pricing.trustedLogos.map((logo, i) => (

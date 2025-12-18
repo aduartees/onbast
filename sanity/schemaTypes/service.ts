@@ -337,6 +337,7 @@ export default defineType({
                     { name: 'active', type: 'boolean', title: 'Activo por defecto', initialValue: false }
                 ]
             }),
+            defineField({ name: 'trustedCompaniesTitle', title: 'Título Sección Logos', type: 'string', initialValue: "Designs trusted by companies like:" }),
             defineField({
                 name: 'trustedLogos',
                 title: 'Logos de Confianza (Sección Precios)',

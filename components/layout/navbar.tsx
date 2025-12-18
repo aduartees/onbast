@@ -62,7 +62,7 @@ export function Navbar({ data }: NavbarProps) {
   const ctaUrl = header?.ctaButton?.url || "/contacto";
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 backdrop-blur-md bg-neutral-950/80 border-b border-white/5 supports-[backdrop-filter]:bg-neutral-950/50">
+    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-6 backdrop-blur-md bg-neutral-950/80 border-b border-white/5 supports-[backdrop-filter]:bg-neutral-950/50 h-[88px]">
       <div className="flex items-center gap-2 relative z-50">
         <Link href="/" title="Volver al inicio" className="text-2xl font-bold tracking-tighter text-white font-inter hover:opacity-80 transition-opacity flex items-center gap-2">
            <span>{logoText}</span>

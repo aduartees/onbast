@@ -89,7 +89,7 @@ export function Breadcrumbs() {
       {/* Visual Breadcrumbs - Absolute positioned to sit on top of Heros */}
       <nav 
         aria-label="Breadcrumb"
-        className="absolute top-20 md:top-24 left-0 w-full z-40 pointer-events-none"
+        className="absolute top-[96px] md:top-24 left-0 w-full z-40 pointer-events-none"
       >
         <div className="max-w-7xl mx-auto px-6 pointer-events-auto flex justify-center md:justify-start">
             <ol className="flex items-center space-x-2 text-[10px] md:text-xs text-neutral-500 bg-neutral-950/30 backdrop-blur-sm border border-white/5 py-1 px-3 rounded-full inline-flex uppercase tracking-wider">

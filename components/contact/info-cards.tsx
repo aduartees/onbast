@@ -104,21 +104,45 @@ export function InfoCards({ info }: { info?: ContactInfo }) {
       >
          <p className="text-neutral-400 font-medium mb-6">Síguenos</p>
          <div className="flex flex-wrap gap-4">
-            {info?.socialProfiles?.map((social, i) => (
+            {info?.socialProfiles?.map((social, i) => {
+                let platformName = '';
+                try {
+                    const urlObj = new URL(social);
+                    const hostname = urlObj.hostname.replace('www.', '');
+                    
+                    if (hostname.includes('linkedin')) platformName = 'LinkedIn';
+                    else if (hostname.includes('twitter') || hostname.includes('x.com')) platformName = 'X (Twitter)';
+                    else if (hostname.includes('instagram')) platformName = 'Instagram';
+                    else if (hostname.includes('facebook')) platformName = 'Facebook';
+                    else if (hostname.includes('github')) platformName = 'GitHub';
+                    else if (hostname.includes('youtube')) platformName = 'YouTube';
+                    else platformName = hostname.split('.')[0]; // Fallback to domain name
+                    
+                    // Capitalize first letter if it's a generic domain fallback
+                    if (!['LinkedIn', 'X (Twitter)', 'Instagram', 'Facebook', 'GitHub', 'YouTube'].includes(platformName)) {
+                         platformName = platformName.charAt(0).toUpperCase() + platformName.slice(1);
+                    }
+
+                } catch (e) {
+                    platformName = 'Social Link';
+                }
+
+                return (
                 <a 
                     key={i} 
                     href={social} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    title={social.replace('https://', '').split('/')[0]}
+                    title={platformName}
                     className="px-6 py-3 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 text-white text-sm font-medium transition-all hover:-translate-y-1"
                 >
-                    {social.replace('https://', '').split('/')[0]}
+                    {platformName}
                 </a>
-            )) || (
+                );
+            }) || (
                 <>
                     <span className="px-6 py-3 rounded-full bg-white/5 text-neutral-500 text-sm">LinkedIn</span>
-                    <span className="px-6 py-3 rounded-full bg-white/5 text-neutral-500 text-sm">Twitter</span>
+                    <span className="px-6 py-3 rounded-full bg-white/5 text-neutral-500 text-sm">X (Twitter)</span>
                     <span className="px-6 py-3 rounded-full bg-white/5 text-neutral-500 text-sm">Instagram</span>
                 </>
             )}

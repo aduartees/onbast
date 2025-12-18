@@ -88,9 +88,9 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
                       href={member.social.twitter} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      title="Twitter Profile"
+                      title="X (Twitter) Profile"
                       className="text-neutral-400 hover:text-white transition-colors"
-                      aria-label="Twitter Profile"
+                      aria-label="X (Twitter) Profile"
                     >
                       <Twitter className="w-4 h-4" />
                     </a>

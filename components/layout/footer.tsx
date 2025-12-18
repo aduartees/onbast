@@ -78,7 +78,7 @@ export function Footer({ data }: FooterProps) {
               ))}
               {!footer?.socialLinks && (
                  <>
-                  <SocialLink href="#" icon={<Twitter className="w-4 h-4" />} label="Twitter" />
+                  <SocialLink href="#" icon={<Twitter className="w-4 h-4" />} label="X (Twitter)" />
                   <SocialLink href="#" icon={<Linkedin className="w-4 h-4" />} label="LinkedIn" />
                  </>
               )}

@@ -150,7 +150,7 @@ export function MobileNav({ menuItems = [], cta }: MobileNavProps) {
                           href={item.url}
                           title={item.label}
                           onClick={() => !item.submenu && handleLinkClick(item.url)}
-                          className="text-3xl font-bold text-white hover:text-neutral-400 transition-colors tracking-tight text-center"
+                          className="text-3xl font-medium text-white hover:text-neutral-400 transition-colors tracking-tight text-center"
                         >
                           {item.label}
                         </Link>

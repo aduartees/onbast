@@ -24,8 +24,13 @@ export const SectionHeading = ({
         </div>
       )}
       <h2 className={cn("text-xl md:text-2xl font-bold text-white leading-tight", titleClassName)}>
-        <span className="font-sans mr-2">{title}</span>
-        {highlight && <span className="font-serif italic font-normal text-indigo-300">{highlight}</span>}
+        <span className="font-sans">{title}</span>
+        {highlight && (
+          <>
+            {"\u00A0"}
+            <span className="font-serif italic font-normal text-indigo-300">{highlight}</span>
+          </>
+        )}
       </h2>
       <div className={cn("h-px w-8 bg-indigo-500/30 mt-3", align === "center" ? "mx-auto" : "")} />
     </div>

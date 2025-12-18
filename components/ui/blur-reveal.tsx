@@ -66,16 +66,18 @@ export const BlurReveal = ({ text, className, highlightClassName, highlightWord,
         className="inline-block"
       >
         {words.map((word, index) => (
-          <motion.span
-            key={index}
-            variants={child}
-            className={cn(
-              "inline-block mr-[0.25em] will-change-[opacity,filter,transform]",
-              shouldHighlight(word, index) ? highlightClassName : ""
-            )}
-          >
-            {word}
-          </motion.span>
+          <React.Fragment key={index}>
+            <motion.span
+              variants={child}
+              className={cn(
+                "inline-block will-change-[opacity,filter,transform]",
+                shouldHighlight(word, index) ? highlightClassName : ""
+              )}
+            >
+              {word}
+            </motion.span>
+            {index < words.length - 1 && " "}
+          </React.Fragment>
         ))}
       </motion.span>
     </Component>

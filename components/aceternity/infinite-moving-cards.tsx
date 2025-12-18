@@ -35,8 +35,8 @@ export const InfiniteMovingCards = ({
       const scrollerContent = Array.from(scrollerRef.current.children);
 
       // Duplicate content enough times to ensure smooth scrolling on large screens
-      // If we have few items, duplicate more times
-      const duplicationFactor = items.length < 5 ? 4 : 2;
+      // Reduced duplication factor to avoid excessive repetition as per user request
+      const duplicationFactor = 0;
 
       // Only duplicate if we haven't already (check if length is greater than original items)
       if (scrollerRef.current.children.length === items.length) {
@@ -141,9 +141,9 @@ export const InfiniteMovingCards = ({
                   <h3 className="text-sm font-semibold text-white">
                     {item.name}
                   </h3>
-                  <span className="text-xs text-neutral-400 font-mono uppercase tracking-wider">
+                  <h4 className="text-xs text-neutral-400 font-mono uppercase tracking-wider">
                     {item.role}
-                  </span>
+                  </h4>
                 </div>
               </div>
             </blockquote>

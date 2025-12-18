@@ -33,9 +33,10 @@ interface MobileNavProps {
   socialLinks?: SocialLink[];
   agencyEmail?: string;
   agencyPhone?: string;
+  agencyWhatsapp?: string;
 }
 
-export function MobileNav({ menuItems = [], cta, socialLinks, agencyEmail, agencyPhone }: MobileNavProps) {
+export function MobileNav({ menuItems = [], cta, socialLinks, agencyEmail, agencyPhone, agencyWhatsapp }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
@@ -88,12 +89,15 @@ export function MobileNav({ menuItems = [], cta, socialLinks, agencyEmail, agenc
       }
   };
 
+  if (!mounted) return null;
+
   return (
     <div className="md:hidden">
       {/* Animated Hamburger Button - Portalled to body to escape Navbar stacking context */}
-      {mounted && createPortal(
-        <MotionConfig transition={{ duration: 0.3, ease: "easeInOut" }}>
-            <motion.button
+      {createPortal(
+        <div className="md:hidden">
+            <MotionConfig transition={{ duration: 0.3, ease: "easeInOut" }}>
+                <motion.button
                 initial={false}
                 animate={isOpen ? "open" : "closed"}
                 onClick={toggleMenu}
@@ -125,11 +129,13 @@ export function MobileNav({ menuItems = [], cta, socialLinks, agencyEmail, agenc
                     }}
                 />
             </motion.button>
-        </MotionConfig>,
+        </MotionConfig>
+        </div>,
         document.body
       )}
 
-      {mounted && createPortal(
+      {createPortal(
+        <div className="md:hidden">
         <AnimatePresence mode="wait">
           {isOpen && (
             <motion.div
@@ -183,13 +189,14 @@ export function MobileNav({ menuItems = [], cta, socialLinks, agencyEmail, agenc
                                     {ctaButton.text}
                                 </Button>
                             </Link>
-                            <Link 
-                                href="https://wa.me/34600000000" 
+                            <a 
+                                href={agencyWhatsapp || "https://wa.me/34600000000"} 
                                 target="_blank"
+                                rel="noopener noreferrer"
                                 className="w-14 h-14 flex items-center justify-center rounded-full border border-white/20 text-white hover:bg-white hover:text-black transition-all duration-300"
                             >
                                 <MessageCircle className="w-6 h-6" />
-                            </Link>
+                            </a>
                         </div>
 
                         <div className="flex justify-between items-end border-t border-white/10 pt-6">
@@ -216,7 +223,8 @@ export function MobileNav({ menuItems = [], cta, socialLinks, agencyEmail, agenc
                 </div>
             </motion.div>
           )}
-        </AnimatePresence>,
+        </AnimatePresence>
+        </div>,
         document.body
       )}
     </div>

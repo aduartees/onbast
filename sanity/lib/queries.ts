@@ -223,7 +223,9 @@ export const SETTINGS_QUERY = `*[_type == "settings"][0] {
     email,
     address,
     socialProfiles,
-    "logo": logo.asset->url
+    "logo": logo.asset->url,
+    phone,
+    "whatsapp": *[_type == "contactPage"][0].contactInfo.whatsapp,
   },
   header {
     logoText,

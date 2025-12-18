@@ -14,6 +14,7 @@ interface NavbarProps {
       logo?: string;
       email?: string;
       phone?: string;
+      whatsapp?: string;
     };
     header?: {
       logoText?: string;
@@ -139,6 +140,7 @@ export function Navbar({ data }: NavbarProps) {
         socialLinks={footer?.socialLinks}
         agencyEmail={agency?.email}
         agencyPhone={agency?.phone}
+        agencyWhatsapp={agency?.whatsapp}
       />
     </nav>
   )

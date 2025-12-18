@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { motion, useMotionValue, useSpring, PanInfo } from "framer-motion";
+import { motion, useMotionValue, useSpring, PanInfo, useInView } from "framer-motion";
 import Image from "next/image";
 import { Linkedin, Twitter } from "lucide-react";
 
@@ -19,12 +19,13 @@ export const ThreeDCarousel = ({ items }: { items: TeamMember[] }) => {
   const [rotation, setRotation] = useState(0);
   const rotationValue = useMotionValue(0);
   const springRotation = useSpring(rotationValue, {
-    stiffness: 150,
-    damping: 30,
+    stiffness: 50, // Softer spring for smoother auto-rotation
+    damping: 20,
     mass: 1,
   });
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: true, amount: 0.4 });
   const [width, setWidth] = useState(0);
 
   useEffect(() => {
@@ -32,6 +33,20 @@ export const ThreeDCarousel = ({ items }: { items: TeamMember[] }) => {
       setWidth(containerRef.current.offsetWidth);
     }
   }, []);
+
+  // Auto-rotate when in view to show interactivity
+  useEffect(() => {
+    if (isInView && items.length > 1) {
+      // Small delay to let the user register the component
+      const timer = setTimeout(() => {
+        const anglePerItem = 360 / items.length;
+        // Rotate slightly to reveal the next card, then settle
+        setRotation(anglePerItem);
+        rotationValue.set(anglePerItem);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isInView, items.length, rotationValue]);
 
   const handlePan = (_: any, info: PanInfo) => {
     const dragFactor = 0.5; // Sensitivity
@@ -81,14 +96,14 @@ export const ThreeDCarousel = ({ items }: { items: TeamMember[] }) => {
 
   // Calculate radius based on width and number of items
   // Radius = (Width of Item / 2) / tan(PI / numItems)
-  const itemWidth = 240; // Smaller width for mobile calculations
+  const itemWidth = 280; // Increased width to push cards further apart
   const radius = items.length > 2 
     ? (itemWidth / 2) / Math.tan(Math.PI / items.length) 
-    : 160; // Much tighter fallback radius
+    : 180; // Increased fallback radius
 
   return (
     <div 
-      className="relative w-full h-[400px] flex items-center justify-center overflow-hidden [perspective:800px] scale-90 md:scale-100 origin-center" // Adjusted scaling
+      className="relative w-full h-[500px] flex items-center justify-center overflow-hidden [perspective:800px] scale-90 md:scale-100 origin-center" // Increased height from 400px to 500px
       ref={containerRef}
     >
       <motion.div

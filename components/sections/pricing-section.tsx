@@ -58,7 +58,7 @@ export function PricingSection({ pricing }: PricingProps) {
       {/* Background Elements - Fixed clipping on mobile */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1200px] h-[600px] bg-indigo-900/20 blur-[120px] rounded-full pointer-events-none" />
 
-      <div className="max-w-4xl mx-auto px-4 relative z-10 pt-10 md:pt-0">
+      <div className="max-w-4xl mx-auto px-2 md:px-4 relative z-10 pt-10 md:pt-0">
         {/* Header */}
         <FadeIn className="text-center mb-10">
           <SectionHeading
@@ -72,11 +72,11 @@ export function PricingSection({ pricing }: PricingProps) {
         </FadeIn>
 
         {/* Pricing Card */}
-        <FadeIn delay={0.2} className="relative max-w-sm mx-auto">
+        <FadeIn delay={0.2} className="relative w-full max-w-md lg:max-w-xl mx-auto">
            {/* Card Glow */}
            <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/20 to-purple-500/20 rounded-3xl blur-xl transform scale-105 opacity-50" />
            
-           <div className="relative bg-[#0A0A0A] border border-white/10 rounded-3xl p-8 shadow-2xl overflow-hidden">
+           <div className="relative bg-[#0A0A0A] border border-white/10 rounded-3xl p-8 md:p-10 shadow-2xl overflow-hidden">
               {/* Top Gradient Line */}
               <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-50" />
 

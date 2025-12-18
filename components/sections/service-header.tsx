@@ -7,6 +7,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { BlurReveal } from "@/components/ui/blur-reveal";
 import { InfiniteMovingLogos } from "@/components/aceternity/infinite-moving-logos";
+import { useBreadcrumb } from "@/components/layout/breadcrumb-context";
 
 interface ServiceHeaderProps {
   title: string;
@@ -33,6 +34,13 @@ const DEFAULT_LOGOS = [
 
 export function ServiceHeader({ title, description, highlight, introduction, buttonText, buttonLink, secondaryButtonText, secondaryButtonLink, trustedLogos }: ServiceHeaderProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const { setLastItemOverride } = useBreadcrumb();
+
+  React.useEffect(() => {
+    setLastItemOverride(title);
+    return () => setLastItemOverride(null);
+  }, [title, setLastItemOverride]);
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],

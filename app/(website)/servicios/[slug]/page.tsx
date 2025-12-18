@@ -166,6 +166,9 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
   return {
     title: service.seoTitle || `${service.title} | ONBAST`,
     description: service.seoDescription || service.shortDescription,
+    alternates: {
+      canonical: `https://onbast.com/servicios/${service.slug}`,
+    },
     openGraph: {
       title: service.seoTitle || `${service.title} | ONBAST`,
       description: service.seoDescription || service.shortDescription,

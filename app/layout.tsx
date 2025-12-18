@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { BreadcrumbProvider } from "@/components/layout/breadcrumb-context";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const poppins = Poppins({ 
@@ -23,6 +24,10 @@ const instrumentSerif = Instrument_Serif({
 export const metadata: Metadata = {
   title: "ONBAST | Web Development & SEO Agency",
   description: "Agencia de Desarrollo Web Ultra-High-Performance, SEO & GEO.",
+  metadataBase: new URL("https://onbast.com"),
+  alternates: {
+    canonical: "./",
+  },
 };
 
 export default function RootLayout({
@@ -45,7 +50,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <BreadcrumbProvider>
+              {children}
+            </BreadcrumbProvider>
             <Analytics />
             <SpeedInsights />
           </ThemeProvider>

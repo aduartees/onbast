@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ChevronRight, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useBreadcrumb } from "@/components/layout/breadcrumb-context";
 
 // Map common paths to readable names
 const PATH_MAP: Record<string, string> = {
@@ -21,6 +22,7 @@ const PATH_MAP: Record<string, string> = {
 
 export function Breadcrumbs() {
   const pathname = usePathname();
+  const { lastItemOverride } = useBreadcrumb();
 
   const breadcrumbs = useMemo(() => {
     if (pathname === "/") return [];
@@ -28,11 +30,18 @@ export function Breadcrumbs() {
     const segments = pathname.split("/").filter(Boolean);
     return segments.map((segment, index) => {
       const href = `/${segments.slice(0, index + 1).join("/")}`;
-      // Use map or capitalize first letter of each word and replace hyphens
-      const name = PATH_MAP[segment] || segment.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+      
+      // If it's the last item and we have an override, use it.
+      // Otherwise use map or capitalize first letter of each word and replace hyphens
+      let name = PATH_MAP[segment] || segment.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+      
+      if (index === segments.length - 1 && lastItemOverride) {
+        name = lastItemOverride;
+      }
+      
       return { name, href };
     });
-  }, [pathname]);
+  }, [pathname, lastItemOverride]);
 
   // Don't render on home page, studio, or if empty
   if (

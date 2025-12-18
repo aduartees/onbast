@@ -190,7 +190,7 @@ export function MobileNav({ menuItems = [], cta, socialLinks, agencyEmail, agenc
                                 </Button>
                             </Link>
                             <a 
-                                href={agencyWhatsapp || "https://wa.me/34600000000"} 
+                                href={agencyWhatsapp ? (agencyWhatsapp.startsWith('http') ? agencyWhatsapp : `https://wa.me/${agencyWhatsapp.replace(/[^0-9]/g, '')}`) : "https://wa.me/34600000000"} 
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="w-14 h-14 flex items-center justify-center rounded-full border border-white/20 text-white hover:bg-white hover:text-black transition-all duration-300"

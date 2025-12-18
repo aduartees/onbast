@@ -12,6 +12,8 @@ interface NavbarProps {
   data?: {
     agency?: {
       logo?: string;
+      email?: string;
+      phone?: string;
     };
     header?: {
       logoText?: string;
@@ -31,6 +33,10 @@ interface NavbarProps {
     };
     footer?: {
       copyrightText?: string;
+      socialLinks?: {
+        platform: string;
+        url: string;
+      }[];
     };
   };
 }
@@ -127,7 +133,13 @@ export function Navbar({ data }: NavbarProps) {
       </div>
 
       {/* Mobile Menu */}
-      <MobileNav menuItems={menuItems} cta={{ text: ctaText, url: ctaUrl }} />
+      <MobileNav 
+        menuItems={menuItems} 
+        cta={{ text: ctaText, url: ctaUrl }} 
+        socialLinks={footer?.socialLinks}
+        agencyEmail={agency?.email}
+        agencyPhone={agency?.phone}
+      />
     </nav>
   )
 }

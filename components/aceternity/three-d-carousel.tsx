@@ -81,14 +81,14 @@ export const ThreeDCarousel = ({ items }: { items: TeamMember[] }) => {
 
   // Calculate radius based on width and number of items
   // Radius = (Width of Item / 2) / tan(PI / numItems)
-  const itemWidth = 300; // Approximate width of a card
+  const itemWidth = 280; // Correct width of a card based on CSS
   const radius = items.length > 2 
-    ? (itemWidth / 2) / Math.tan(Math.PI / items.length) + 50 // Added buffer
-    : 300; // Fallback for few items
+    ? (itemWidth / 2) / Math.tan(Math.PI / items.length) + 20 // Adjusted buffer for tighter fit
+    : 200; // Smaller fallback radius
 
   return (
     <div 
-      className="relative w-full h-[500px] flex items-center justify-center overflow-hidden [perspective:1000px]"
+      className="relative w-full h-[500px] flex items-center justify-center overflow-hidden [perspective:800px] scale-75 md:scale-100 origin-center" // Added scaling for mobile
       ref={containerRef}
     >
       <motion.div

@@ -92,7 +92,7 @@ export function PricingSection({ pricing }: PricingProps) {
 
               {/* Price */}
               <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-5xl font-bold text-white tracking-tight">
+                <span className="text-5xl font-bold text-white">
                     <motion.span
                         key={totalPrice}
                         initial={{ opacity: 0, y: 20 }} // Start from below

@@ -102,7 +102,7 @@ export const CardTitle = ({
   const IconComponent = icon && (LucideIcons as any)[icon];
 
   return (
-    <h4 className={cn("text-zinc-100 font-bold tracking-wide mt-4 flex items-center gap-3 text-xl", className)}>
+    <h4 className={cn("text-zinc-100 font-bold mt-4 flex items-center gap-3 text-xl", className)}>
       {IconComponent && <IconComponent className="w-6 h-6 text-indigo-500" />}
       {children}
     </h4>

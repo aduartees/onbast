@@ -143,8 +143,9 @@ const TeamCard = ({ member }: { member: TeamMember }) => {
 
       {/* Floating Glass Info Card */}
       <div className="absolute bottom-4 left-4 right-4 p-5 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] translate-y-2 transition-transform duration-500 group-hover:translate-y-0 will-change-transform">
-         <div className="flex flex-col gap-1">
-            <h3 className="text-xl font-bold text-white tracking-tight leading-tight">
+         {/* Info */}
+         <div className="pt-4 text-center">
+            <h3 className="text-xl font-bold text-white mb-1 group-hover:text-indigo-200 transition-colors">
               {member.name}
             </h3>
             <p className="text-indigo-300 font-mono text-xs uppercase tracking-wider font-medium">

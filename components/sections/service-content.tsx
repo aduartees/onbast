@@ -390,7 +390,7 @@ const ContentWrapper = ({ mainImage, mainImageAlt, relatedProjects, features, fe
           <section className="text-center py-16 relative overflow-hidden rounded-3xl bg-neutral-900/10 border border-white/5 max-w-4xl mx-auto">
               <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none" />
               <FadeIn className="relative z-10 max-w-2xl mx-auto px-6">
-                <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tighter mb-4">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
                   {ctaSection?.title || "¿Listo para comenzar?"}
                 </h2>
                 <p className="text-neutral-400 text-base mb-8 max-w-lg mx-auto font-light">

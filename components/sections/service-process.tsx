@@ -79,7 +79,7 @@ const TimelineItem = ({ step, index, isLast }: { step: ProcessStep, index: numbe
                     <span className="text-4xl md:text-5xl font-bold text-white/10 font-serif italic group-hover:text-indigo-500/20 transition-colors">
                         {String(index + 1).padStart(2, '0')}
                     </span>
-                    <h3 className="text-xl md:text-2xl font-bold text-white tracking-tight">
+                    <h3 className="text-xl md:text-2xl font-bold text-white">
                         {step.title}
                     </h3>
                 </div>

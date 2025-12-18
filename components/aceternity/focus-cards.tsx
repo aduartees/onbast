@@ -43,7 +43,12 @@ export const Card = React.memo(
           <div className="bg-gradient-to-t from-black/80 via-black/40 to-transparent absolute inset-0 pointer-events-none" />
           <div className="relative z-10">
             <h3 className="text-xl md:text-3xl font-bold text-white mb-2">{card.title}</h3>
-            <p className="text-neutral-300 text-sm md:text-base line-clamp-2 mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0">
+            <p
+              className={cn(
+                "text-neutral-300 text-sm md:text-base line-clamp-2 mb-4 transition-all duration-300",
+                hovered === index ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+              )}
+            >
                {card.description}
             </p>
             <Link 

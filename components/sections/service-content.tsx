@@ -159,7 +159,7 @@ export function ServiceContent({ mainImage, mainImageAlt, mainImageName, related
 }
 
 // Extracted Content Component to reuse
-const ContentWrapper = ({ mainImage, mainImageAlt, relatedProjects, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection }: ServiceContentProps) => {
+const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProjects, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection }: ServiceContentProps) => {
     return (
         <div className="max-w-6xl mx-auto pt-4 antialiased relative pb-16">
           

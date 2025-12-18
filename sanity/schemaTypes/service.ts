@@ -77,6 +77,22 @@ export default defineType({
       initialValue: '/contacto'
     }),
     defineField({
+      name: 'heroSecondaryButtonText',
+      title: 'Texto Botón Secundario Hero',
+      type: 'string',
+      group: 'general',
+      description: 'Ej: Ver Casos de Éxito',
+      initialValue: 'Ver Casos de Éxito'
+    }),
+    defineField({
+      name: 'heroSecondaryButtonLink',
+      title: 'Enlace Botón Secundario Hero',
+      type: 'string',
+      group: 'general',
+      description: 'Ej: /proyectos',
+      initialValue: '/proyectos'
+    }),
+    defineField({
       name: 'heroHeadline',
       title: 'Titular de Impacto (Hero)',
       type: 'string',

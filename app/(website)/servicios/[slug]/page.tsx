@@ -24,6 +24,8 @@ interface SanityServiceDetail {
   imageAlt?: string;
   heroButtonText?: string;
   heroButtonLink?: string;
+  heroSecondaryButtonText?: string;
+  heroSecondaryButtonLink?: string;
   heroHeadline?: string;
   heroHighlight?: string;
   heroIntroduction?: string;
@@ -224,6 +226,8 @@ export default async function ServicePage({ params }: ServicePageProps) {
         trustedLogos={service.heroTrustedLogos}
         buttonText={service.heroButtonText}
         buttonLink={service.heroButtonLink}
+        secondaryButtonText={service.heroSecondaryButtonText}
+        secondaryButtonLink={service.heroSecondaryButtonLink}
       />
       <ServiceContent 
         key={`content-${slug}`} // Force re-mount for content animations too

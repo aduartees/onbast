@@ -15,6 +15,8 @@ interface ServiceHeaderProps {
   introduction?: string;
   buttonText?: string;
   buttonLink?: string;
+  secondaryButtonText?: string;
+  secondaryButtonLink?: string;
   trustedLogos?: { name: string; logo: string; alt?: string }[];
 }
 
@@ -29,7 +31,7 @@ const DEFAULT_LOGOS = [
   { name: "Google", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", alt: "Google" },
 ];
 
-export function ServiceHeader({ title, description, highlight, introduction, buttonText, buttonLink, trustedLogos }: ServiceHeaderProps) {
+export function ServiceHeader({ title, description, highlight, introduction, buttonText, buttonLink, secondaryButtonText, secondaryButtonLink, trustedLogos }: ServiceHeaderProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -142,8 +144,11 @@ export function ServiceHeader({ title, description, highlight, introduction, but
             size="default" 
             variant="outline" 
             className="h-9 md:h-10 px-5 md:px-7 text-xs md:text-sm border-neutral-800 bg-black/20 text-neutral-300 hover:bg-white/5 hover:text-white rounded-full backdrop-blur-sm transition-all w-full sm:w-auto font-medium"
+            asChild
           >
-             Ver Casos de Éxito
+             <a href={secondaryButtonLink || "/proyectos"} title={secondaryButtonText || "Ver Casos de Éxito"}>
+                {secondaryButtonText || "Ver Casos de Éxito"}
+             </a>
           </Button>
         </motion.div>
 

@@ -20,6 +20,8 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
   "imageAlt": mainImage.alt,
   heroButtonText,
   heroButtonLink,
+  heroSecondaryButtonText,
+  heroSecondaryButtonLink,
   heroHeadline,
   heroHighlight,
   heroIntroduction,

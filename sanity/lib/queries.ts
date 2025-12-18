@@ -111,15 +111,29 @@ export const SERVICE_BY_SLUG_QUERY = `*[_type == "service" && slug.current == $s
         name
     }
   },
-  relatedProjects[]->{
-    _id,
-    title,
-    description,
-    "slug": slug.current,
-    "imageUrl": mainImage.asset->url,
-    tags,
-    link
-  },
+  relatedProjectsTitle,
+  relatedProjectsHighlight,
+  relatedProjectsDescription,
+  "relatedProjects": select(
+    count(relatedProjects) > 0 => relatedProjects[]->{
+      _id,
+      title,
+      description,
+      "slug": slug.current,
+      "imageUrl": mainImage.asset->url,
+      tags,
+      link
+    },
+    *[_type == "project"] | order(_createdAt desc)[0...3] {
+      _id,
+      title,
+      description,
+      "slug": slug.current,
+      "imageUrl": mainImage.asset->url,
+      tags,
+      link
+    }
+  ),
   faqTitle,
   faqHighlight,
   faqDescription,

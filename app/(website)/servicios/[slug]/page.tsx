@@ -102,6 +102,9 @@ interface SanityServiceDetail {
     trustedCompaniesTitle?: string;
     trustedLogos?: { logo: string | null; name: string }[];
   };
+  relatedProjectsTitle?: string;
+  relatedProjectsHighlight?: string;
+  relatedProjectsDescription?: string;
   relatedProjects?: {
     _id: string;
     title: string;
@@ -260,6 +263,9 @@ export default async function ServicePage({ params }: ServicePageProps) {
         testimonialsDescription={service.testimonialsDescription}
         pricing={service.pricing}
         relatedProjects={service.relatedProjects}
+        relatedProjectsTitle={service.relatedProjectsTitle}
+        relatedProjectsHighlight={service.relatedProjectsHighlight}
+        relatedProjectsDescription={service.relatedProjectsDescription}
         faqs={service.faqs} 
         faqTitle={service.faqTitle}
         faqHighlight={service.faqHighlight}

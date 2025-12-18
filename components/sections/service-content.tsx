@@ -28,6 +28,9 @@ interface ServiceContentProps {
   mainImage?: string;
   mainImageAlt?: string;
   mainImageName?: string;
+  relatedProjectsTitle?: string;
+  relatedProjectsHighlight?: string;
+  relatedProjectsDescription?: string;
   relatedProjects?: {
     _id: string;
     title: string;
@@ -125,7 +128,7 @@ interface ServiceContentProps {
   };
 }
 
-export function ServiceContent({ mainImage, mainImageAlt, mainImageName, relatedProjects, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection }: ServiceContentProps) {
+export function ServiceContent({ mainImage, mainImageAlt, mainImageName, relatedProjects, relatedProjectsTitle, relatedProjectsHighlight, relatedProjectsDescription, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection }: ServiceContentProps) {
   return (
     <div className="bg-neutral-950 min-h-screen py-12 md:py-24 px-4 md:px-6 relative z-10 rounded-t-[3rem] md:rounded-t-[5rem] shadow-[0_-50px_100px_-20px_rgba(79,70,229,0.1)] border-t border-white/10 mt-0 transform-gpu backface-hidden">
       
@@ -142,7 +145,7 @@ export function ServiceContent({ mainImage, mainImageAlt, mainImageName, related
            mainImage={mainImage}
            mainImageAlt={mainImageAlt}
            mainImageName={mainImageName}
-           relatedProjects={relatedProjects}
+           relatedProjects={relatedProjects} relatedProjectsTitle={relatedProjectsTitle} relatedProjectsHighlight={relatedProjectsHighlight} relatedProjectsDescription={relatedProjectsDescription}
            features={features} featuresTitle={featuresTitle} featuresHighlight={featuresHighlight} featuresDescription={featuresDescription}
            benefits={benefits} process={process} processTitle={processTitle} processHighlight={processHighlight} processDescription={processDescription}
            longDescription={longDescription} overviewText={overviewText} 
@@ -159,7 +162,7 @@ export function ServiceContent({ mainImage, mainImageAlt, mainImageName, related
 }
 
 // Extracted Content Component to reuse
-const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProjects, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection }: ServiceContentProps) => {
+const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProjects, relatedProjectsTitle, relatedProjectsHighlight, relatedProjectsDescription, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection }: ServiceContentProps) => {
     return (
         <div className="max-w-6xl mx-auto pt-4 antialiased relative pb-16">
           
@@ -357,13 +360,15 @@ const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProject
              <section className="mb-20 md:mb-28 w-full">
                 <FadeIn className="max-w-4xl mx-auto px-4 mb-12">
                    <SectionHeading 
-                     title="Proyectos Relacionados" 
+                     title={relatedProjectsTitle || "Proyectos Relacionados"} 
                      subtitle="Casos de Éxito" 
-                     highlight="Destacados" 
+                     highlight={relatedProjectsHighlight || "Destacados"} 
                    />
-                   <p className="text-neutral-400 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed text-center">
-                      Descubre cómo hemos transformado ideas en productos digitales de alto impacto.
-                   </p>
+                   {relatedProjectsDescription && (
+                     <p className="text-neutral-400 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed text-center">
+                        {relatedProjectsDescription}
+                     </p>
+                   )}
                 </FadeIn>
                 <ParallaxScroll items={relatedProjects} />
              </section>

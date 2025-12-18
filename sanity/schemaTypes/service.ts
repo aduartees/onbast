@@ -225,11 +225,26 @@ export default defineType({
       of: [{ type: 'reference', to: [{ type: 'testimonial' }] }]
     }),
     defineField({
+      name: 'relatedProjectsTitle',
+      title: 'Título Proyectos Relacionados',
+      type: 'string',
+      group: 'content',
+      initialValue: 'Proyectos Relacionados'
+    }),
+    defineField({ name: 'relatedProjectsHighlight', title: 'Palabra Destacada Proyectos (Cursiva)', type: 'string', group: 'content' }),
+    defineField({
+      name: 'relatedProjectsDescription',
+      title: 'Descripción Proyectos Relacionados',
+      type: 'text',
+      rows: 2,
+      group: 'content',
+    }),
+    defineField({
       name: 'relatedProjects',
       title: 'Proyectos Relacionados',
       type: 'array',
       group: 'content',
-      description: 'Selecciona proyectos que se mostrarán en la landing de este servicio.',
+      description: 'Selecciona proyectos que se mostrarán en la landing de este servicio. Si se deja vacío, se mostrarán automáticamente los 3 últimos proyectos.',
       of: [{ type: 'reference', to: [{ type: 'project' }] }]
     }),
     defineField({

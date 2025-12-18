@@ -7,7 +7,7 @@ import { BackgroundBeams } from "@/components/aceternity/background-beams";
 import { HoverEffect } from "@/components/aceternity/card-hover-effect";
 import { FadeIn } from "@/components/ui/fade-in";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { ParallaxScroll } from "@/components/ui/parallax-scroll";
+import { ParallaxScroll } from "@/components/aceternity/parallax-scroll";
 import { ScrollReset } from "@/components/utils/scroll-reset";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Code2, Zap, Shield, Globe, Database, Smartphone } from "lucide-react";

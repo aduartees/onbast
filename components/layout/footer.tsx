@@ -63,7 +63,7 @@ export function Footer({ data }: FooterProps) {
           
           {/* Brand Column */}
           <div className="md:col-span-5 flex flex-col gap-6 items-center md:items-start text-center md:text-left">
-            <h3 className="text-2xl font-bold text-white tracking-tighter font-inter">{agency?.name || "onbast."}</h3>
+            <p className="text-2xl font-bold text-white tracking-tighter font-inter">{agency?.name || "onbast."}</p>
             <p className="text-neutral-400 max-w-sm leading-relaxed text-sm font-light">
               {footer?.brandText || "Redefiniendo el estándar digital. Creamos experiencias web de alto rendimiento y estrategias GEO que dominan el futuro de la búsqueda."}
             </p>

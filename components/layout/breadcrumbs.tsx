@@ -64,12 +64,11 @@ export function Breadcrumbs() {
         "item": process.env.NEXT_PUBLIC_URL || "https://onbast.com"
       },
       ...breadcrumbs.map((crumb, index) => {
-        const isLast = index === breadcrumbs.length - 1;
         return {
           "@type": "ListItem",
           "position": index + 2,
           "name": crumb.name,
-          ...(isLast ? {} : { "item": `${process.env.NEXT_PUBLIC_URL || "https://onbast.com"}${crumb.href}` })
+          "item": `${process.env.NEXT_PUBLIC_URL || "https://onbast.com"}${crumb.href}`
         };
       })
     ]

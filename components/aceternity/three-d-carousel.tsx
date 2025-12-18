@@ -148,9 +148,9 @@ const TeamCard = ({ member }: { member: TeamMember }) => {
             <h3 className="text-lg sm:text-xl font-bold text-white mb-1 group-hover:text-indigo-200 transition-colors">
               {member.name}
             </h3>
-            <p className="text-indigo-300 font-mono text-[10px] sm:text-xs uppercase tracking-wider font-medium">
+            <h4 className="text-indigo-300 font-mono text-[10px] sm:text-xs uppercase tracking-wider font-medium">
               {member.role}
-            </p>
+            </h4>
          </div>
 
          {/* Divider & Socials (Reveal on Hover) */}

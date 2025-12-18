@@ -88,7 +88,7 @@ export function Footer({ data }: FooterProps) {
           {/* Dynamic Links Columns */}
           {footer?.columns?.map((col, idx) => (
             <div key={idx} className="md:col-span-2 flex flex-col gap-4 items-center md:items-start text-center md:text-left">
-              <h4 className="text-white font-medium mb-2">{col.title}</h4>
+              <p className="text-white font-medium mb-2">{col.title}</p>
               {col.links?.map((link, linkIdx) => (
                  <FooterLink key={linkIdx} href={link.url}>{link.label}</FooterLink>
               ))}
@@ -99,13 +99,13 @@ export function Footer({ data }: FooterProps) {
           {!footer?.columns && (
             <>
               <div className="md:col-span-2 md:col-start-7 flex flex-col gap-4 items-center md:items-start text-center md:text-left">
-                <h4 className="text-white font-medium mb-2">Explorar</h4>
+                <p className="text-white font-medium mb-2">Explorar</p>
                 <FooterLink href="/servicios">Servicios</FooterLink>
                 <FooterLink href="/projects">Proyectos</FooterLink>
                 <FooterLink href="/agencia">Agencia</FooterLink>
               </div>
               <div className="md:col-span-2 flex flex-col gap-4 items-center md:items-start text-center md:text-left">
-                <h4 className="text-white font-medium mb-2">Legal</h4>
+                <p className="text-white font-medium mb-2">Legal</p>
                 <FooterLink href="/privacy">Privacidad</FooterLink>
                 <FooterLink href="/terms">Términos</FooterLink>
               </div>
@@ -114,7 +114,7 @@ export function Footer({ data }: FooterProps) {
 
           {/* Contact Column (Always present, possibly dynamic) */}
           <div className="md:col-span-2 flex flex-col gap-4 items-center md:items-start text-center md:text-left">
-            <h4 className="text-white font-medium mb-2">Contacto</h4>
+            <p className="text-white font-medium mb-2">Contacto</p>
             <FooterLink href={`mailto:${agency?.email || "hello@onbast.agency"}`}>
               {agency?.email || "hello@onbast.agency"}
             </FooterLink>

@@ -78,9 +78,9 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
             <h3 className="text-xl font-bold text-white tracking-tight leading-tight">
               {member.name}
             </h3>
-            <p className="text-indigo-300 font-mono text-xs uppercase tracking-wider font-medium">
+            <h4 className="text-indigo-300 font-mono text-xs uppercase tracking-wider font-medium">
               {member.role}
-            </p>
+            </h4>
          </div>
 
          {/* Divider & Socials (Always visible on mobile to prevent tap issues) */}

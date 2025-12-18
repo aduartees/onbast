@@ -129,13 +129,42 @@ export function generateServiceSchema(service: any, agency?: any) {
     const serviceImage = service.seoImage || service.imageUrl;
     
     // Parse price if available
-    let offers = undefined;
+    let offers: any = undefined;
     if (service.pricing && service.pricing.price) {
         // Remove non-numeric chars except dot/comma, then normalize decimal
         // Assuming format "2.500€" or "2500" -> extract digits
         const numericPrice = service.pricing.price.replace(/[^0-9]/g, '');
         
         if (numericPrice) {
+             // Detect Recurring Payment (Subscription)
+             const period = service.pricing.period ? service.pricing.period.toLowerCase() : '';
+             let priceSpec = undefined;
+
+             // Logic for UnitPriceSpecification (Recurring)
+             if (period.includes('mes') || period.includes('mensual') || period.includes('month') || period.includes('/mo')) {
+                priceSpec = {
+                    "@type": "UnitPriceSpecification",
+                    "price": numericPrice,
+                    "priceCurrency": "EUR",
+                    "referenceQuantity": {
+                        "@type": "QuantitativeValue",
+                        "value": "1",
+                        "unitCode": "MON"
+                    }
+                };
+             } else if (period.includes('año') || period.includes('anual') || period.includes('year') || period.includes('/yr')) {
+                 priceSpec = {
+                    "@type": "UnitPriceSpecification",
+                    "price": numericPrice,
+                    "priceCurrency": "EUR",
+                    "referenceQuantity": {
+                        "@type": "QuantitativeValue",
+                        "value": "1",
+                        "unitCode": "ANN"
+                    }
+                };
+             }
+
              offers = {
                 "@type": "Offer",
                 "price": numericPrice,
@@ -143,7 +172,8 @@ export function generateServiceSchema(service: any, agency?: any) {
                 "availability": "https://schema.org/InStock",
                 "url": `${baseUrl}/services/${service.slug}`,
                 "description": service.pricing.description || service.shortDescription,
-                "priceValidUntil": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0] // Valid for 1 year
+                "priceValidUntil": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0], // Valid for 1 year
+                ...(priceSpec ? { "priceSpecification": priceSpec } : {})
              };
         }
     }

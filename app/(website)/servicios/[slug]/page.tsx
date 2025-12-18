@@ -226,6 +226,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
       <ServiceContent 
         key={`content-${slug}`} // Force re-mount for content animations too
         mainImage={service.imageUrl}
+        mainImageAlt={service.imageAlt || service.title}
         features={service.features} 
         featuresTitle={service.featuresTitle}
         featuresHighlight={service.featuresHighlight}

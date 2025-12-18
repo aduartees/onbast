@@ -26,6 +26,7 @@ import { ParallaxScroll } from "@/components/aceternity/parallax-scroll";
 
 interface ServiceContentProps {
   mainImage?: string;
+  mainImageAlt?: string;
   relatedProjects?: {
     _id: string;
     title: string;
@@ -122,7 +123,7 @@ interface ServiceContentProps {
   };
 }
 
-export function ServiceContent({ mainImage, relatedProjects, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection }: ServiceContentProps) {
+export function ServiceContent({ mainImage, mainImageAlt, relatedProjects, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection }: ServiceContentProps) {
   return (
     <div className="bg-neutral-950 min-h-screen py-12 md:py-24 px-4 md:px-6 relative z-10 rounded-t-[3rem] md:rounded-t-[5rem] shadow-[0_-50px_100px_-20px_rgba(79,70,229,0.1)] border-t border-white/10 mt-0 transform-gpu backface-hidden">
       
@@ -133,47 +134,29 @@ export function ServiceContent({ mainImage, relatedProjects, features, featuresT
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-indigo-900/10 blur-[60px] rounded-full transform-gpu will-change-transform" />
       </div>
 
-      {/* Responsive Tracing Beam: Hidden on mobile, visible on lg+ */}
-      <div className="hidden lg:block">
-        <TracingBeam className="px-4 max-w-6xl mx-auto">
-           <ContentWrapper 
-             mainImage={mainImage}
-             relatedProjects={relatedProjects}
-             features={features} featuresTitle={featuresTitle} featuresHighlight={featuresHighlight} featuresDescription={featuresDescription}
-             benefits={benefits} process={process} processTitle={processTitle} processHighlight={processHighlight} processDescription={processDescription}
-             longDescription={longDescription} overviewText={overviewText} 
-             technologies={technologies} techTitle={techTitle} techHighlight={techHighlight} techDescription={techDescription}
-             impactSection={impactSection} team={team} teamTitle={teamTitle} teamHighlight={teamHighlight} teamDescription={teamDescription}
-             testimonials={testimonials} testimonialsTitle={testimonialsTitle} testimonialsHighlight={testimonialsHighlight} testimonialsDescription={testimonialsDescription}
-             pricing={pricing}
-             faqs={faqs} faqTitle={faqTitle} faqHighlight={faqHighlight} faqDescription={faqDescription}
-             ctaSection={ctaSection}
-           />
-        </TracingBeam>
-      </div>
-
-      {/* Mobile/Tablet Content without TracingBeam */}
-      <div className="lg:hidden">
+      {/* Single Content Wrapper with Internal Responsive Tracing Beam Logic */}
+      <TracingBeam className="px-4 max-w-6xl mx-auto">
          <ContentWrapper 
-             mainImage={mainImage}
-             relatedProjects={relatedProjects}
-             features={features} featuresTitle={featuresTitle} featuresHighlight={featuresHighlight} featuresDescription={featuresDescription}
-             benefits={benefits} process={process} processTitle={processTitle} processHighlight={processHighlight} processDescription={processDescription}
-             longDescription={longDescription} overviewText={overviewText} 
-             technologies={technologies} techTitle={techTitle} techHighlight={techHighlight} techDescription={techDescription}
-             impactSection={impactSection} team={team} teamTitle={teamTitle} teamHighlight={teamHighlight} teamDescription={teamDescription}
-             testimonials={testimonials} testimonialsTitle={testimonialsTitle} testimonialsHighlight={testimonialsHighlight} testimonialsDescription={testimonialsDescription}
-             pricing={pricing}
-             faqs={faqs} faqTitle={faqTitle} faqHighlight={faqHighlight} faqDescription={faqDescription}
-             ctaSection={ctaSection}
-           />
-      </div>
+           mainImage={mainImage}
+           mainImageAlt={mainImageAlt}
+           relatedProjects={relatedProjects}
+           features={features} featuresTitle={featuresTitle} featuresHighlight={featuresHighlight} featuresDescription={featuresDescription}
+           benefits={benefits} process={process} processTitle={processTitle} processHighlight={processHighlight} processDescription={processDescription}
+           longDescription={longDescription} overviewText={overviewText} 
+           technologies={technologies} techTitle={techTitle} techHighlight={techHighlight} techDescription={techDescription}
+           impactSection={impactSection} team={team} teamTitle={teamTitle} teamHighlight={teamHighlight} teamDescription={teamDescription}
+           testimonials={testimonials} testimonialsTitle={testimonialsTitle} testimonialsHighlight={testimonialsHighlight} testimonialsDescription={testimonialsDescription}
+           pricing={pricing}
+           faqs={faqs} faqTitle={faqTitle} faqHighlight={faqHighlight} faqDescription={faqDescription}
+           ctaSection={ctaSection}
+         />
+      </TracingBeam>
     </div>
   );
 }
 
 // Extracted Content Component to reuse
-const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection }: ServiceContentProps) => {
+const ContentWrapper = ({ mainImage, mainImageAlt, relatedProjects, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection }: ServiceContentProps) => {
     return (
         <div className="max-w-6xl mx-auto pt-4 antialiased relative pb-16">
           
@@ -207,7 +190,7 @@ const ContentWrapper = ({ mainImage, relatedProjects, features, featuresTitle, f
                              <div className="relative aspect-[3/2] w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl group">
                                 <Image 
                                    src={mainImage}
-                                   alt="Service Overview"
+                                   alt={mainImageAlt || "Service Overview"}
                                    fill
                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
                                 />

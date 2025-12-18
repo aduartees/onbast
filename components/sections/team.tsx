@@ -25,7 +25,7 @@ export const TeamSection = ({ team }: { team: TeamMember[] }) => {
       </div>
 
       {/* Desktop: Premium Grid */}
-      <div className="hidden lg:grid grid-cols-3 gap-8 max-w-7xl mx-auto px-8">
+      <div className="hidden lg:grid grid-cols-3 gap-8 max-w-7xl mx-auto px-8 place-items-center">
         {team.map((member, index) => (
           <TeamCard key={index} member={member} index={index} />
         ))}

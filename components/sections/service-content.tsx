@@ -27,6 +27,7 @@ import { ParallaxScroll } from "@/components/aceternity/parallax-scroll";
 interface ServiceContentProps {
   mainImage?: string;
   mainImageAlt?: string;
+  mainImageName?: string;
   relatedProjects?: {
     _id: string;
     title: string;
@@ -191,8 +192,8 @@ const ContentWrapper = ({ mainImage, mainImageAlt, relatedProjects, features, fe
                              <div className="relative aspect-[3/2] w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl group">
                                 <Image 
                                    src={mainImage}
-                                   alt={mainImageAlt || "Service Overview"}
-                                   title={mainImageAlt || "Service Overview"}
+                                   alt={mainImageAlt || mainImageName || "Service Overview"}
+                                   title={mainImageAlt || mainImageName || "Service Overview"}
                                    fill
                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
                                 />

@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ServiceHeader } from "@/components/sections/service-header";
 import { ServiceContent } from "@/components/sections/service-content";
 import { ScrollReset } from "@/components/utils/scroll-reset";
-import { generateServiceSchema, generateFAQSchema } from "@/lib/seo";
+import { generateServiceSchema, generateFAQSchema, generateBreadcrumbSchema } from "@/lib/seo";
 
 // --- Types ---
 interface ServicePageProps {
@@ -204,11 +204,17 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
   const serviceSchema = generateServiceSchema(service, service.agency);
   const faqSchema = generateFAQSchema(service.faqs || []);
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Inicio", item: "https://onbast.com" },
+    { name: "Servicios", item: "https://onbast.com/servicios" },
+    { name: service.title, item: `https://onbast.com/servicios/${service.slug}` }
+  ]);
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
       serviceSchema,
+      breadcrumbSchema,
       ...(faqSchema ? [faqSchema] : [])
     ]
   };

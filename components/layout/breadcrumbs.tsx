@@ -52,7 +52,10 @@ export function Breadcrumbs() {
     return null;
   }
 
-  // Generate JSON-LD
+  // Generate JSON-LD - Only if NOT a service landing page (handled in page.tsx for SEO title)
+  const isServiceLanding = pathname.startsWith('/servicios/') && pathname.split('/').length > 2;
+  const shouldRenderJsonLd = !isServiceLanding;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -76,10 +79,12 @@ export function Breadcrumbs() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      {shouldRenderJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
       
       {/* Visual Breadcrumbs - Absolute positioned to sit on top of Heros */}
       <nav 

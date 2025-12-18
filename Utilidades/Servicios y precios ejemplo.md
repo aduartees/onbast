@@ -1,33 +1,9 @@
-Aquí tienes la **Arquitectura Comercial y Web Definitiva para ONBAST**:
-
----
-
-### 1. Mapa del Sitio (Arquitectura de Navegación)
-
-Tu menú de navegación debe quedar así para dirigir el tráfico correctamente:
-
-*   **Servicios** (Dropdown)
-    *   Desarrollo Web
-    *   Desarrollo MVP / Apps Web
-    *   Posicionamiento SEO y GEO (IA)
-    *   Gestión Perfil Google
-*   **Planes** (Vista global de precios)
-*   **Proyectos**
-*   **Agencia**
-*   **Contacto**
-
----
-
-### 2. Definición de los Servicios y sus Planes (Suscripción)
-
-Aquí tienes cómo estructurar la oferta comercial dentro de cada servicio.
-
-#### A. Servicio: **Desarrollo Web**
+#### A. Servicio: **Desarrollo y Diseño Web**
 *La base tecnológica. Modelo "Website as a Service" (WaaS).*
 
 *   **Filosofía:** "No compres una web que envejece. Suscríbete a una plataforma viva."
 *   **El Plan Único:** **Suscripción Corporate**
-    *   **Precio:** **150€ / mes** (Permanencia 18 meses).
+    *   **Precio:** **200€ / mes** (Permanencia 18 meses).
     *   **Qué incluye:**
         *   Arquitectura Next.js 15 (Ultra-rápida).
         *   Diseño UI Premium (Sistema de diseño propio).
@@ -80,10 +56,7 @@ Aquí tienes cómo estructurar la oferta comercial dentro de cada servicio.
         *   Publicación de Novedades cada 3 dias (Google Posts).
         *   Defensa contra spam en el mapa.
 
----
-
-### 3. La Página de "Planes" (`/planes`)
-
+Y la estructura del formulario, seria asi:
 Esta página es tu **Configurador de Éxito**. No pongas una tabla gigante aburrida. Hazlo modular.
 
 **Título:** "Elige tu velocidad de crecimiento"
@@ -108,30 +81,4 @@ Web Next.js (200€)
 SEO/GEO AI Dominance (300€)
 Gestión Local (150€)
 Precio por separado: 650€/mes
-Precio Pack: 550€/mes (Ahorras 1.200€ al año)
-
----
-
-### 4. Implementación en tus Landings Masivas
-
-Cuando generes automáticamente la landing para **"Agencia de Marketing en Albacete"** (que es una landing hija del servicio "Posicionamiento SEO y GEO"), ¿qué muestras?
-
-1.  **H1:** Estrategias de Posicionamiento SEO y GEO en Albacete.
-2.  **Contenido:** Explicas cómo posicionas empresas de Albacete no solo en Google, sino en la IA.
-3.  **Pricing Card:** Muestras destacada la tarjeta de **AI Dominance (1.500€/mes)** porque incluye la estrategia programática local que estás demostrando en ese momento.
-4.  **Upsell:** Debajo del precio, un texto pequeño: *"¿Tu web actual es lenta? Añade nuestra infraestructura Next.js por solo 450€/mes más."*
-
-### Resumen de la Estructura
-
-*   **4 Servicios Claros:** Nombres exactos, sin inventos raros.
-*   **Modelo Suscripción:** Todo mensual (menos Apps que es por Sprint).
-*   **SEO como Addon de GEO:** Correcto. El plan de 1.500€ "contiene" al de 800€. Es una escalera de valor natural.
-*   **Claridad:** El cliente sabe exactamente qué contrata: una web, una app, visibilidad o reputación local.
-
-Cómo vender "Tecnología Next.js" a quien "Le da igual la tecnología"
-no vendemos "Next.js". Vende la consecuencia de usar Next.js.
-No le digas al cliente: "Usamos Server Side Rendering y Edge Functions".
-Dile esto en la propuesta:
-Velocidad = Dinero: "Las webs normales tardan 3 segundos en cargar y pierdes al 40% de las visitas. Nuestra tecnología hace que cargue en 0,5 segundos. Eso significa que, con las mismas visitas, tienes el doble de clientes potenciales."
-Seguridad Blindada: "WordPress (lo que usa la mayoría) se hackea fácil porque necesita actualizaciones constantes. Nuestra tecnología es estática y segura por diseño. Duerme tranquilo."
-Preparado para IA: "Tu competencia tiene una web que Google lee mal. Nosotros construimos la tuya para que Google y la Inteligencia Artificial la entiendan perfectamente. Estás comprando futuro."
+Precio Pack: 550€/mes (Ahorras 1.200€ al año).

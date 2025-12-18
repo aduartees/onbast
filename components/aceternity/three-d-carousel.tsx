@@ -162,10 +162,10 @@ const TeamCard = ({ member }: { member: TeamMember }) => {
                       href={member.social.linkedin} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      title="LinkedIn Profile"
+                      title={`Perfil de LinkedIn de ${member.name}`}
                       className="text-neutral-400 hover:text-white transition-colors pointer-events-auto"
                       onPointerDown={(e) => e.stopPropagation()}
-                      aria-label="LinkedIn Profile"
+                      aria-label={`Perfil de LinkedIn de ${member.name}`}
                     >
                       <Linkedin className="w-4 h-4" />
                     </a>
@@ -177,8 +177,8 @@ const TeamCard = ({ member }: { member: TeamMember }) => {
                       rel="noopener noreferrer"
                       className="text-neutral-400 hover:text-white transition-colors pointer-events-auto"
                       onPointerDown={(e) => e.stopPropagation()}
-                      aria-label="X (Twitter) Profile"
-                      title="X (Twitter) Profile"
+                      aria-label={`Perfil de X (Twitter) de ${member.name}`}
+                      title={`Perfil de X (Twitter) de ${member.name}`}
                     >
                       <Twitter className="w-4 h-4" />
                     </a>

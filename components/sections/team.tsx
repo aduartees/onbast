@@ -93,7 +93,8 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-neutral-400 hover:text-white transition-colors"
-                      aria-label="LinkedIn Profile"
+                      aria-label={`Perfil de LinkedIn de ${member.name}`}
+                      title={`Perfil de LinkedIn de ${member.name}`}
                     >
                       <Linkedin className="w-4 h-4" />
                     </a>
@@ -103,9 +104,9 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
                       href={member.social.twitter} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      title="X (Twitter) Profile"
+                      title={`Perfil de X (Twitter) de ${member.name}`}
                       className="text-neutral-400 hover:text-white transition-colors"
-                      aria-label="X (Twitter) Profile"
+                      aria-label={`Perfil de X (Twitter) de ${member.name}`}
                     >
                       <Twitter className="w-4 h-4" />
                     </a>

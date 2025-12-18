@@ -82,13 +82,13 @@ export function PricingSection({ pricing }: PricingProps) {
 
               {/* Badge */}
               {pricing.badge && (
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-900 border border-white/10 text-xs font-medium text-white mb-6">
+                <h3 className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-900 border border-white/10 text-xs font-medium text-white mb-6">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                   </span>
                   {pricing.badge}
-                </div>
+                </h3>
               )}
 
               {/* Price */}

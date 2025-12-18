@@ -231,9 +231,9 @@ const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProject
                   </div>
                   <div className="flex flex-wrap justify-center gap-3 relative z-10 max-w-3xl mx-auto">
                       {technologies.map((tech, i) => (
-                          <div key={i} className="px-4 py-2 rounded-full bg-neutral-900/50 border border-white/5 text-neutral-300 font-mono text-sm hover:text-white hover:border-neutral-600 transition-colors cursor-default">
+                          <h3 key={i} className="px-4 py-2 rounded-full bg-neutral-900/50 border border-white/5 text-neutral-300 font-mono text-sm hover:text-white hover:border-neutral-600 transition-colors cursor-default">
                               {tech}
-                          </div>
+                          </h3>
                       ))}
                   </div>
               </FadeIn>

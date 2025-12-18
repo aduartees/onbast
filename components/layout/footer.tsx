@@ -121,7 +121,7 @@ export function Footer({ data }: FooterProps) {
             <span className="text-neutral-400 text-sm">
               Toda España
             </span>
-            <Link href="/contacto" title="Iniciar Proyecto" className="inline-flex items-center gap-1 text-indigo-400 hover:text-indigo-300 text-sm transition-colors mt-2">
+            <Link href="/contacto" title="Contacto" className="inline-flex items-center gap-1 text-indigo-400 hover:text-indigo-300 text-sm transition-colors mt-2">
               Iniciar Proyecto <ArrowUpRight className="w-3 h-3" />
             </Link>
           </div>
@@ -158,13 +158,16 @@ const FooterLink = ({ href, children }: { href: string; children: React.ReactNod
   </Link>
 );
 
-const SocialLink = ({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) => (
-  <a 
-    href={href} 
-    aria-label={label}
-    title={label}
-    className="w-10 h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center text-neutral-400 hover:bg-white/10 hover:text-white hover:border-white/10 transition-all duration-300"
-  >
-    {icon}
-  </a>
-);
+const SocialLink = ({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) => {
+  const title = label.startsWith('Perfil de') ? label : `Perfil de ${label} de ONBAST`;
+  return (
+    <a 
+      href={href} 
+      aria-label={title}
+      title={title}
+      className="w-10 h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center text-neutral-400 hover:bg-white/10 hover:text-white hover:border-white/10 transition-all duration-300"
+    >
+      {icon}
+    </a>
+  );
+};

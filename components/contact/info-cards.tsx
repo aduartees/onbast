@@ -127,13 +127,15 @@ export function InfoCards({ info }: { info?: ContactInfo }) {
                     platformName = 'Social Link';
                 }
 
+                const title = `Perfil de ${platformName} de ONBAST`;
+
                 return (
                 <a 
                     key={i} 
                     href={social} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    title={platformName}
+                    title={title}
                     className="px-6 py-3 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 text-white text-sm font-medium transition-all hover:-translate-y-1"
                 >
                     {platformName}

@@ -18,12 +18,12 @@ const FAQItem = ({ question, answer, isOpen, onClick }: FAQItemProps) => {
         onClick={onClick}
         className="flex w-full items-center justify-between py-6 text-left focus:outline-none group"
       >
-        <span className={cn(
+        <h3 className={cn(
             "text-lg font-medium transition-colors duration-300",
             isOpen ? "text-white" : "text-neutral-400 group-hover:text-neutral-200"
         )}>
           {question}
-        </span>
+        </h3>
         <div className={cn(
             "relative flex h-8 w-8 items-center justify-center rounded-full border border-neutral-700 transition-all duration-300",
             isOpen ? "bg-white border-white rotate-90" : "bg-transparent group-hover:border-neutral-500"

@@ -138,9 +138,9 @@ export const InfiniteMovingCards = ({
                     </div>
                 )}
                 <div className="flex flex-col">
-                  <span className="text-sm font-semibold text-white">
+                  <h3 className="text-sm font-semibold text-white">
                     {item.name}
-                  </span>
+                  </h3>
                   <span className="text-xs text-neutral-400 font-mono uppercase tracking-wider">
                     {item.role}
                   </span>

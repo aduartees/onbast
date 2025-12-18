@@ -73,6 +73,25 @@ export default defineType({
       ]
     }),
 
+    // Featured Projects Section
+    defineField({
+      name: 'featuredProjects',
+      title: 'Proyectos Destacados',
+      type: 'object',
+      fields: [
+        defineField({ name: 'pill', title: 'Pill (Etiqueta)', type: 'string', initialValue: 'Casos de Éxito' }),
+        defineField({ name: 'title', title: 'Título', type: 'string', initialValue: 'Proyectos Relacionados' }),
+        defineField({ name: 'highlight', title: 'Palabra Destacada (Cursiva)', type: 'string', initialValue: 'Destacados' }),
+        defineField({ name: 'description', title: 'Descripción', type: 'text', rows: 2, initialValue: 'Descubre cómo hemos transformado ideas en productos digitales de alto impacto.' }),
+        defineField({
+            name: 'projects',
+            title: 'Seleccionar Proyectos',
+            type: 'array',
+            of: [{ type: 'reference', to: [{ type: 'project' }] }]
+        })
+      ]
+    }),
+
     // CTA Section
     defineField({
       name: 'cta',

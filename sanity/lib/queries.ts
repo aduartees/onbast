@@ -167,6 +167,21 @@ export const SERVICES_PAGE_QUERY = `*[_type == "servicesPage"][0] {
       "imageUrl": image.asset->url
     }
   },
+  featuredProjects {
+    pill,
+    title,
+    highlight,
+    description,
+    projects[]->{
+      _id,
+      title,
+      description,
+      "slug": slug.current,
+      "imageUrl": mainImage.asset->url,
+      tags,
+      link
+    }
+  },
   cta,
   seoTitle,
   seoDescription

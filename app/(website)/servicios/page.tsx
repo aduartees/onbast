@@ -7,6 +7,7 @@ import { BackgroundBeams } from "@/components/aceternity/background-beams";
 import { HoverEffect } from "@/components/aceternity/card-hover-effect";
 import { FadeIn } from "@/components/ui/fade-in";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { ParallaxScroll } from "@/components/ui/parallax-scroll";
 import { ScrollReset } from "@/components/utils/scroll-reset";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Code2, Zap, Shield, Globe, Database, Smartphone } from "lucide-react";
@@ -44,6 +45,10 @@ export default async function ServicesPage() {
   // Dynamic Tech Stack from Sanity
   const techStack = pageData?.tech?.stackCards || [];
   
+  // Dynamic Featured Projects from Sanity
+  const featuredProjects = pageData?.featuredProjects;
+  const projectsList = featuredProjects?.projects || [];
+
   const cta = pageData?.cta;
 
   return (
@@ -145,6 +150,26 @@ export default async function ServicesPage() {
                  </div>
              </div>
           </div>
+
+          {/* Featured Projects - Dynamic */}
+          {projectsList.length > 0 && (
+             <section className="py-20 md:py-32 w-full bg-neutral-950">
+                <div className="max-w-7xl mx-auto px-6 mb-12 text-center">
+                   <FadeIn>
+                     <SectionHeading 
+                        title={featuredProjects?.title || "Proyectos Relacionados"}
+                        subtitle={featuredProjects?.pill || "Casos de Éxito"}
+                        highlight={featuredProjects?.highlight || "Destacados"}
+                        align="center"
+                     />
+                     <p className="text-neutral-400 mt-6 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed">
+                        {featuredProjects?.description || "Descubre cómo hemos transformado ideas en productos digitales de alto impacto."}
+                     </p>
+                   </FadeIn>
+                </div>
+                <ParallaxScroll items={projectsList} />
+             </section>
+          )}
 
           {/* CTA Section - Standardized */}
           <section className="py-20 md:py-32 relative z-10 px-6 bg-neutral-950 border-t border-white/5">

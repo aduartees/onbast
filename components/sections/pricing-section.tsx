@@ -53,7 +53,7 @@ export function PricingSection({ pricing }: PricingProps) {
   }, [totalPrice]);
 
   return (
-    <section className="py-0 relative">
+    <section className="py-0 relative" id="precio">
       {/* Background Elements - Fixed clipping on mobile */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1200px] h-[600px] bg-indigo-900/20 blur-[120px] rounded-full pointer-events-none" />
 
@@ -61,12 +61,12 @@ export function PricingSection({ pricing }: PricingProps) {
         {/* Header */}
         <FadeIn className="text-center mb-10">
           <SectionHeading
-            title={pricing.title || "Pricing that's so simple."}
-            subtitle="Pricing"
-            highlight="Simple"
+            title={pricing.title || "Precios claros y simples."}
+            subtitle="Precios"
+            highlight={pricing.title?.includes("simple") ? "simple" : undefined}
           />
           <p className="text-neutral-400 text-sm md:text-base leading-relaxed max-w-2xl mx-auto font-light mt-[-20px]">
-            {pricing.subtitle || "We like to keep things simple with one, limitless plan."}
+            {pricing.subtitle || "Nos gusta mantener las cosas simples con un plan único y sin límites."}
           </p>
         </FadeIn>
 

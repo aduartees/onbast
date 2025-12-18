@@ -81,14 +81,14 @@ export const ThreeDCarousel = ({ items }: { items: TeamMember[] }) => {
 
   // Calculate radius based on width and number of items
   // Radius = (Width of Item / 2) / tan(PI / numItems)
-  const itemWidth = 280; // Correct width of a card based on CSS
+  const itemWidth = 240; // Smaller width for mobile calculations
   const radius = items.length > 2 
-    ? (itemWidth / 2) / Math.tan(Math.PI / items.length) + 20 // Adjusted buffer for tighter fit
-    : 200; // Smaller fallback radius
+    ? (itemWidth / 2) / Math.tan(Math.PI / items.length) 
+    : 160; // Much tighter fallback radius
 
   return (
     <div 
-      className="relative w-full h-[500px] flex items-center justify-center overflow-hidden [perspective:800px] scale-75 md:scale-100 origin-center" // Added scaling for mobile
+      className="relative w-full h-[400px] flex items-center justify-center overflow-hidden [perspective:800px] scale-90 md:scale-100 origin-center" // Adjusted scaling
       ref={containerRef}
     >
       <motion.div
@@ -127,7 +127,7 @@ export const ThreeDCarousel = ({ items }: { items: TeamMember[] }) => {
 
 const TeamCard = ({ member }: { member: TeamMember }) => {
   return (
-    <div className="w-[280px] h-[400px] group relative overflow-hidden rounded-[2rem] bg-neutral-900 border border-white/5 hover:border-white/10 transition-colors select-none shadow-2xl backface-hidden">
+    <div className="w-[220px] h-[320px] sm:w-[260px] sm:h-[380px] group relative overflow-hidden rounded-[2rem] bg-neutral-900 border border-white/5 hover:border-white/10 transition-colors select-none shadow-2xl backface-hidden">
       {/* Background Image - Clean & Sharp */}
       <div className="absolute inset-0 h-full w-full">
         <Image

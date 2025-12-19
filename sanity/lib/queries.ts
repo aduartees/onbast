@@ -184,7 +184,12 @@ export const SERVICE_BY_SLUG_QUERY = defineQuery(`*[_type == "service" && slug.c
   },
   seoTitle,
   seoDescription,
-  "seoImage": seoImage.asset->url
+  "seoImage": seoImage.asset->url,
+  "serviceLocations": array::unique(*[_type == "serviceLocation" && service->slug.current == $slug].location-> [type == "city"] {
+    name,
+    "slug": slug.current,
+    type
+  })
 }`);
 
 export const PROJECTS_QUERY = defineQuery(`*[_type == "project"] | order(_createdAt desc)[0...3] {

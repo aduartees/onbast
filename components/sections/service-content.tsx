@@ -133,8 +133,14 @@ interface ServiceContentProps {
     type: string;
   }[];
   cityName?: string;
+  citySlug?: string;
   serviceSlug?: string;
   serviceTitle?: string;
+  serviceLocations?: {
+    name: string;
+    slug: string;
+    type: string;
+  }[];
 }
 
 const plainTextFromPortableChildren = (children: any) => {
@@ -205,7 +211,7 @@ const getSeoContentComponents = () => ({
   },
 });
 
-export function ServiceContent({ mainImage, mainImageAlt, mainImageName, relatedProjects, relatedProjectsTitle, relatedProjectsHighlight, relatedProjectsDescription, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection, localContentBlock, nearbyLocations, cityName, serviceSlug, serviceTitle }: ServiceContentProps) {
+export function ServiceContent({ mainImage, mainImageAlt, mainImageName, relatedProjects, relatedProjectsTitle, relatedProjectsHighlight, relatedProjectsDescription, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection, localContentBlock, nearbyLocations, cityName, citySlug, serviceSlug, serviceTitle, serviceLocations }: ServiceContentProps) {
   return (
     <div className="bg-neutral-950 min-h-screen py-12 md:py-24 px-4 md:px-6 relative z-10 rounded-t-[3rem] md:rounded-t-[5rem] shadow-[0_-50px_100px_-20px_rgba(79,70,229,0.1)] border-t border-white/10 mt-0 transform-gpu backface-hidden">
       
@@ -218,7 +224,7 @@ export function ServiceContent({ mainImage, mainImageAlt, mainImageName, related
 
       {/* Single Content Wrapper with Internal Responsive Tracing Beam Logic */}
       <TracingBeam className="px-4 max-w-6xl mx-auto">
-         <ContentWrapper 
+          <ContentWrapper 
            mainImage={mainImage}
            mainImageAlt={mainImageAlt}
            mainImageName={mainImageName}
@@ -235,8 +241,10 @@ export function ServiceContent({ mainImage, mainImageAlt, mainImageName, related
            localContentBlock={localContentBlock}
            nearbyLocations={nearbyLocations}
            cityName={cityName}
+           citySlug={citySlug}
            serviceSlug={serviceSlug}
            serviceTitle={serviceTitle}
+           serviceLocations={serviceLocations}
          />
       </TracingBeam>
     </div>
@@ -244,7 +252,7 @@ export function ServiceContent({ mainImage, mainImageAlt, mainImageName, related
 }
 
 // Extracted Content Component to reuse
-const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProjects, relatedProjectsTitle, relatedProjectsHighlight, relatedProjectsDescription, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection, localContentBlock, nearbyLocations, cityName, serviceSlug, serviceTitle }: ServiceContentProps) => {
+const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProjects, relatedProjectsTitle, relatedProjectsHighlight, relatedProjectsDescription, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection, localContentBlock, nearbyLocations, cityName, citySlug, serviceSlug, serviceTitle, serviceLocations }: ServiceContentProps) => {
     
     // Determine if this is a Local Landing Page
     const isLocalLanding = !!cityName;
@@ -468,7 +476,7 @@ const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProject
 
           {/* --- LOCAL ONLY SECTION: SEO Content Block --- */}
           {isLocalLanding && localContentBlock && (
-             <section className="mb-20 md:mb-32 relative max-w-4xl mx-auto px-4">
+             <section className="mb-20 md:mb-32 relative max-w-4xl mx-auto px-2 md:px-0">
                 <FadeIn>
                   <div className="mb-12 text-center">
                       <SectionHeading 
@@ -563,11 +571,13 @@ const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProject
           )}
 
           {/* --- LOCAL ONLY SECTION: Nearby Locations (Interlinking) --- */}
-          {isLocalLanding && nearbyLocations && nearbyLocations.length > 0 && serviceSlug && (
+          {isLocalLanding && cityName && serviceSlug && (
              <NearbyLocations 
                 currentServiceSlug={serviceSlug}
                 currentServiceTitle={serviceTitle}
-                locations={nearbyLocations} 
+                currentLocationName={cityName}
+                currentLocationSlug={citySlug}
+                locations={nearbyLocations || []} 
              />
           )}
 
@@ -595,6 +605,17 @@ const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProject
                 </div>
               </FadeIn>
           </section>
+
+          {/* --- SERVICE PAGE ONLY: Nearby Locations (Interlinking) --- */}
+          {!isLocalLanding && serviceLocations && serviceLocations.length > 0 && serviceSlug && (
+            <div className="mt-16">
+              <NearbyLocations
+                currentServiceSlug={serviceSlug}
+                currentServiceTitle={serviceTitle}
+                locations={serviceLocations}
+              />
+            </div>
+          )}
 
         </div>
     );

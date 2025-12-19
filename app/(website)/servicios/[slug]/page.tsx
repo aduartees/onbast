@@ -130,6 +130,11 @@ interface SanityServiceDetail {
   seoTitle?: string;
   seoDescription?: string;
   seoImage?: string;
+  serviceLocations?: {
+    name: string;
+    slug: string;
+    type: string;
+  }[];
   agency?: {
     name: string;
     url: string;
@@ -246,6 +251,8 @@ export default async function ServicePage({ params }: ServicePageProps) {
         mainImage={service.imageUrl}
         mainImageAlt={service.imageAlt}
         mainImageName={service.imageName}
+        serviceSlug={service.slug}
+        serviceTitle={service.title}
         features={service.features} 
         featuresTitle={service.featuresTitle}
         featuresHighlight={service.featuresHighlight}
@@ -280,6 +287,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
         faqHighlight={service.faqHighlight}
         faqDescription={service.faqDescription}
         ctaSection={service.ctaSection}
+        serviceLocations={service.serviceLocations}
       />
 
     </main>

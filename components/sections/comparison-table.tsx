@@ -24,7 +24,7 @@ export function ComparisonTable({ agencyName = "ONBAST", cityName }: ComparisonT
   return (
     <section className="py-20 md:py-32 relative">
       <FadeIn>
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-4xl mx-auto px-2 md:px-0">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
               ¿Por qué elegirnos?

@@ -280,8 +280,11 @@ export default async function ServiceLocationPage({ params }: PageProps) {
 
   const { service, location, override } = data;
 
+  const baseUrl = process.env.NEXT_PUBLIC_URL || "https://onbast.com";
+
   const localHeroImage = `/api/hero?title=${encodeURIComponent(`${service.title} en ${location.name}`)}&subtitle=${encodeURIComponent("WEB, SEO & GEO")}`;
   const localHeroAlt = `${service.title} en ${location.name} | ONBAST`;
+  const localHeroImageAbsolute = `${baseUrl}${localHeroImage}`;
 
   // --- Data Merging Strategy ---
   // Prioritize Local Overrides, but fallback to Service Defaults for structure
@@ -301,7 +304,7 @@ export default async function ServiceLocationPage({ params }: PageProps) {
   const features = override?.customFeatures?.length ? override.customFeatures : service.features;
 
   // Process: Local > Service
-  const process = override?.customProcess?.length ? override.customProcess : service.process;
+  const processSteps = override?.customProcess?.length ? override.customProcess : service.process;
 
   // FAQs: Local > Service
   const faqs = override?.customFaqs?.length ? override.customFaqs : service.faqs;
@@ -323,6 +326,7 @@ export default async function ServiceLocationPage({ params }: PageProps) {
   // We need to generate Service schema but with AreaServed
   const serviceSchema = generateServiceSchema(service, service.agency);
   // We need to extend/modify it for Local SEO
+  const schemaName = `${service.title} en ${location.name}`;
   const localServiceSchema = {
     ...serviceSchema,
     areaServed: {
@@ -330,8 +334,9 @@ export default async function ServiceLocationPage({ params }: PageProps) {
       name: location.name,
       sameAs: location.wikipediaUrl
     },
-    name: heroTitle,
-    description: heroDescription
+    name: schemaName,
+    description: heroDescription,
+    image: localHeroImageAbsolute
   };
 
   const faqSchema = generateFAQSchema(faqs || []);
@@ -401,6 +406,7 @@ export default async function ServiceLocationPage({ params }: PageProps) {
         mainImageAlt={localHeroAlt}
         mainImageName={service.imageName}
         serviceTitle={service.title}
+        citySlug={location.slug}
         
         // Pass Local Content Block
         localContentBlock={override?.localContentBlock}
@@ -410,7 +416,7 @@ export default async function ServiceLocationPage({ params }: PageProps) {
         featuresHighlight={service.featuresHighlight}
         featuresDescription={service.featuresDescription}
         benefits={service.benefits} 
-        process={process} 
+        process={processSteps} 
         processTitle={service.processTitle}
         processHighlight={service.processHighlight}
         processDescription={service.processDescription}

@@ -165,9 +165,13 @@ const getSeoContentComponents = () => ({
       </h2>
     ),
     h3: ({ children, value }: any) => (
-      <h3 id={value?.__id} className="scroll-mt-28 text-xl font-semibold text-white mt-8 mb-4 flex items-center gap-2">
-        <CheckCircle2 className="w-5 h-5 text-indigo-400" />
-        {children}
+      <h3 id={value?.__id} className="scroll-mt-28 text-xl font-semibold text-white mt-8 mb-4">
+        <span className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-2">
+          <span className="inline-flex items-center justify-center w-10 h-10 rounded-2xl bg-indigo-500/10 text-indigo-300 sm:w-6 sm:h-6 sm:rounded-lg">
+            <CheckCircle2 className="w-5 h-5 sm:w-4 sm:h-4" />
+          </span>
+          <span>{children}</span>
+        </span>
       </h3>
     ),
     blockquote: ({ children }: any) => (

@@ -32,14 +32,14 @@ export function NearbyLocations({ currentServiceSlug, currentServiceTitle, locat
             </p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center">
+          <div className="flex flex-wrap justify-center gap-4">
             {locations.map((loc) => (
               <Link 
                 key={loc.slug} 
                 href={`/${currentServiceSlug}/${loc.slug}`}
                 title={`${label} en ${loc.name}`}
                 aria-label={`${label} en ${loc.name}`}
-                className="group flex items-center gap-3 p-4 rounded-xl bg-neutral-900/30 border border-white/5 hover:bg-neutral-800/50 hover:border-indigo-500/30 transition-all duration-300 w-full max-w-[260px]"
+                className="group flex items-center gap-3 p-4 rounded-xl bg-neutral-900/30 border border-white/5 hover:bg-neutral-800/50 hover:border-indigo-500/30 transition-all duration-300 w-full max-w-[280px]"
               >
                 <div className="w-8 h-8 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 group-hover:text-indigo-400 group-hover:bg-indigo-500/10 transition-colors">
                   <MapPin className="w-4 h-4" />

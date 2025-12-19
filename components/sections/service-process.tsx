@@ -71,19 +71,25 @@ const TimelineItem = ({ step, index, isLast }: { step: ProcessStep, index: numbe
                 isEven ? "md:pr-12 md:text-right" : "md:pl-12 md:text-left"
             )}
         >
-            <div className="bg-neutral-900/40 backdrop-blur-sm border border-white/5 p-6 md:p-8 rounded-2xl hover:bg-neutral-900/60 hover:border-indigo-500/30 transition-all duration-500 group">
-                <div className={cn(
-                    "flex items-center gap-4 mb-4",
-                    isEven ? "md:flex-row-reverse" : "md:flex-row"
+            <div className="bg-neutral-900/40 backdrop-blur-sm border border-white/5 p-6 md:p-8 rounded-2xl hover:bg-neutral-900/60 hover:border-indigo-500/30 transition-all duration-500 group relative overflow-hidden">
+                <span
+                  className={cn(
+                    "absolute top-4 right-4 text-6xl md:text-7xl font-bold text-white/10 font-serif italic select-none pointer-events-none group-hover:text-indigo-500/20 transition-colors",
+                    isEven ? "md:right-auto md:left-6" : "md:left-auto md:right-6"
+                  )}
+                >
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3 className={cn(
+                  "text-xl md:text-2xl font-bold text-white mb-3 pr-10",
+                  isEven ? "md:pl-14 md:pr-0" : "md:pr-14 md:pl-0"
                 )}>
-                    <span className="text-4xl md:text-5xl font-bold text-white/10 font-serif italic group-hover:text-indigo-500/20 transition-colors">
-                        {String(index + 1).padStart(2, '0')}
-                    </span>
-                    <h3 className="text-xl md:text-2xl font-bold text-white">
-                        {step.title}
-                    </h3>
-                </div>
-                <p className="text-neutral-400 leading-relaxed text-sm md:text-base">
+                    {step.title}
+                </h3>
+                <p className={cn(
+                  "text-neutral-400 leading-relaxed text-sm md:text-base",
+                  isEven ? "md:pl-14" : "md:pr-14"
+                )}>
                     {step.description}
                 </p>
             </div>

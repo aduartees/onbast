@@ -282,7 +282,7 @@ export default async function ServiceLocationPage({ params }: PageProps) {
 
   const baseUrl = process.env.NEXT_PUBLIC_URL || "https://onbast.com";
 
-  const localHeroImage = `/api/hero?title=${encodeURIComponent(`${service.title} en ${location.name}`)}&subtitle=${encodeURIComponent("WEB, SEO & GEO")}`;
+  const localHeroImage = `/api/hero?title=${encodeURIComponent(`${service.title} en ${location.name}`)}&subtitle=${encodeURIComponent("Desarrollo Web y Posicionamiento SEO & GEO")}`;
   const localHeroAlt = `${service.title} en ${location.name} | ONBAST`;
   const localHeroImageAbsolute = `${baseUrl}${localHeroImage}`;
 

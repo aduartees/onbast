@@ -38,7 +38,6 @@ interface MobileNavProps {
 
 export function MobileNav({ menuItems = [], cta, socialLinks, agencyEmail, agencyPhone, agencyWhatsapp }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const currentYear = new Date().getFullYear();
 
@@ -51,14 +50,7 @@ export function MobileNav({ menuItems = [], cta, socialLinks, agencyEmail, agenc
 
   const ctaButton = cta || { text: "Contacto", url: "/contacto" };
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Close menu when route changes
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
+  // Close menu when route changes (handled via link clicks). Keep effect-free to avoid render cascades.
 
   useEffect(() => {
     if (isOpen) {
@@ -89,7 +81,7 @@ export function MobileNav({ menuItems = [], cta, socialLinks, agencyEmail, agenc
       }
   };
 
-  if (!mounted) return null;
+  if (!pathname) return null;
 
   return (
     <div className="md:hidden">

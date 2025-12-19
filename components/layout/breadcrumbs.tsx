@@ -22,10 +22,17 @@ const PATH_MAP: Record<string, string> = {
 
 export function Breadcrumbs() {
   const pathname = usePathname();
-  const { lastItemOverride } = useBreadcrumb();
+  const { lastItemOverride, itemsOverride } = useBreadcrumb();
+
+  const segments = useMemo(() => pathname.split("/").filter(Boolean), [pathname]);
+  const isLocalLanding = segments.length === 2 && segments[0] !== "servicios";
 
   const breadcrumbs = useMemo(() => {
     if (pathname === "/") return [];
+
+    if (itemsOverride && itemsOverride.length > 0) {
+      return itemsOverride;
+    }
 
     const segments = pathname.split("/").filter(Boolean);
     return segments.map((segment, index) => {
@@ -41,12 +48,13 @@ export function Breadcrumbs() {
       
       return { name, href };
     });
-  }, [pathname, lastItemOverride]);
+  }, [pathname, lastItemOverride, itemsOverride]);
 
-  // Don't render on home page, studio, or if empty
+  // Don't render on home page, studio, local landing until overrides are set, or if empty
   if (
     pathname === "/" || 
     pathname.startsWith("/studio") || 
+    (isLocalLanding && !itemsOverride) ||
     breadcrumbs.length === 0
   ) {
     return null;
@@ -54,7 +62,7 @@ export function Breadcrumbs() {
 
   // Generate JSON-LD - Only if NOT a service landing page (handled in page.tsx for SEO title)
   const isServiceLanding = pathname.startsWith('/servicios/') && pathname.split('/').length > 2;
-  const shouldRenderJsonLd = !isServiceLanding;
+  const shouldRenderJsonLd = !isServiceLanding && !isLocalLanding && !itemsOverride;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -92,7 +100,7 @@ export function Breadcrumbs() {
         className="absolute top-[96px] md:top-24 left-0 w-full z-40 pointer-events-none"
       >
         <div className="max-w-7xl mx-auto px-6 pointer-events-auto flex justify-center md:justify-start">
-            <ol className="flex items-center space-x-2 text-[10px] md:text-xs text-neutral-500 bg-neutral-950/30 backdrop-blur-sm border border-white/5 py-1 px-3 rounded-full inline-flex uppercase tracking-wider">
+            <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] md:text-xs text-neutral-500 bg-neutral-950/30 backdrop-blur-sm border border-white/5 py-1 px-3 rounded-full inline-flex uppercase tracking-wider">
               <li>
                 <Link 
                   href="/" 
@@ -106,11 +114,11 @@ export function Breadcrumbs() {
               {breadcrumbs.map((crumb, index) => {
                 const isLast = index === breadcrumbs.length - 1;
                 return (
-                  <li key={crumb.href} className="flex items-center space-x-2">
+                  <li key={crumb.href} className="flex items-center gap-x-2">
                     <ChevronRight className="w-3 h-3 text-neutral-600" />
                     {isLast ? (
                       <span 
-                        className="text-white font-medium cursor-default truncate max-w-[150px] md:max-w-xs" 
+                        className="text-white font-medium cursor-default truncate max-w-[220px] md:max-w-xs" 
                         aria-current="page"
                       >
                         {crumb.name}
@@ -119,7 +127,7 @@ export function Breadcrumbs() {
                       <Link 
                         href={crumb.href} 
                         title={crumb.name}
-                        className="hover:text-white transition-colors truncate max-w-[100px]"
+                        className="hover:text-white transition-colors truncate max-w-[160px]"
                       >
                         {crumb.name}
                       </Link>

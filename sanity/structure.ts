@@ -49,6 +49,49 @@ export const structure = (S: StructureBuilder) =>
       
       S.divider(),
       
+      // 4. Estrategia GEO & Comercial (NUEVO)
+      S.listItem()
+        .title('Estrategia GEO & Comercial')
+        .child(
+          S.list()
+            .title('Gestión de Expansión')
+            .items([
+              // Agrupación de Ubicaciones
+              S.listItem()
+                .title('📍 Ubicaciones')
+                .child(
+                  S.list()
+                    .title('Filtrar por Tipo')
+                    .items([
+                      S.listItem()
+                        .title('🏙️ Ciudades Principales')
+                        .child(
+                          S.documentList()
+                            .title('Ciudades Principales')
+                            .filter('_type == "location" && type == "city"')
+                        ),
+                      S.listItem()
+                        .title('🏘️ Pueblos y Municipios')
+                        .child(
+                          S.documentList()
+                            .title('Pueblos y Municipios')
+                            .filter('_type == "location" && type == "town"')
+                        ),
+                      S.divider(),
+                      S.listItem()
+                        .title('Ver Todas')
+                        .child(S.documentTypeList('location').title('Todas las Ubicaciones')),
+                    ])
+                ),
+              S.documentTypeListItem('serviceLocation').title('🚀 Landings Locales (Overrides)'),
+              S.divider(),
+              S.documentTypeListItem('pricingPlan').title('💰 Planes de Precio'),
+              S.documentTypeListItem('pricingAddon').title('➕ Add-ons de Precio'),
+            ])
+        ),
+
+      S.divider(),
+      
       S.documentTypeListItem('teamMember').title('Equipo'),
       S.documentTypeListItem('testimonial').title('Testimonios'),
     ])

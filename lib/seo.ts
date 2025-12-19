@@ -170,7 +170,7 @@ export function generateServiceSchema(service: any, agency?: any) {
                 "price": numericPrice,
                 "priceCurrency": "EUR",
                 "availability": "https://schema.org/InStock",
-                "url": `${baseUrl}/services/${service.slug}`,
+                "url": `${baseUrl}/servicios/${service.slug}`,
                 "description": service.pricing.description || service.shortDescription,
                 "priceValidUntil": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0], // Valid for 1 year
                 ...(priceSpec ? { "priceSpecification": priceSpec } : {})

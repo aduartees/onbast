@@ -19,6 +19,7 @@ interface ServiceHeaderProps {
   secondaryButtonText?: string;
   secondaryButtonLink?: string;
   trustedLogos?: { name: string; logo: string; alt?: string }[];
+  breadcrumbsOverride?: { name: string; href: string }[];
 }
 
 const DEFAULT_LOGOS = [
@@ -32,14 +33,21 @@ const DEFAULT_LOGOS = [
   { name: "Google", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", alt: "Google" },
 ];
 
-export function ServiceHeader({ title, description, highlight, introduction, buttonText, buttonLink, secondaryButtonText, secondaryButtonLink, trustedLogos }: ServiceHeaderProps) {
+export function ServiceHeader({ title, description, highlight, introduction, buttonText, buttonLink, secondaryButtonText, secondaryButtonLink, trustedLogos, breadcrumbsOverride }: ServiceHeaderProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const { setLastItemOverride } = useBreadcrumb();
+  const { setLastItemOverride, setItemsOverride } = useBreadcrumb();
 
   React.useEffect(() => {
     setLastItemOverride(title);
-    return () => setLastItemOverride(null);
-  }, [title, setLastItemOverride]);
+    if (breadcrumbsOverride && breadcrumbsOverride.length > 0) {
+      setItemsOverride(breadcrumbsOverride);
+    }
+
+    return () => {
+      setLastItemOverride(null);
+      setItemsOverride(null);
+    };
+  }, [title, setLastItemOverride, breadcrumbsOverride, setItemsOverride]);
 
   const { scrollYProgress } = useScroll({
     target: ref,

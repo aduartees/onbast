@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
-import { Plus, Check, ArrowRight } from "lucide-react";
+import { Plus, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -9,169 +9,80 @@ import { FadeIn } from "@/components/ui/fade-in";
 import { SectionHeading } from "@/components/ui/section-heading";
 import Link from "next/link";
 
+interface PricingPlan {
+  title: string;
+  price: string;
+  currency: string;
+  period?: string;
+  badge?: string;
+  description?: string;
+  features?: string[];
+  addon?: {
+    title: string;
+    price: string;
+    active?: boolean;
+  };
+  buttonText?: string;
+  buttonLinkID?: string;
+}
+
 interface PricingProps {
   pricing: {
     title?: string;
     subtitle?: string;
-    badge?: string;
-    price?: string;
-    period?: string;
-    description?: string;
-    buttonText?: string;
-    buttonLink?: string;
-    secondaryButtonText?: string;
-    secondaryButtonLink?: string;
-    features?: string[];
-    addon?: {
-      title: string;
-      price: string;
-      active?: boolean;
-    };
+    plans?: PricingPlan[];
     trustedCompaniesTitle?: string;
     trustedLogos?: { logo: string | null; name: string }[];
+    // Optional override for button links (used in local landings)
+    buttonLinkOverride?: string;
   };
 }
 
 export function PricingSection({ pricing }: PricingProps) {
-  const [addonActive, setAddonActive] = React.useState(pricing.addon?.active || false);
-
   if (!pricing) return null;
-
-  // Helper to parse price string (e.g. "1.850€" -> 1850)
-  const basePrice = React.useMemo(() => {
-     return parseInt(pricing.price?.replace(/[^0-9]/g, '') || "0") || 0;
-  }, [pricing.price]);
-
-  const addonPrice = React.useMemo(() => {
-     return pricing.addon ? parseInt(pricing.addon.price.replace(/[^0-9]/g, '') || "0") || 0 : 0;
-  }, [pricing.addon]);
-
-  const totalPrice = addonActive ? basePrice + addonPrice : basePrice;
-
-  // Format back to locale string (simple implementation for Euro)
-  const formattedPrice = React.useMemo(() => {
-     return new Intl.NumberFormat('es-ES', { minimumFractionDigits: 0 }).format(totalPrice);
-  }, [totalPrice]);
 
   return (
     <section className="py-0 relative" id="precio">
-      {/* Background Elements - Fixed clipping on mobile */}
+      {/* Background Elements */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1200px] h-[600px] bg-indigo-900/20 blur-[120px] rounded-full pointer-events-none" />
 
-      <div className="max-w-4xl mx-auto px-2 md:px-4 relative z-10 pt-10 md:pt-0">
+      <div className="max-w-7xl mx-auto px-4 relative z-10 pt-10 md:pt-0">
         {/* Header */}
-        <FadeIn className="text-center mb-10">
+        <FadeIn className="text-center mb-16">
           <SectionHeading
             title={pricing.title || "Precios claros y simples."}
             subtitle="Precios"
             highlight={pricing.title?.includes("simple") ? "simple" : undefined}
           />
           <p className="text-neutral-400 text-lg leading-relaxed max-w-2xl mx-auto font-light mt-6">
-            {pricing.subtitle || "Nos gusta mantener las cosas simples con un plan único y sin límites."}
+            {pricing.subtitle || "Elige el plan que mejor se adapte a tus necesidades."}
           </p>
         </FadeIn>
 
-        {/* Pricing Card */}
-        <FadeIn delay={0.2} className="relative w-full max-w-md lg:max-w-xl mx-auto">
-           {/* Card Glow */}
-           <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/20 to-purple-500/20 rounded-3xl blur-xl transform scale-105 opacity-50" />
-           
-           <div className="relative bg-[#0A0A0A] border border-white/10 rounded-3xl p-8 md:p-10 shadow-2xl overflow-hidden">
-              {/* Top Gradient Line */}
-              <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-50" />
-
-              {/* Badge */}
-              {pricing.badge && (
-                <h3 className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-900 border border-white/10 text-xs font-medium text-white mb-6">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                  </span>
-                  {pricing.badge}
-                </h3>
-              )}
-
-              {/* Price */}
-              <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-5xl font-bold text-white">
-                    <motion.span
-                        key={totalPrice}
-                        initial={{ opacity: 0, y: 20 }} // Start from below
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4, ease: "easeOut" }}
-                        suppressHydrationWarning
-                    >
-                        {formattedPrice}€
-                    </motion.span>
-                </span>
-                <span className="text-neutral-500 text-lg">{pricing.period}</span>
-              </div>
-              <p className="text-neutral-400 text-sm mb-8 leading-relaxed">
-                {pricing.description}
-              </p>
-
-              {/* Buttons */}
-              <div className="flex flex-col gap-3 mb-8">
-                <Link href={pricing.buttonLink || "/contacto"} title={pricing.buttonText || "Subscribe"} className="w-full">
-                    <Button className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium h-12 rounded-full shadow-[0_0_20px_-5px_rgba(79,70,229,0.5)] transition-all">
-                    {pricing.buttonText || "Subscribe"}
-                    </Button>
-                </Link>
-                <Link href={pricing.secondaryButtonLink || "/contacto"} title={pricing.secondaryButtonText || "Book a call"} className="w-full">
-                    <Button variant="outline" className="w-full bg-transparent border-white/10 text-white hover:bg-white/5 font-medium h-12 rounded-full">
-                    {pricing.secondaryButtonText || "Book a call"}
-                    </Button>
-                </Link>
-              </div>
-
-              {/* Addon Switch */}
-              {pricing.addon && (
-                <div className="flex items-center justify-between p-3 rounded-xl bg-neutral-900/50 border border-white/5 mb-8">
-                   <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <div 
-                        onClick={() => setAddonActive(!addonActive)}
-                        className={cn(
-                            "w-10 h-6 rounded-full relative p-1 cursor-pointer transition-colors duration-300 shrink-0",
-                            addonActive ? "bg-emerald-500" : "bg-neutral-800 hover:bg-neutral-700"
-                        )}
-                      >
-                          <motion.div 
-                            animate={{ x: addonActive ? 16 : 0 }}
-                            transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                            className={cn("w-4 h-4 bg-white rounded-full")} 
-                          />
-                      </div>
-                      <span className={cn("text-xs md:text-sm font-medium transition-colors leading-tight", addonActive ? "text-white" : "text-neutral-300")}>
-                        {pricing.addon.title}
-                      </span>
-                   </div>
-                   <span className="text-xs font-mono text-neutral-500 bg-neutral-900 px-2 py-1 rounded border border-white/5 whitespace-nowrap ml-2">
-                      {pricing.addon.price}
-                   </span>
-                </div>
-              )}
-
-              {/* Features */}
-              {pricing.features && (
-                <ul className="space-y-3">
-                  {pricing.features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3 text-sm text-neutral-300">
-                      <Plus className="w-4 h-4 text-white shrink-0 mt-0.5" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-           </div>
-        </FadeIn>
+        {/* Pricing Cards Grid */}
+        <div className={cn(
+          "grid gap-8 mx-auto",
+          pricing.plans?.length === 1 ? "max-w-md grid-cols-1" :
+          pricing.plans?.length === 2 ? "max-w-4xl grid-cols-1 md:grid-cols-2" :
+          "max-w-7xl grid-cols-1 md:grid-cols-3"
+        )}>
+          {pricing.plans?.map((plan, index) => (
+            <PricingCard 
+              key={index} 
+              plan={plan} 
+              index={index} 
+              buttonLinkOverride={pricing.buttonLinkOverride}
+            />
+          ))}
+        </div>
 
         {/* Trusted By */}
         {pricing.trustedLogos && pricing.trustedLogos.length > 0 && (
-          <FadeIn delay={0.4} className="mt-16 text-center">
-            <p className="text-neutral-500 text-sm mb-6 font-light">
+          <FadeIn delay={0.4} className="mt-24 text-center">
+            <p className="text-neutral-500 text-sm mb-8 font-light">
               {pricing.trustedCompaniesTitle || "Designs trusted by companies like:"}
             </p>
-            <div className="flex flex-wrap justify-center gap-8 md:gap-12 items-center opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+            <div className="flex flex-wrap justify-center gap-12 items-center opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
               {pricing.trustedLogos.map((logo, i) => (
                 logo.logo ? (
                   <div key={i} className="relative h-8 w-24">
@@ -191,5 +102,119 @@ export function PricingSection({ pricing }: PricingProps) {
 
       </div>
     </section>
+  );
+}
+
+function PricingCard({ plan, index, buttonLinkOverride }: { plan: PricingPlan, index: number, buttonLinkOverride?: string }) {
+  const [addonActive, setAddonActive] = React.useState(plan.addon?.active || false);
+
+  // Helper to parse price string
+  const basePrice = React.useMemo(() => {
+     return parseInt(plan.price?.replace(/[^0-9]/g, '') || "0") || 0;
+  }, [plan.price]);
+
+  const addonPrice = React.useMemo(() => {
+     return plan.addon ? parseInt(plan.addon.price.replace(/[^0-9]/g, '') || "0") || 0 : 0;
+  }, [plan.addon]);
+
+  const totalPrice = addonActive ? basePrice + addonPrice : basePrice;
+
+  const formattedPrice = React.useMemo(() => {
+     return new Intl.NumberFormat('es-ES', { minimumFractionDigits: 0 }).format(totalPrice);
+  }, [totalPrice]);
+
+  // Determine link: Override > Configurator Link > Default Contact
+  const finalLink = buttonLinkOverride 
+    ? buttonLinkOverride 
+    : `/planes?service=${plan.buttonLinkID}`;
+
+  return (
+    <FadeIn delay={0.2 + (index * 0.1)} className="relative w-full h-full">
+       <div className={cn(
+         "relative bg-[#0A0A0A] border border-white/10 rounded-3xl p-8 shadow-2xl overflow-hidden h-full flex flex-col transition-transform duration-300 hover:-translate-y-2",
+         plan.badge ? "border-indigo-500/30" : ""
+       )}>
+          {/* Highlight Gradient for Badged Plans */}
+          {plan.badge && (
+             <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500" />
+          )}
+
+          {/* Badge */}
+          {plan.badge && (
+            <div className="mb-6">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs font-bold text-indigo-400">
+                {plan.badge}
+              </span>
+            </div>
+          )}
+
+          <h3 className="text-xl font-bold text-white mb-2">{plan.title}</h3>
+          
+          {/* Price */}
+          <div className="flex items-baseline gap-1 mb-4">
+            <span className="text-4xl md:text-5xl font-bold text-white">
+                <motion.span
+                    key={totalPrice}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    suppressHydrationWarning
+                >
+                    {formattedPrice}€
+                </motion.span>
+            </span>
+            <span className="text-neutral-500 text-sm">{plan.period}</span>
+          </div>
+
+          <p className="text-neutral-400 text-sm mb-8 leading-relaxed min-h-[40px]">
+            {plan.description}
+          </p>
+
+          {/* Addon Switch */}
+          {plan.addon && (
+            <div className="flex items-center justify-between p-3 rounded-xl bg-neutral-900/50 border border-white/5 mb-8 cursor-pointer hover:bg-neutral-900 transition-colors" onClick={() => setAddonActive(!addonActive)}>
+               <div className="flex items-center gap-3">
+                  <div className={cn(
+                        "w-10 h-6 rounded-full relative p-1 transition-colors duration-300 shrink-0",
+                        addonActive ? "bg-emerald-500" : "bg-neutral-800"
+                    )}
+                  >
+                      <motion.div 
+                        animate={{ x: addonActive ? 16 : 0 }}
+                        className="w-4 h-4 bg-white rounded-full" 
+                      />
+                  </div>
+                  <span className="text-xs font-medium text-neutral-300">
+                    {plan.addon.title}
+                  </span>
+               </div>
+               <span className="text-xs font-mono text-neutral-500">
+                  {plan.addon.price}
+               </span>
+            </div>
+          )}
+
+          {/* Features */}
+          <ul className="space-y-3 mb-8 flex-grow">
+            {plan.features?.map((feature, i) => (
+              <li key={i} className="flex items-start gap-3 text-sm text-neutral-300">
+                <Check className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
+                <span>{feature}</span>
+              </li>
+            ))}
+          </ul>
+
+          {/* CTA */}
+          <Link href={finalLink} className="w-full mt-auto">
+              <Button className={cn(
+                "w-full font-medium h-12 rounded-full transition-all",
+                plan.badge 
+                  ? "bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_20px_-5px_rgba(79,70,229,0.5)]" 
+                  : "bg-white text-black hover:bg-neutral-200"
+              )}>
+                {plan.buttonText || "Empezar ahora"}
+              </Button>
+          </Link>
+       </div>
+    </FadeIn>
   );
 }

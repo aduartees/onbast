@@ -10,6 +10,9 @@ import { FadeIn } from "@/components/ui/fade-in";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { BlurReveal } from "@/components/ui/blur-reveal";
 import Link from "next/link";
+import { PortableText } from "next-sanity";
+import { TracingBeam } from "@/components/aceternity/tracing-beam";
+import { ParallaxScroll } from "@/components/aceternity/parallax-scroll";
 
 // Lazy load heavy components
 const ServiceFAQ = dynamic(() => import("./service-faq").then(mod => mod.ServiceFAQ), { ssr: false });
@@ -18,11 +21,8 @@ const TestimonialsSection = dynamic(() => import("@/components/sections/testimon
 const TeamSection = dynamic(() => import("@/components/sections/team").then(mod => mod.TeamSection));
 const PricingSection = dynamic(() => import("@/components/sections/pricing-section").then(mod => mod.PricingSection));
 const ImpactStats = dynamic(() => import("@/components/sections/impact-stats").then(mod => mod.ImpactStats));
-
-// Removed imports that are now dynamic
-import { TracingBeam } from "@/components/aceternity/tracing-beam";
-
-import { ParallaxScroll } from "@/components/aceternity/parallax-scroll";
+const ComparisonTable = dynamic(() => import("@/components/sections/comparison-table").then(mod => mod.ComparisonTable));
+const NearbyLocations = dynamic(() => import("@/components/sections/nearby-locations").then(mod => mod.NearbyLocations));
 
 interface ServiceContentProps {
   mainImage?: string;
@@ -126,9 +126,82 @@ interface ServiceContentProps {
     secondaryButtonText?: string;
     secondaryButtonLink?: string;
   };
+  localContentBlock?: any;
+  nearbyLocations?: {
+    name: string;
+    slug: string;
+    type: string;
+  }[];
+  cityName?: string;
+  serviceSlug?: string;
+  serviceTitle?: string;
 }
 
-export function ServiceContent({ mainImage, mainImageAlt, mainImageName, relatedProjects, relatedProjectsTitle, relatedProjectsHighlight, relatedProjectsDescription, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection }: ServiceContentProps) {
+const plainTextFromPortableChildren = (children: any) => {
+  if (!Array.isArray(children)) return "";
+  return children
+    .map((c) => (typeof c?.text === "string" ? c.text : ""))
+    .join("")
+    .trim();
+};
+
+const slugify = (input: string) =>
+  input
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+
+const getSeoContentComponents = () => ({
+  block: {
+    normal: ({ children }: any) => <p className="mb-6 text-neutral-300 leading-relaxed">{children}</p>,
+    h2: ({ children, value }: any) => (
+      <h2 id={value?.__id} className="scroll-mt-28 text-2xl md:text-3xl font-bold text-white mt-12 mb-6 flex items-center gap-3">
+        <span className="w-8 h-1 bg-indigo-500 rounded-full inline-block"></span>
+        {children}
+      </h2>
+    ),
+    h3: ({ children, value }: any) => (
+      <h3 id={value?.__id} className="scroll-mt-28 text-xl font-semibold text-white mt-8 mb-4 flex items-center gap-2">
+        <CheckCircle2 className="w-5 h-5 text-indigo-400" />
+        {children}
+      </h3>
+    ),
+    blockquote: ({ children }: any) => (
+      <blockquote className="border-l-4 border-indigo-500 pl-6 py-2 my-8 italic text-neutral-400 bg-white/5 rounded-r-lg">
+        {children}
+      </blockquote>
+    ),
+  },
+  list: {
+    bullet: ({ children }: any) => <ul className="space-y-3 my-6 pl-4">{children}</ul>,
+    number: ({ children }: any) => <ol className="space-y-3 my-6 pl-4 list-decimal text-neutral-400">{children}</ol>,
+  },
+  listItem: {
+    bullet: ({ children }: any) => (
+      <li className="flex items-start gap-3 text-neutral-300">
+        <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-indigo-400 flex-shrink-0" />
+        <span>{children}</span>
+      </li>
+    ),
+  },
+  marks: {
+    strong: ({ children }: any) => <strong className="font-semibold text-white">{children}</strong>,
+    link: ({ value, children }: any) => {
+      const target = (value?.href || '').startsWith('http') ? '_blank' : undefined
+      return (
+        <a href={value?.href} target={target} rel={target === '_blank' ? 'noindex nofollow' : undefined} className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4 transition-colors">
+          {children}
+        </a>
+      )
+    },
+  },
+});
+
+export function ServiceContent({ mainImage, mainImageAlt, mainImageName, relatedProjects, relatedProjectsTitle, relatedProjectsHighlight, relatedProjectsDescription, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection, localContentBlock, nearbyLocations, cityName, serviceSlug, serviceTitle }: ServiceContentProps) {
   return (
     <div className="bg-neutral-950 min-h-screen py-12 md:py-24 px-4 md:px-6 relative z-10 rounded-t-[3rem] md:rounded-t-[5rem] shadow-[0_-50px_100px_-20px_rgba(79,70,229,0.1)] border-t border-white/10 mt-0 transform-gpu backface-hidden">
       
@@ -155,6 +228,11 @@ export function ServiceContent({ mainImage, mainImageAlt, mainImageName, related
            pricing={pricing}
            faqs={faqs} faqTitle={faqTitle} faqHighlight={faqHighlight} faqDescription={faqDescription}
            ctaSection={ctaSection}
+           localContentBlock={localContentBlock}
+           nearbyLocations={nearbyLocations}
+           cityName={cityName}
+           serviceSlug={serviceSlug}
+           serviceTitle={serviceTitle}
          />
       </TracingBeam>
     </div>
@@ -162,58 +240,63 @@ export function ServiceContent({ mainImage, mainImageAlt, mainImageName, related
 }
 
 // Extracted Content Component to reuse
-const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProjects, relatedProjectsTitle, relatedProjectsHighlight, relatedProjectsDescription, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection }: ServiceContentProps) => {
+const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProjects, relatedProjectsTitle, relatedProjectsHighlight, relatedProjectsDescription, features, featuresTitle, featuresHighlight, featuresDescription, benefits, process, processTitle, processHighlight, processDescription, longDescription, overviewText, technologies, techTitle, techHighlight, techDescription, impactSection, team, teamTitle, teamHighlight, teamDescription, testimonials, testimonialsTitle, testimonialsHighlight, testimonialsDescription, pricing, faqs, faqTitle, faqHighlight, faqDescription, ctaSection, localContentBlock, nearbyLocations, cityName, serviceSlug, serviceTitle }: ServiceContentProps) => {
+    
+    // Determine if this is a Local Landing Page
+    const isLocalLanding = !!cityName;
+
     return (
         <div className="max-w-6xl mx-auto pt-4 antialiased relative pb-16">
           
-          {/* 1. Strategic Vision & Transformation */}
+          {/* --- STANDARD SECTION: Intro (Long Description) --- */}
           <section className="mb-20 md:mb-32 relative max-w-6xl mx-auto px-4">
-             {/* Large Editorial Intro */}
              <FadeIn>
-                <div className="flex flex-col gap-12 lg:gap-16">
-                   {/* Párrafo 1: Full Width */}
-                   <div className="prose prose-invert max-w-none">
-                      <div className="text-2xl md:text-4xl lg:text-5xl font-normal leading-tight tracking-tight text-white/90 font-sans">
-                         <BlurReveal text={longDescription || "Transforming your digital presence."} />
-                      </div>
-                   </div>
-
-                   {/* Párrafo 2 + Imagen: Side by Side (50/50 Split) */}
-                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-                       <div className="prose prose-invert max-w-none">
-                          {overviewText && (
-                             <BlurReveal 
-                               text={overviewText} 
-                               className="text-lg md:text-xl text-neutral-400 font-light leading-relaxed border-l-2 border-indigo-500/50 pl-6" 
-                               delay={0.2}
-                             />
-                          )}
-                       </div>
-                       
-                       {/* Main Image - Aligned with Paragraph 2 */}
-                       {mainImage && (
-                          <div className="relative mt-8 lg:mt-0">
-                             <div className="relative aspect-[3/2] w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl group">
-                                <Image 
-                                   src={mainImage}
-                                   alt={mainImageAlt || mainImageName || "Service Overview"}
-                                   title={mainImageAlt || mainImageName || "Service Overview"}
-                                   fill
-                                   className="object-cover transition-transform duration-700 group-hover:scale-105"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/60 to-transparent pointer-events-none" />
-                             </div>
-                             {/* Decorative Element */}
-                             <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl -z-10" />
-                             <div className="absolute -top-6 -left-6 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl -z-10" />
-                          </div>
-                       )}
+                <div className="prose prose-invert max-w-none">
+                   <div className="text-2xl md:text-4xl lg:text-5xl font-normal leading-tight tracking-tight text-white/90 font-sans">
+                      <BlurReveal text={longDescription || "Transforming your digital presence."} />
                    </div>
                 </div>
              </FadeIn>
           </section>
-    
-          {/* Tech Stack */}
+
+          {/* --- STANDARD SECTION: Overview + Image --- */}
+          <section className="mb-20 md:mb-32 relative max-w-6xl mx-auto px-4">
+             <FadeIn>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                    <div className="prose prose-invert max-w-none">
+                       {overviewText && (
+                          <BlurReveal 
+                            text={overviewText} 
+                            className="text-lg md:text-xl text-neutral-400 font-light leading-relaxed border-l-2 border-indigo-500/50 pl-6" 
+                            delay={0.2}
+                          />
+                       )}
+                    </div>
+                    
+                    {/* Main Image - Aligned with Paragraph 2 */}
+                    {mainImage && (
+                       <div className="relative mt-8 lg:mt-0">
+                          <div className="relative aspect-[3/2] w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl group">
+                             <Image 
+                                src={mainImage}
+                                alt={mainImageAlt || mainImageName || "Service Overview"}
+                                title={mainImageAlt || mainImageName || "Service Overview"}
+                                unoptimized={mainImage.startsWith("/api/hero?")}
+                                fill
+                                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                             />
+                             <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/60 to-transparent pointer-events-none" />
+                          </div>
+                          {/* Decorative Element */}
+                          <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl -z-10" />
+                          <div className="absolute -top-6 -left-6 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl -z-10" />
+                       </div>
+                    )}
+                </div>
+             </FadeIn>
+          </section>
+
+          {/* --- STANDARD SECTION: Tech Stack --- */}
           {technologies && technologies.length > 0 && (
               <FadeIn className="mb-20 md:mb-28 max-w-5xl mx-auto">
                   <div className="text-center mb-10">
@@ -223,11 +306,6 @@ const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProject
                         highlight={techHighlight || "Core"}
                         className="justify-center"
                     />
-                    {techDescription && (
-                        <p className="text-neutral-400 mt-6 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed text-center">
-                            {techDescription}
-                        </p>
-                    )}
                   </div>
                   <div className="flex flex-wrap justify-center gap-3 relative z-10 max-w-3xl mx-auto">
                       {technologies.map((tech, i) => (
@@ -238,17 +316,37 @@ const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProject
                   </div>
               </FadeIn>
           )}
-    
-          {/* Impact Section - Clean Stats */}
+
+          {/* --- STANDARD SECTION: Impact Stats --- */}
           {impactSection && impactSection.stats && impactSection.stats.length > 0 && (
              <ImpactStats impact={{
                 ...impactSection,
                 highlight: impactSection.highlight
              }} />
           )}
-    
-    
-          {/* Features Grid - Small Cards */}
+
+          {/* --- STANDARD SECTION: Team --- */}
+          {team && team.length > 0 && (
+            <section className="mb-20 md:mb-28 max-w-4xl mx-auto">
+                <FadeIn>
+                   <SectionHeading 
+                     title={teamTitle || "Nuestro Equipo"} 
+                     subtitle="Talento" 
+                     highlight={teamHighlight || "Experto"} 
+                   />
+                   {teamDescription && (
+                     <p className="text-neutral-400 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed text-center">
+                         {teamDescription}
+                     </p>
+                   )}
+                </FadeIn>
+                <div className="mt-12">
+                   <TeamSection team={team} />
+                </div>
+            </section>
+          )}
+
+          {/* --- STANDARD SECTION: Features --- */}
           {features && features.length > 0 && (
             <section className="mb-20 md:mb-28 max-w-5xl mx-auto">
                <FadeIn>
@@ -287,28 +385,44 @@ const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProject
             </section>
           )}
 
-          {/* Team Section */}
-          {team && team.length > 0 && (
-            <section className="mb-20 md:mb-28 max-w-4xl mx-auto">
-                <FadeIn>
+          {/* --- STANDARD SECTION: Process --- */}
+           {process && process.length > 0 && (
+             <section className="mb-20 w-full">
+                <FadeIn className="max-w-4xl mx-auto">
                    <SectionHeading 
-                     title={teamTitle || "Nuestro Equipo"} 
-                     subtitle="Talento" 
-                     highlight={teamHighlight || "Experto"} 
+                     title={processTitle || "Nuestro Proceso"} 
+                     subtitle="Metodología" 
+                     highlight={processHighlight || "Ágil"} 
                    />
-                   {teamDescription && (
-                     <p className="text-neutral-400 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed text-center">
-                         {teamDescription}
+                   {processDescription && (
+                     <p className="text-neutral-400 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed text-center mb-12">
+                         {processDescription}
                      </p>
                    )}
                 </FadeIn>
-                <div className="mt-12">
-                   <TeamSection team={team} />
-                </div>
-            </section>
+                <ServiceProcess steps={process} />
+             </section>
+           )}
+
+          {/* --- STANDARD SECTION: Pricing --- */}
+          {pricing && (
+            <div className="mb-20 md:mb-28">
+               <PricingSection pricing={{
+                 ...pricing,
+                 // Override button link for local landings to point to configurator
+                 buttonLinkOverride: cityName && serviceSlug 
+                    ? `/planes?service=${serviceSlug}&location=${cityName}` 
+                    : undefined
+               }} />
+            </div>
           )}
 
-          {/* Testimonials Section */}
+          {/* --- LOCAL ONLY SECTION: Comparison Table --- */}
+          {isLocalLanding && cityName && (
+             <ComparisonTable cityName={cityName} />
+          )}
+
+          {/* --- STANDARD SECTION: Testimonials --- */}
           {testimonials && testimonials.length > 0 && (
             <section className="mb-20 md:mb-28 max-w-4xl mx-auto">
                 <FadeIn>
@@ -329,35 +443,9 @@ const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProject
             </section>
           )}
 
-          {/* Process Section (Sticky Scroll) */}
-           {process && process.length > 0 && (
-             <section className="mb-0 w-full">
-                <FadeIn className="max-w-4xl mx-auto">
-                   <SectionHeading 
-                     title={processTitle || "Nuestro Proceso"} 
-                     subtitle="Metodología" 
-                     highlight={processHighlight || "Ágil"} 
-                   />
-                   {processDescription && (
-                     <p className="text-neutral-400 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed text-center mb-12">
-                         {processDescription}
-                     </p>
-                   )}
-                </FadeIn>
-                <ServiceProcess steps={process} />
-             </section>
-           )}
-
-          {/* Pricing Section */}
-          {pricing && (
-            <div className="mb-20 md:mb-28">
-               <PricingSection pricing={pricing} />
-            </div>
-          )}
-
-          {/* Related Projects Section */}
+          {/* --- STANDARD SECTION: Related Projects --- */}
           {relatedProjects && relatedProjects.length > 0 && (
-             <section className="mb-20 md:mb-28 w-full">
+             <section className="mb-20 md:mb-32 w-full">
                 <FadeIn className="max-w-4xl mx-auto px-4 mb-12">
                    <SectionHeading 
                      title={relatedProjectsTitle || "Proyectos Relacionados"} 
@@ -373,8 +461,83 @@ const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProject
                 <ParallaxScroll items={relatedProjects} />
              </section>
           )}
-    
-          {/* FAQs */}
+
+          {/* --- LOCAL ONLY SECTION: SEO Content Block --- */}
+          {isLocalLanding && localContentBlock && (
+             <section className="mb-20 md:mb-32 relative max-w-4xl mx-auto px-4">
+                <FadeIn>
+                  <div className="mb-12 text-center">
+                      <SectionHeading 
+                        title={`Servicios en ${cityName || 'la Región'}`}
+                        subtitle="Información Local" 
+                        highlight="Detallada" 
+                        className="justify-center"
+                      />
+                  </div>
+                  {(() => {
+                    const enhanced = Array.isArray(localContentBlock)
+                      ? localContentBlock.map((block: any, idx: number) => {
+                          if (!block || block._type !== "block") return block;
+                          const style = block.style;
+                          if (style !== "h2" && style !== "h3") return block;
+                          const text = plainTextFromPortableChildren(block.children);
+                          const id = `seo-${style}-${idx}-${slugify(text || "section")}`;
+                          return { ...block, __id: id };
+                        })
+                      : localContentBlock;
+
+                    const toc = Array.isArray(enhanced)
+                      ? enhanced
+                          .filter((b: any) => b?._type === "block" && (b.style === "h2" || b.style === "h3") && b.__id)
+                          .map((b: any) => ({
+                            id: b.__id,
+                            level: b.style,
+                            text: plainTextFromPortableChildren(b.children),
+                          }))
+                          .filter((i: any) => i.text)
+                      : [];
+
+                    const components = getSeoContentComponents();
+
+                    return (
+                      <div className="bg-neutral-900/20 border border-white/5 rounded-3xl p-5 sm:p-6 md:p-10">
+                        <div className="grid gap-10 lg:grid-cols-12">
+                          {toc.length > 0 && (
+                            <aside className="lg:col-span-4">
+                              <div className="lg:sticky lg:top-28">
+                                <div className="text-xs uppercase tracking-wider text-neutral-500 mb-4">Índice</div>
+                                <nav aria-label="Índice del contenido" className="space-y-2 rounded-2xl border border-white/5 bg-neutral-950/30 p-4">
+                                  {toc.map((item: any) => (
+                                    <a
+                                      key={item.id}
+                                      href={`#${item.id}`}
+                                      className={cn(
+                                        "block text-sm text-neutral-300 hover:text-white transition-colors",
+                                        item.level === "h3" && "pl-4 text-neutral-400"
+                                      )}
+                                    >
+                                      {item.text}
+                                    </a>
+                                  ))}
+                                </nav>
+                              </div>
+                            </aside>
+                          )}
+
+                          <article className={cn("min-w-0", toc.length > 0 ? "lg:col-span-8" : "lg:col-span-12")}>
+                            <div className="text-base md:text-lg leading-relaxed">
+                              <PortableText value={enhanced} components={components as any} />
+                            </div>
+                          </article>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </FadeIn>
+             </section>
+          )}
+
+          {/* --- STANDARD SECTION: FAQs --- */}
           {faqs && faqs.length > 0 && (
               <section className="max-w-4xl mx-auto mb-20 md:mb-28 px-2 md:px-0">
                   <FadeIn>
@@ -395,7 +558,16 @@ const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProject
               </section>
           )}
 
-          {/* CTA Section - Clean */}
+          {/* --- LOCAL ONLY SECTION: Nearby Locations (Interlinking) --- */}
+          {isLocalLanding && nearbyLocations && nearbyLocations.length > 0 && serviceSlug && (
+             <NearbyLocations 
+                currentServiceSlug={serviceSlug}
+                currentServiceTitle={serviceTitle}
+                locations={nearbyLocations} 
+             />
+          )}
+
+          {/* --- STANDARD SECTION: CTA --- */}
           <section className="text-center py-16 relative overflow-hidden rounded-3xl bg-neutral-900/10 border border-white/5 max-w-4xl mx-auto">
               <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none" />
               <FadeIn className="relative z-10 max-w-2xl mx-auto px-6">

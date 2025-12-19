@@ -1,12 +1,16 @@
 "use client";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button"
-import { MobileNav } from "@/components/layout/mobile-nav"
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
+
+const MobileNav = dynamic(() => import("@/components/layout/mobile-nav").then(mod => mod.MobileNav), {
+  ssr: false,
+});
 
 interface NavbarProps {
   data?: {

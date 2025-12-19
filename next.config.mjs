@@ -3,6 +3,16 @@ const nextConfig = {
   poweredByHeader: false,
   images: {
     formats: ['image/avif', 'image/webp'],
+    localPatterns: [
+      {
+        pathname: '/api/hero',
+        search: '*',
+      },
+      {
+        pathname: '/api/og',
+        search: '*',
+      },
+    ],
     remotePatterns: [
       {
         protocol: 'https',

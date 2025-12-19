@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
@@ -20,85 +20,35 @@ export const InfiniteMovingLogos = ({
   pauseOnHover?: boolean;
   className?: string;
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const scrollerRef = useRef<HTMLUListElement>(null);
+  const duplicatedItems = React.useMemo(() => {
+    const duplicationFactor = items.length < 5 ? 8 : 4;
+    return Array.from({ length: duplicationFactor + 1 }).flatMap(() => items);
+  }, [items]);
 
-  useEffect(() => {
-    addAnimation();
-  }, []);
-
-  const [start, setStart] = useState(false);
-
-  function addAnimation() {
-    if (containerRef.current && scrollerRef.current) {
-      const scrollerContent = Array.from(scrollerRef.current.children);
-
-      // Duplicate content enough times to ensure smooth scrolling
-      // For logos, we might need more duplication if they are small
-      const duplicationFactor = items.length < 5 ? 8 : 4;
-
-      if (scrollerRef.current.children.length === items.length) {
-        for (let i = 0; i < duplicationFactor; i++) {
-            scrollerContent.forEach((item) => {
-                const duplicatedItem = item.cloneNode(true);
-                if (scrollerRef.current) {
-                    scrollerRef.current.appendChild(duplicatedItem);
-                }
-            });
-        }
-      }
-
-      getDirection();
-      getSpeed();
-      setStart(true);
-    }
-  }
-
-  const getDirection = () => {
-    if (containerRef.current) {
-      if (direction === "left") {
-        containerRef.current.style.setProperty(
-          "--animation-direction",
-          "forwards"
-        );
-      } else {
-        containerRef.current.style.setProperty(
-          "--animation-direction",
-          "reverse"
-        );
-      }
-    }
-  };
-
-  const getSpeed = () => {
-    if (containerRef.current) {
-      if (speed === "fast") {
-        containerRef.current.style.setProperty("--animation-duration", "20s");
-      } else if (speed === "normal") {
-        containerRef.current.style.setProperty("--animation-duration", "40s");
-      } else {
-        containerRef.current.style.setProperty("--animation-duration", "80s");
-      }
-    }
-  };
+  const duration = speed === "fast" ? "20s" : speed === "normal" ? "40s" : "80s";
+  const dir = direction === "left" ? "forwards" : "reverse";
 
   return (
     <div
-      ref={containerRef}
+      style={
+        {
+          "--animation-direction": dir,
+          "--animation-duration": duration,
+        } as React.CSSProperties
+      }
       className={cn(
         "scroller relative z-20 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_20%,white_80%,transparent)]",
         className
       )}
     >
       <ul
-        ref={scrollerRef}
         className={cn(
           "flex min-w-full shrink-0 gap-12 py-4 w-max flex-nowrap items-center will-change-transform",
-          start && "animate-scroll",
+          "animate-scroll",
           pauseOnHover && "hover:[animation-play-state:paused]"
         )}
       >
-        {items.map((item, idx) => (
+        {duplicatedItems.map((item, idx) => (
           <li
             className="flex items-center justify-center grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
             key={item.name + idx}
@@ -115,11 +65,6 @@ export const InfiniteMovingLogos = ({
                         className="object-contain brightness-0 invert" 
                         priority={idx < 6}
                         loading={idx < 6 ? "eager" : "lazy"}
-                        onError={(e) => {
-                            // Fallback if image fails to load?
-                            // For now just hide or log
-                            console.error("Error loading logo:", item.logo);
-                        }}
                     />
                  </div>
              ) : (

@@ -5,15 +5,19 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 interface BreadcrumbContextType {
   lastItemOverride: string | null;
   setLastItemOverride: (name: string | null) => void;
+
+  itemsOverride: { name: string; href: string }[] | null;
+  setItemsOverride: (items: { name: string; href: string }[] | null) => void;
 }
 
 const BreadcrumbContext = createContext<BreadcrumbContextType | undefined>(undefined);
 
 export function BreadcrumbProvider({ children }: { children: ReactNode }) {
   const [lastItemOverride, setLastItemOverride] = useState<string | null>(null);
+  const [itemsOverride, setItemsOverride] = useState<{ name: string; href: string }[] | null>(null);
 
   return (
-    <BreadcrumbContext.Provider value={{ lastItemOverride, setLastItemOverride }}>
+    <BreadcrumbContext.Provider value={{ lastItemOverride, setLastItemOverride, itemsOverride, setItemsOverride }}>
       {children}
     </BreadcrumbContext.Provider>
   );

@@ -9,7 +9,31 @@ import agencyPage from './agencyPage'
 import projectsPage from './projectsPage'
 import servicesPage from './servicesPage'
 import contactPage from './contactPage'
+import location from './location'
+import serviceLocation from './serviceLocation'
+import pricingPlan from './pricingPlan'
+import pricingAddon from './pricingAddon'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [service, project, teamMember, testimonial, settings, homePage, agencyPage, projectsPage, servicesPage, contactPage],
+  types: [
+    // Core Content
+    service, 
+    project, 
+    teamMember, 
+    testimonial, 
+    settings,
+    
+    // Pages
+    homePage, 
+    agencyPage, 
+    projectsPage, 
+    servicesPage, 
+    contactPage,
+
+    // GEO Strategy & Commercial
+    location,
+    serviceLocation,
+    pricingPlan,
+    pricingAddon
+  ],
 }

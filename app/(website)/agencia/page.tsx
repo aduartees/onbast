@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { LuminousPill } from "@/components/ui/luminous-pill";
 import { BackgroundBeams } from "@/components/aceternity/background-beams";
 import { BlurReveal } from "@/components/ui/blur-reveal";
+import Link from "next/link";
 
 import { ParallaxScroll } from "@/components/aceternity/parallax-scroll";
 import { TestimonialsSection } from "@/components/sections/testimonials";
@@ -306,7 +307,7 @@ export default async function AgencyPage() {
                          <a href={cta.buttonLink || "#contact"}>{cta.buttonText || "Agendar Llamada"}</a>
                       </Button>
                       <Button size="lg" variant="outline" className="text-neutral-300 hover:text-white hover:bg-white/5 border-neutral-800 text-sm h-12 px-8 rounded-full" asChild>
-                          <a href="/projects">Ver Portfolio</a>
+                          <Link href="/proyectos">Ver Portfolio</Link>
                       </Button>
                     </div>
                   </FadeIn>

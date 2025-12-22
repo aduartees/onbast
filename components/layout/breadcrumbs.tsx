@@ -22,7 +22,8 @@ const PATH_MAP: Record<string, string> = {
 };
 
 export function Breadcrumbs() {
-  const pathname = usePathname();
+  const rawPathname = usePathname();
+  const pathname = rawPathname === "/" ? "/" : rawPathname.replace(/\/+$/, "");
   const { lastItemOverride, itemsOverride } = useBreadcrumb();
 
   const segments = useMemo(() => pathname.split("/").filter(Boolean), [pathname]);
@@ -62,8 +63,9 @@ export function Breadcrumbs() {
   }
 
   // Generate JSON-LD - Only if NOT a service landing page (handled in page.tsx for SEO title)
-  const isServiceLanding = pathname.startsWith('/servicios/') && pathname.split('/').length > 2;
-  const shouldRenderJsonLd = !isServiceLanding && !isLocalLanding && !itemsOverride;
+  const isServiceLanding = pathname.startsWith("/servicios/") && pathname.split("/").length > 2;
+  const isServerBreadcrumbSchemaPage = pathname === "/servicios" || pathname === "/planes";
+  const shouldRenderJsonLd = !isServerBreadcrumbSchemaPage && !isServiceLanding && !isLocalLanding && !itemsOverride;
 
   const jsonLd = {
     "@context": "https://schema.org",

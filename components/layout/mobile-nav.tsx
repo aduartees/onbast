@@ -53,6 +53,10 @@ export function MobileNav({ menuItems = [], cta, socialLinks, agencyEmail, agenc
   // Close menu when route changes (handled via link clicks). Keep effect-free to avoid render cascades.
 
   useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
     } else {
@@ -66,9 +70,7 @@ export function MobileNav({ menuItems = [], cta, socialLinks, agencyEmail, agenc
   const toggleMenu = () => setIsOpen(!isOpen);
 
   const handleLinkClick = (url: string) => {
-    if (url.startsWith("#")) {
-        setIsOpen(false);
-    }
+    setIsOpen(false);
   };
 
   const getSocialIcon = (platform: string) => {

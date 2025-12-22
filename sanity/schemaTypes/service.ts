@@ -30,6 +30,13 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'additionalType',
+      title: 'Additional Type (Wikidata URL)',
+      type: 'url',
+      group: 'general',
+      description: 'URL de Wikidata para el tipo de servicio (ej: https://www.wikidata.org/wiki/Q56062435)',
+    }),
+    defineField({
       name: 'shortDescription',
       title: 'Descripción Corta (Para Cards)',
       type: 'text',

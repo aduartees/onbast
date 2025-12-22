@@ -183,6 +183,7 @@ export function generateServiceSchema(service: any, agency?: any) {
         "@type": "Service",
         "serviceType": service.title,
         "name": service.title,
+        ...(service.additionalType ? { "additionalType": service.additionalType } : {}),
         "description": service.seoDescription || service.shortDescription,
         ...(serviceImage ? { "image": serviceImage } : {}),
         "provider": {
@@ -211,6 +212,25 @@ export function generateServiceSchema(service: any, agency?: any) {
             }
         }
     };
+}
+
+export function generateHomeOrganizationServicesSchema(data: any, services: any[]) {
+  const organizationSchema = generateOrganizationSchema(data, "Organization");
+  if (!organizationSchema) return null;
+
+  const { ["@context"]: _organizationContext, ...organizationNode } = organizationSchema as any;
+  const agency = data?.siteSettings?.agency;
+
+  const serviceNodes = (services || []).map((service) => {
+    const serviceSchema = generateServiceSchema(service, agency);
+    const { ["@context"]: _serviceContext, ...serviceNode } = serviceSchema as any;
+    return serviceNode;
+  });
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [organizationNode, ...serviceNodes]
+  };
 }
 
 export function generateBreadcrumbSchema(items: { name: string; item: string }[]) {

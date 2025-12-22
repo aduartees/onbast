@@ -25,15 +25,28 @@ export const SERVICES_QUERY = defineQuery(`*[_type == "service"] | order(_create
   title,
   "slug": slug.current,
   "description": shortDescription,
+  additionalType,
   icon,
   "imageUrl": mainImage.asset->url,
   colSpan
+}`);
+
+export const HOME_SERVICES_SCHEMA_QUERY = defineQuery(`*[_type == "service"] | order(_createdAt asc) {
+  _id,
+  title,
+  "slug": slug.current,
+  shortDescription,
+  seoDescription,
+  "seoImage": seoImage.asset->url,
+  "imageUrl": mainImage.asset->url,
+  additionalType
 }`);
 
 export const SERVICE_BY_SLUG_QUERY = defineQuery(`*[_type == "service" && slug.current == $slug][0] {
   _id,
   title,
   "slug": slug.current,
+  additionalType,
   shortDescription,
   longDescription,
   overviewText,
@@ -208,7 +221,17 @@ export const HOME_PAGE_QUERY = defineQuery(`*[_type == "homePage"][0] {
   techArsenal,
   services,
   projects,
-  contact
+  contact,
+  "siteSettings": *[_type == "settings"][0] {
+    "agency": agencyInfo {
+      name,
+      email,
+      phone,
+      address,
+      socialProfiles,
+      "logo": logo.asset->url
+    }
+  }
 }`);
 
 export const SERVICES_PAGE_QUERY = defineQuery(`*[_type == "servicesPage"][0] {
@@ -518,6 +541,7 @@ export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
     _id,
     title,
     "slug": slug.current,
+    additionalType,
     shortDescription,
     longDescription,
     overviewText,

@@ -27,6 +27,7 @@ interface SanityServiceDetail {
   _id: string;
   title: string;
   slug: string;
+  additionalType?: string;
   shortDescription: string;
   longDescription?: string;
   overviewText?: string;

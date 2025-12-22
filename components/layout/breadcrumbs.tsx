@@ -11,6 +11,7 @@ import { useBreadcrumb } from "@/components/layout/breadcrumb-context";
 const PATH_MAP: Record<string, string> = {
   "agencia": "Agencia",
   "servicios": "Servicios",
+  "planes": "Planes",
   "proyectos": "Proyectos",
   "projects": "Proyectos",
   "contact": "Contacto",

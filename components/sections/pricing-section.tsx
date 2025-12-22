@@ -33,8 +33,7 @@ interface PricingProps {
     plans?: PricingPlan[];
     trustedCompaniesTitle?: string;
     trustedLogos?: { logo: string | null; name: string }[];
-    // Optional override for button links (used in local landings)
-    buttonLinkOverride?: string;
+    linkLocation?: string;
   };
 }
 
@@ -68,10 +67,10 @@ export function PricingSection({ pricing }: PricingProps) {
         )}>
           {pricing.plans?.map((plan, index) => (
             <PricingCard 
-              key={index} 
+              key={plan.buttonLinkID || plan.title} 
               plan={plan} 
               index={index} 
-              buttonLinkOverride={pricing.buttonLinkOverride}
+              linkLocation={pricing.linkLocation}
             />
           ))}
         </div>
@@ -105,7 +104,7 @@ export function PricingSection({ pricing }: PricingProps) {
   );
 }
 
-function PricingCard({ plan, index, buttonLinkOverride }: { plan: PricingPlan, index: number, buttonLinkOverride?: string }) {
+function PricingCard({ plan, index, linkLocation }: { plan: PricingPlan, index: number, linkLocation?: string }) {
   const [addonActive, setAddonActive] = React.useState(plan.addon?.active || false);
 
   // Helper to parse price string
@@ -123,10 +122,15 @@ function PricingCard({ plan, index, buttonLinkOverride }: { plan: PricingPlan, i
      return new Intl.NumberFormat('es-ES', { minimumFractionDigits: 0 }).format(totalPrice);
   }, [totalPrice]);
 
-  // Determine link: Override > Configurator Link > Default Contact
-  const finalLink = buttonLinkOverride 
-    ? buttonLinkOverride 
-    : `/planes?service=${plan.buttonLinkID}`;
+  const finalLink = React.useMemo(() => {
+    const params = new URLSearchParams();
+
+    if (plan.buttonLinkID) params.set("service", plan.buttonLinkID);
+    if (linkLocation) params.set("location", linkLocation);
+
+    const qs = params.toString();
+    return qs ? `/planes?${qs}` : "/planes";
+  }, [linkLocation, plan.buttonLinkID]);
 
   return (
     <FadeIn delay={0.2 + (index * 0.1)} className="relative w-full h-full">

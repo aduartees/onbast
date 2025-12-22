@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Code2, Zap, Shield, Globe, Database, Smartphone } from "lucide-react";
 import Image from "next/image";
 import * as LucideIcons from "lucide-react";
+import { generateBreadcrumbSchema } from "@/lib/seo";
 
 export const dynamic = 'force-dynamic';
 
@@ -34,6 +35,73 @@ export default async function ServicesPage() {
     client.fetch(SERVICES_PAGE_QUERY)
   ]);
 
+  const baseUrl = process.env.NEXT_PUBLIC_URL || "https://onbast.com";
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Inicio", item: `${baseUrl}/` },
+    { name: "Servicios", item: `${baseUrl}/servicios` },
+  ]);
+
+  const orgId = `${baseUrl}#org`;
+  const websiteId = `${baseUrl}#website`;
+  const pageId = `${baseUrl}/servicios#webpage`;
+
+  const organizationSchema = {
+    "@type": "Organization",
+    "@id": orgId,
+    name: pageData?.siteSettings?.agency?.name || "ONBAST",
+    url: baseUrl,
+    ...(pageData?.siteSettings?.agency?.logo ? { logo: pageData.siteSettings.agency.logo } : {}),
+    ...(pageData?.siteSettings?.agency?.email ? { email: pageData.siteSettings.agency.email } : {}),
+    ...(pageData?.siteSettings?.agency?.phone ? { telephone: pageData.siteSettings.agency.phone } : {}),
+    ...(pageData?.siteSettings?.agency?.socialProfiles?.length
+      ? { sameAs: pageData.siteSettings.agency.socialProfiles }
+      : {}),
+  };
+
+  const websiteSchema = {
+    "@type": "WebSite",
+    "@id": websiteId,
+    url: baseUrl,
+    name: pageData?.siteSettings?.agency?.name || "ONBAST",
+    publisher: { "@id": orgId },
+  };
+
+  const webpageSchema = {
+    "@type": "CollectionPage",
+    "@id": pageId,
+    url: `${baseUrl}/servicios`,
+    name: pageData?.seoTitle || "Servicios",
+    description: pageData?.seoDescription,
+    isPartOf: { "@id": websiteId },
+    about: { "@id": orgId },
+  };
+
+  const servicesItemListSchema = {
+    "@type": "ItemList",
+    name: "Servicios",
+    itemListElement: (services || []).map((service: any, index: number) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Service",
+        name: service.title,
+        description: service.description,
+        url: `${baseUrl}/servicios/${service.slug}`,
+        provider: { "@id": orgId },
+        areaServed: {
+          "@type": "Country",
+          name: "España",
+        },
+      },
+    })),
+  };
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [organizationSchema, websiteSchema, webpageSchema, breadcrumbSchema, servicesItemListSchema],
+  };
+
   // Map services to HoverEffect format
   const hoverItems = (services || []).map((service: any) => ({
     title: service.title,
@@ -54,6 +122,8 @@ export default async function ServicesPage() {
   return (
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-indigo-500 selection:text-white pt-0">
       <ScrollReset />
+
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* Hero Section */}
       <section className="h-[80vh] w-full sticky top-0 z-0 flex flex-col items-center justify-center bg-neutral-950 overflow-hidden">

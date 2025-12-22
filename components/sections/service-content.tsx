@@ -421,10 +421,7 @@ const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProject
             <div className="mb-20 md:mb-28">
                <PricingSection pricing={{
                  ...pricing,
-                 // Override button link for local landings to point to configurator
-                 buttonLinkOverride: cityName && serviceSlug 
-                    ? `/planes?service=${serviceSlug}&location=${cityName}` 
-                    : undefined
+                 linkLocation: cityName || undefined
                }} />
             </div>
           )}

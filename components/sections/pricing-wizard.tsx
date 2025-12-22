@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, ArrowRight, ArrowLeft, Loader2, MapPin, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -56,7 +56,7 @@ export function PricingWizard({ plans, addons, initialPlanId, initialLocation }:
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const selectedPlan = plans.find(p => p.buttonLinkID === selectedPlanId);
+  const selectedPlan = useMemo(() => plans.find((p) => p.buttonLinkID === selectedPlanId), [plans, selectedPlanId]);
 
   const handleNext = () => {
     if (step === 1 && !selectedPlanId) return;
@@ -101,258 +101,280 @@ export function PricingWizard({ plans, addons, initialPlanId, initialLocation }:
     }
   };
 
-  // --- STEPS ---
-
-  const Step1Plans = () => (
-    <div className="space-y-6">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-white mb-2">Selecciona tu Plan Base</h2>
-        <p className="text-neutral-400">Elige la estructura que mejor se adapte a tu proyecto.</p>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {plans.map((plan) => (
-          <div 
-            key={plan.buttonLinkID}
-            onClick={() => setSelectedPlanId(plan.buttonLinkID)}
-            className={cn(
-              "cursor-pointer relative p-6 rounded-2xl border transition-all duration-300",
-              selectedPlanId === plan.buttonLinkID 
-                ? "bg-indigo-900/20 border-indigo-500 shadow-[0_0_30px_-10px_rgba(99,102,241,0.3)]" 
-                : "bg-neutral-900/10 border-white/10 hover:bg-neutral-900/30 hover:border-white/20"
-            )}
-          >
-            {plan.badge && (
-              <span className="absolute -top-3 left-6 px-3 py-1 text-xs font-bold text-black bg-indigo-400 rounded-full">
-                {plan.badge}
-              </span>
-            )}
-            <h3 className="text-xl font-bold text-white mb-2">{plan.title}</h3>
-            <div className="mb-4">
-              <span className="text-3xl font-bold text-white">{plan.price}</span>
-              {plan.period && <span className="text-neutral-400 text-sm ml-1">{plan.period}</span>}
-            </div>
-            <p className="text-sm text-neutral-400 mb-6 min-h-[40px]">{plan.description}</p>
-            <ul className="space-y-2 mb-6">
-              {plan.features?.slice(0, 4).map((feature, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-neutral-300">
-                  <Check className="w-4 h-4 text-indigo-400 mt-0.5 shrink-0" />
-                  <span>{feature}</span>
-                </li>
-              ))}
-            </ul>
-            <div className={cn(
-              "w-full py-2 rounded-lg text-center text-sm font-medium transition-colors",
-              selectedPlanId === plan.buttonLinkID ? "bg-indigo-500 text-white" : "bg-white/5 text-neutral-400"
-            )}>
-              {selectedPlanId === plan.buttonLinkID ? "Seleccionado" : "Elegir"}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const Step2Addons = () => (
-    <div className="space-y-6 max-w-2xl mx-auto">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-white mb-2">Potencia tu Plan</h2>
-        <p className="text-neutral-400">Servicios adicionales para maximizar resultados.</p>
-      </div>
-      
-      {addons.map((addon) => (
-        <div 
-          key={addon.id}
-          onClick={() => toggleAddon(addon.id)}
-          className={cn(
-            "cursor-pointer flex items-center justify-between p-4 md:p-6 rounded-xl border transition-all duration-300",
-            selectedAddons.includes(addon.id)
-              ? "bg-indigo-900/10 border-indigo-500/50" 
-              : "bg-neutral-900/10 border-white/5 hover:bg-neutral-900/20"
-          )}
-        >
-          <div className="flex items-start gap-4">
-            <div className={cn(
-              "w-6 h-6 rounded border flex items-center justify-center mt-1 transition-colors",
-              selectedAddons.includes(addon.id) ? "bg-indigo-500 border-indigo-500" : "border-neutral-600"
-            )}>
-              {selectedAddons.includes(addon.id) && <Check className="w-4 h-4 text-white" />}
-            </div>
-            <div>
-              <h3 className="font-bold text-white">{addon.title}</h3>
-              <p className="text-sm text-neutral-400">{addon.description}</p>
-            </div>
-          </div>
-          <div className="text-right pl-4">
-            <span className="block font-bold text-indigo-400">{addon.price}</span>
-          </div>
+  const stepContent =
+    step === 1 ? (
+      <div className="space-y-8">
+        <div className="text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Selecciona tu Plan Base</h2>
+          <p className="text-neutral-400 mt-3">Elige la estructura que mejor se adapte a tu proyecto.</p>
         </div>
-      ))}
-    </div>
-  );
 
-  const Step3Location = () => (
-    <div className="space-y-6 max-w-xl mx-auto">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-white mb-2">¿Dónde quieres posicionarte?</h2>
-        <p className="text-neutral-400">Define tu área de actuación principal.</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          {plans.map((plan) => {
+            const isSelected = selectedPlanId === plan.buttonLinkID;
+            return (
+              <button
+                key={plan.buttonLinkID}
+                type="button"
+                onClick={() => setSelectedPlanId(plan.buttonLinkID)}
+                className={cn(
+                  "text-left relative rounded-3xl border p-6 md:p-7 transition-all duration-300 bg-neutral-900/10 hover:bg-neutral-900/20",
+                  "hover:-translate-y-1 hover:shadow-[0_40px_80px_-50px_rgba(0,0,0,0.8)]",
+                  isSelected ? "border-indigo-500/50 shadow-[0_0_30px_-10px_rgba(99,102,241,0.45)]" : "border-white/10"
+                )}
+              >
+                <div className="absolute inset-0 pointer-events-none rounded-3xl bg-gradient-to-b from-white/5 to-transparent opacity-60" />
+
+                {plan.badge && (
+                  <span className="absolute -top-3 left-6 inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-indigo-400 text-black shadow">
+                    {plan.badge}
+                  </span>
+                )}
+
+                <div className="relative">
+                  <div className="flex items-start justify-between gap-4">
+                    <h3 className="text-xl font-bold text-white">{plan.title}</h3>
+                    <span
+                      className={cn(
+                        "inline-flex items-center justify-center w-7 h-7 rounded-full border",
+                        isSelected ? "bg-indigo-500 border-indigo-400 text-white" : "border-white/15 text-transparent"
+                      )}
+                    >
+                      <Check className="w-4 h-4" />
+                    </span>
+                  </div>
+
+                  <div className="mt-4 flex items-baseline gap-2">
+                    <span className="text-4xl font-bold text-white tracking-tight">{plan.price}</span>
+                    {plan.period && <span className="text-sm text-neutral-500">{plan.period}</span>}
+                  </div>
+
+                  {plan.description && <p className="mt-4 text-sm text-neutral-400 leading-relaxed min-h-[40px]">{plan.description}</p>}
+
+                  {plan.features && plan.features.length > 0 && (
+                    <ul className="mt-6 space-y-2">
+                      {plan.features.slice(0, 4).map((feature, i) => (
+                        <li key={`${plan.buttonLinkID}-${i}`} className="flex items-start gap-2 text-sm text-neutral-300">
+                          <Check className="w-4 h-4 text-indigo-400 mt-0.5 shrink-0" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
+                  <div
+                    className={cn(
+                      "mt-7 w-full py-2.5 rounded-xl text-center text-sm font-medium transition-colors",
+                      isSelected ? "bg-indigo-500 text-white" : "bg-white/5 text-neutral-400"
+                    )}
+                  >
+                    {isSelected ? "Seleccionado" : "Elegir"}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </div>
+    ) : step === 2 ? (
+      <div className="space-y-8 max-w-3xl mx-auto">
+        <div className="text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Potencia tu Plan</h2>
+          <p className="text-neutral-400 mt-3">Servicios adicionales para maximizar resultados.</p>
+        </div>
 
-      <div className="bg-neutral-900/30 border border-white/10 rounded-2xl p-8">
-        <div className="flex flex-col gap-6">
-          <div className="space-y-2">
+        <div className="space-y-3">
+          {addons.map((addon) => {
+            const active = selectedAddons.includes(addon.id);
+            return (
+              <button
+                key={addon.id}
+                type="button"
+                onClick={() => toggleAddon(addon.id)}
+                className={cn(
+                  "w-full text-left rounded-2xl border p-5 md:p-6 transition-all duration-300",
+                  active
+                    ? "bg-indigo-500/10 border-indigo-500/40 shadow-[0_0_25px_-15px_rgba(99,102,241,0.55)]"
+                    : "bg-neutral-900/10 border-white/10 hover:bg-neutral-900/20"
+                )}
+              >
+                <div className="flex items-start justify-between gap-6">
+                  <div className="flex items-start gap-4">
+                    <div
+                      className={cn(
+                        "mt-1 w-6 h-6 rounded-md border flex items-center justify-center transition-colors",
+                        active ? "bg-indigo-500 border-indigo-500" : "border-neutral-700 bg-neutral-950"
+                      )}
+                    >
+                      {active && <Check className="w-4 h-4 text-white" />}
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-white">{addon.title}</h3>
+                      {addon.description && <p className="text-sm text-neutral-400 mt-1">{addon.description}</p>}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="inline-flex items-center rounded-full bg-white/5 px-3 py-1 text-sm font-semibold text-indigo-200 border border-white/10">
+                      {addon.price}
+                    </span>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    ) : step === 3 ? (
+      <div className="space-y-8 max-w-xl mx-auto">
+        <div className="text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">¿Dónde quieres posicionarte?</h2>
+          <p className="text-neutral-400 mt-3">Define tu área de actuación principal.</p>
+        </div>
+
+        <div className="rounded-3xl border border-white/10 bg-neutral-900/10 p-6 md:p-8 shadow-2xl">
+          <div className="space-y-3">
             <label className="text-sm font-medium text-neutral-300">Ciudad o Región Principal</label>
             <div className="relative">
-              <MapPin className="absolute left-3 top-3 w-5 h-5 text-neutral-500" />
-              <Input 
+              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" />
+              <Input
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="Ej: Madrid, Getafe, Toda España..."
-                className="pl-10 bg-neutral-950 border-white/10 text-white h-12"
+                className="pl-12 h-12 md:h-14 rounded-2xl bg-neutral-950/60 border-white/10 text-white"
               />
             </div>
-            <p className="text-xs text-neutral-500">
-              Analizaremos la competencia en esta zona para preparar tu estrategia.
-            </p>
-          </div>
+            <p className="text-xs text-neutral-500">Analizaremos la competencia en esta zona para preparar tu estrategia.</p>
 
-          <div className="p-4 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex gap-3">
-            <Globe className="w-5 h-5 text-indigo-400 shrink-0" />
-            <p className="text-sm text-indigo-200">
-              Incluye análisis de palabras clave locales y configuración de Google My Business para {location || "tu zona"}.
-            </p>
+            <div className="mt-6 p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex gap-3">
+              <Globe className="w-5 h-5 text-indigo-300 shrink-0 mt-0.5" />
+              <p className="text-sm text-indigo-200 leading-relaxed">
+                Incluye análisis de palabras clave locales y configuración de Google Business Profile para {location || "tu zona"}.
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    ) : step === 4 ? (
+      <div className="space-y-8 max-w-xl mx-auto">
+        <div className="text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Finalizar Solicitud</h2>
+          <p className="text-neutral-400 mt-3">Déjanos tus datos para enviarte la propuesta formal.</p>
+        </div>
 
-  const Step4Contact = () => (
-    <div className="space-y-6 max-w-xl mx-auto">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-white mb-2">Finalizar Solicitud</h2>
-        <p className="text-neutral-400">Déjanos tus datos para enviarte la propuesta formal.</p>
-      </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm text-neutral-400">Nombre</label>
+              <Input
+                required
+                value={formData.name}
+                onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+                className="h-12 rounded-2xl bg-neutral-950/60 border-white/10 text-white"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm text-neutral-400">Teléfono</label>
+              <Input
+                required
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
+                className="h-12 rounded-2xl bg-neutral-950/60 border-white/10 text-white"
+              />
+            </div>
+          </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="text-sm text-neutral-400">Nombre</label>
-            <Input 
+            <label className="text-sm text-neutral-400">Email Profesional</label>
+            <Input
               required
-              value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
-              className="bg-neutral-950 border-white/10 text-white"
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+              className="h-12 rounded-2xl bg-neutral-950/60 border-white/10 text-white"
             />
           </div>
+
           <div className="space-y-2">
-            <label className="text-sm text-neutral-400">Teléfono</label>
-            <Input 
-              required
-              type="tel"
-              value={formData.phone}
-              onChange={(e) => setFormData({...formData, phone: e.target.value})}
-              className="bg-neutral-950 border-white/10 text-white"
+            <label className="text-sm text-neutral-400">Detalles del Proyecto (Opcional)</label>
+            <Textarea
+              value={formData.message}
+              onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
+              className="min-h-[120px] rounded-2xl bg-neutral-950/60 border-white/10 text-white"
+              placeholder="Cuéntanos un poco más sobre tu negocio..."
             />
           </div>
-        </div>
-        
-        <div className="space-y-2">
-          <label className="text-sm text-neutral-400">Email Profesional</label>
-          <Input 
-            required
-            type="email"
-            value={formData.email}
-            onChange={(e) => setFormData({...formData, email: e.target.value})}
-            className="bg-neutral-950 border-white/10 text-white"
-          />
-        </div>
 
-        <div className="space-y-2">
-          <label className="text-sm text-neutral-400">Detalles del Proyecto (Opcional)</label>
-          <Textarea 
-            value={formData.message}
-            onChange={(e) => setFormData({...formData, message: e.target.value})}
-            className="bg-neutral-950 border-white/10 text-white min-h-[100px]"
-            placeholder="Cuéntanos un poco más sobre tu negocio..."
-          />
-        </div>
-
-        <div className="pt-4">
-          <div className="bg-neutral-900/50 rounded-lg p-4 mb-6 text-sm text-neutral-400 border border-white/5">
-            <h4 className="font-bold text-white mb-2">Resumen:</h4>
-            <ul className="space-y-1">
-              <li className="flex justify-between">
-                <span>Plan Base:</span>
-                <span className="text-white">{selectedPlan?.title}</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Ubicación:</span>
-                <span className="text-white">{location}</span>
-              </li>
-              {selectedAddons.length > 0 && (
-                <li className="flex justify-between">
-                  <span>Extras:</span>
-                  <span className="text-white">{selectedAddons.length} seleccionados</span>
+          <div className="pt-2">
+            <div className="rounded-2xl p-5 text-sm text-neutral-400 border border-white/10 bg-neutral-900/10">
+              <h4 className="font-semibold text-white mb-3">Resumen</h4>
+              <ul className="space-y-2">
+                <li className="flex justify-between gap-4">
+                  <span className="text-neutral-500">Plan Base</span>
+                  <span className="text-white text-right">{selectedPlan?.title || "—"}</span>
                 </li>
+                <li className="flex justify-between gap-4">
+                  <span className="text-neutral-500">Ubicación</span>
+                  <span className="text-white text-right">{location || "—"}</span>
+                </li>
+                <li className="flex justify-between gap-4">
+                  <span className="text-neutral-500">Extras</span>
+                  <span className="text-white text-right">{selectedAddons.length || 0}</span>
+                </li>
+              </ul>
+            </div>
+
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="mt-5 w-full h-12 rounded-2xl bg-white text-black hover:bg-neutral-200"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Procesando...
+                </>
+              ) : (
+                "Solicitar Propuesta y Consultoría Gratis"
               )}
-            </ul>
+            </Button>
+            {error && <p className="text-red-400 text-sm text-center mt-3">{error}</p>}
           </div>
-
-          <Button 
-            type="submit" 
-            disabled={isSubmitting}
-            className="w-full h-12 text-base bg-white text-black hover:bg-neutral-200"
-          >
-            {isSubmitting ? (
-              <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Procesando...</>
-            ) : (
-              "Solicitar Propuesta y Consultoría Gratis"
-            )}
-          </Button>
-          {error && <p className="text-red-400 text-sm text-center mt-2">{error}</p>}
-        </div>
-      </form>
-    </div>
-  );
-
-  const Step5Success = () => (
-    <div className="text-center py-12 max-w-lg mx-auto">
-      <div className="w-20 h-20 bg-green-500/10 text-green-400 rounded-full flex items-center justify-center mx-auto mb-6">
-        <Check className="w-10 h-10" />
+        </form>
       </div>
-      <h2 className="text-3xl font-bold text-white mb-4">¡Solicitud Recibida!</h2>
-      <p className="text-neutral-400 text-lg mb-8">
-        Hemos recibido los detalles de tu proyecto en <strong>{location}</strong>. 
-        Un especialista analizará tu caso y te contactará en menos de 24 horas.
-      </p>
-      <Button 
-        onClick={() => window.location.href = "/"}
-        variant="outline"
-        className="border-white/10 text-white hover:bg-white/5"
-      >
-        Volver al Inicio
-      </Button>
-    </div>
-  );
-
-  // --- RENDER ---
+    ) : (
+      <div className="text-center py-14 max-w-lg mx-auto">
+        <div className="w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/20">
+          <Check className="w-10 h-10" />
+        </div>
+        <h2 className="text-3xl font-bold text-white mb-4 tracking-tight">¡Solicitud Recibida!</h2>
+        <p className="text-neutral-400 text-lg leading-relaxed">
+          Hemos recibido los detalles de tu proyecto en <strong>{location}</strong>. Un especialista te contactará en menos de 24 horas.
+        </p>
+        <Button
+          onClick={() => (window.location.href = "/")}
+          variant="outline"
+          className="mt-8 border-white/10 text-white hover:bg-white/5"
+        >
+          Volver al Inicio
+        </Button>
+      </div>
+    );
 
   return (
     <div className="w-full">
       {/* Progress Bar */}
-      <div className="flex justify-between mb-8 md:mb-12 px-4 max-w-3xl mx-auto relative">
-        <div className="absolute top-1/2 left-0 w-full h-0.5 bg-neutral-800 -z-10 -translate-y-1/2" />
-        {[1, 2, 3, 4].map((s) => (
-          <div 
-            key={s}
-            className={cn(
-              "w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-500",
-              step >= s ? "bg-indigo-600 text-white scale-110" : "bg-neutral-900 text-neutral-600 border border-neutral-800"
-            )}
-          >
-            {s}
-          </div>
-        ))}
+      <div className="max-w-4xl mx-auto px-1 md:px-4">
+        <div className="grid grid-cols-4 gap-2 md:gap-3 mb-10">
+          {[1, 2, 3, 4].map((s) => (
+            <div
+              key={s}
+              className={cn(
+                "h-2 rounded-full border",
+                step >= s ? "bg-indigo-500/80 border-indigo-400/40" : "bg-white/5 border-white/10"
+              )}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Content Area */}
@@ -365,35 +387,33 @@ export function PricingWizard({ plans, addons, initialPlanId, initialLocation }:
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
           >
-            {step === 1 && <Step1Plans />}
-            {step === 2 && <Step2Addons />}
-            {step === 3 && <Step3Location />}
-            {step === 4 && <Step4Contact />}
-            {step === 5 && <Step5Success />}
+            {stepContent}
           </motion.div>
         </AnimatePresence>
       </div>
 
       {/* Navigation Buttons (Outside Steps 1 & 5) */}
       {step < 4 && step > 0 && (
-        <div className="mt-12 flex justify-between max-w-4xl mx-auto px-4 border-t border-white/5 pt-8">
-           {step > 1 ? (
-             <Button 
-                variant="ghost" 
-                onClick={handleBack}
-                className="text-neutral-400 hover:text-white hover:bg-white/5"
-             >
-               <ArrowLeft className="w-4 h-4 mr-2" /> Atrás
-             </Button>
-           ) : <div />}
-           
-           <Button 
-             onClick={handleNext}
-             disabled={step === 1 && !selectedPlanId || step === 3 && !location}
-             className="bg-white text-black hover:bg-neutral-200"
-           >
-             Continuar <ArrowRight className="w-4 h-4 ml-2" />
-           </Button>
+        <div className="mt-12 flex justify-between max-w-4xl mx-auto px-4 border-t border-white/10 pt-8">
+          {step > 1 ? (
+            <Button
+              variant="ghost"
+              onClick={handleBack}
+              className="text-neutral-300 hover:text-white hover:bg-white/5 rounded-2xl"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" /> Atrás
+            </Button>
+          ) : (
+            <div />
+          )}
+
+          <Button
+            onClick={handleNext}
+            disabled={(step === 1 && !selectedPlanId) || (step === 3 && !location)}
+            className="bg-white text-black hover:bg-neutral-200 rounded-2xl"
+          >
+            Continuar <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
         </div>
       )}
     </div>

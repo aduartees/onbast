@@ -50,10 +50,9 @@ export function MobileNav({ menuItems = [], cta, socialLinks, agencyEmail, agenc
 
   const ctaButton = cta || { text: "Contacto", url: "/contacto" };
 
-  // Close menu when route changes (handled via link clicks). Keep effect-free to avoid render cascades.
-
   useEffect(() => {
-    setIsOpen(false);
+    const timeoutId = window.setTimeout(() => setIsOpen(false), 0);
+    return () => window.clearTimeout(timeoutId);
   }, [pathname]);
 
   useEffect(() => {
@@ -69,7 +68,7 @@ export function MobileNav({ menuItems = [], cta, socialLinks, agencyEmail, agenc
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
-  const handleLinkClick = (url: string) => {
+  const handleLinkClick = () => {
     setIsOpen(false);
   };
 
@@ -158,7 +157,7 @@ export function MobileNav({ menuItems = [], cta, socialLinks, agencyEmail, agenc
                             >
                                 <Link 
                                     href={item.url}
-                                    onClick={() => handleLinkClick(item.url)}
+                                    onClick={handleLinkClick}
                                     className="group flex items-center justify-between py-3"
                                 >
                                     <span className="text-4xl font-medium tracking-tighter text-white/90 active:text-white active:scale-95 transition-all duration-200">

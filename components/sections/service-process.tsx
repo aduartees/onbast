@@ -12,11 +12,10 @@ export function ServiceProcess({ steps }: { steps: ProcessStep[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end end"],
+    offset: ["start start", "end start"],
   });
 
-  const heightTransform = useTransform(scrollYProgress, [0, 1], [0, 1000]); // Ajuste dinámico sería ideal, pero usaremos % o vh en estilo
-  const height = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const height = useTransform(scrollYProgress, [0, 1], ["46px", "100%"]);
 
   return (
     <div ref={containerRef} className="w-full relative py-20 md:py-40 overflow-hidden">

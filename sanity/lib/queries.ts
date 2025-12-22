@@ -10,7 +10,7 @@ export const PRICING_PLANS_QUERY = defineQuery(`*[_type == "pricingPlan"] | orde
   features,
   addon,
   buttonText,
-  buttonLinkID
+  "buttonLinkID": buttonLinkID.current
 }`);
 
 export const PRICING_ADDONS_QUERY = defineQuery(`*[_type == "pricingAddon"] | order(title asc) {
@@ -136,7 +136,7 @@ export const SERVICE_BY_SLUG_QUERY = defineQuery(`*[_type == "service" && slug.c
       features,
       addon,
       buttonText,
-      buttonLinkID
+      "buttonLinkID": buttonLinkID.current
     },
     trustedCompaniesTitle,
     "trustedLogos": trustedLogos[] {
@@ -243,7 +243,17 @@ export const SERVICES_PAGE_QUERY = defineQuery(`*[_type == "servicesPage"][0] {
   },
   cta,
   seoTitle,
-  seoDescription
+  seoDescription,
+  "siteSettings": *[_type == "settings"][0] {
+    "agency": agencyInfo {
+      name,
+      email,
+      phone,
+      address,
+      socialProfiles,
+      "logo": logo.asset->url
+    }
+  }
 }`);
 
 export const SETTINGS_QUERY = defineQuery(`*[_type == "settings"][0] {

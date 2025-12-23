@@ -28,8 +28,8 @@ export const SERVICES_QUERY = defineQuery(`*[_type == "service"] | order(_create
   "description": shortDescription,
   additionalType,
   additionalTypes,
-  serviceOutput,
-  audience,
+  serviceOutput { name, description },
+  audience { name, audienceType, description },
   isCoreService,
   icon,
   "imageUrl": mainImage.asset->url,
@@ -46,8 +46,8 @@ export const HOME_SERVICES_SCHEMA_QUERY = defineQuery(`*[_type == "service"] | o
   "imageUrl": mainImage.asset->url,
   additionalType,
   additionalTypes,
-  serviceOutput,
-  audience,
+  serviceOutput { name, description },
+  audience { name, audienceType, description },
   isCoreService
 }`);
 
@@ -57,8 +57,8 @@ export const SERVICE_BY_SLUG_QUERY = defineQuery(`*[_type == "service" && slug.c
   "slug": slug.current,
   additionalType,
   additionalTypes,
-  serviceOutput,
-  audience,
+  serviceOutput { name, description },
+  audience { name, audienceType, description },
   shortDescription,
   longDescription,
   overviewText,
@@ -565,8 +565,8 @@ export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
     "slug": slug.current,
     additionalType,
     additionalTypes,
-    serviceOutput,
-    audience,
+    serviceOutput { name, description },
+    audience { name, audienceType, description },
     shortDescription,
     longDescription,
     overviewText,
@@ -719,6 +719,18 @@ export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
     name,
     "slug": slug.current,
     type,
+    province->{
+      name,
+      "slug": slug.current,
+      coordinates,
+      wikipediaUrl
+    },
+    autonomousCommunity->{
+      name,
+      "slug": slug.current,
+      coordinates,
+      wikipediaUrl
+    },
     population,
     gentilicio,
     geoContext,
@@ -727,7 +739,19 @@ export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
     "parentRef": parent._ref,
     parent->{
       name,
-      "slug": slug.current
+      "slug": slug.current,
+      province->{
+        name,
+        "slug": slug.current,
+        coordinates,
+        wikipediaUrl
+      },
+      autonomousCommunity->{
+        name,
+        "slug": slug.current,
+        coordinates,
+        wikipediaUrl
+      }
     }
   },
   "override": *[_type == "serviceLocation" && service->slug.current == $serviceSlug && location->slug.current == $citySlug][0] {

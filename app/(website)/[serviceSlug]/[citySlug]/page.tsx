@@ -23,14 +23,29 @@ interface SanityAgencyInfo {
   socialProfiles?: string[];
 }
 
+type SanityServiceOutput =
+  | {
+      name?: string;
+      description?: string;
+    }
+  | string;
+
+type SanityAudience =
+  | {
+      name?: string;
+      audienceType?: string;
+      description?: string;
+    }
+  | string;
+
 interface SanityServiceDetail {
   _id: string;
   title: string;
   slug: string;
   additionalType?: string;
   additionalTypes?: string[];
-  serviceOutput?: string;
-  audience?: string;
+  serviceOutput?: SanityServiceOutput;
+  audience?: SanityAudience;
   shortDescription: string;
   longDescription?: string;
   overviewText?: string;
@@ -150,6 +165,18 @@ interface SanityLocation {
   name: string;
   slug: string;
   type: 'city' | 'town';
+  province?: {
+    name: string;
+    slug: string;
+    coordinates?: { lat: number; lng: number; alt?: number };
+    wikipediaUrl?: string;
+  };
+  autonomousCommunity?: {
+    name: string;
+    slug: string;
+    coordinates?: { lat: number; lng: number; alt?: number };
+    wikipediaUrl?: string;
+  };
   population?: number;
   gentilicio?: string;
   geoContext?: string;
@@ -159,6 +186,18 @@ interface SanityLocation {
   parent?: {
     name: string;
     slug: string;
+    province?: {
+      name: string;
+      slug: string;
+      coordinates?: { lat: number; lng: number; alt?: number };
+      wikipediaUrl?: string;
+    };
+    autonomousCommunity?: {
+      name: string;
+      slug: string;
+      coordinates?: { lat: number; lng: number; alt?: number };
+      wikipediaUrl?: string;
+    };
   };
 }
 
@@ -333,30 +372,136 @@ export default async function ServiceLocationPage({ params }: PageProps) {
   // We need to extend/modify it for Local SEO
   const schemaName = `${service.title} en ${location.name}`;
 
-  const appendCity = (value: unknown) => {
+  const normalizeText = (value: unknown) => {
     if (typeof value !== "string") return undefined;
     const trimmed = value.trim();
-    if (!trimmed.length) return undefined;
+    return trimmed.length ? trimmed : undefined;
+  };
+
+  const appendCityToText = (value: unknown) => {
+    const trimmed = normalizeText(value);
+    if (!trimmed) return undefined;
     if (trimmed.toLowerCase().includes(location.name.toLowerCase())) return trimmed;
     return `${trimmed} en ${location.name}`;
+  };
+
+  const serviceOutputName =
+    typeof service.serviceOutput === "string"
+      ? appendCityToText(service.serviceOutput)
+      : appendCityToText(service.serviceOutput?.name);
+
+  const serviceOutputDescription =
+    typeof service.serviceOutput === "string" ? undefined : normalizeText(service.serviceOutput?.description);
+
+  const audienceName =
+    typeof service.audience === "string"
+      ? appendCityToText(service.audience)
+      : appendCityToText(service.audience?.name);
+
+  const audienceType =
+    typeof service.audience === "string" ? undefined : normalizeText(service.audience?.audienceType);
+
+  const audienceDescription =
+    typeof service.audience === "string" ? undefined : normalizeText(service.audience?.description);
+
+  const buildGeographicArea = () => {
+    const getGeo = (coordinates: unknown) => {
+      if (!coordinates || typeof coordinates !== "object") return undefined;
+      const c = coordinates as { lat?: unknown; lng?: unknown };
+      if (typeof c.lat !== "number" || typeof c.lng !== "number") return undefined;
+      return {
+        "@type": "GeoCoordinates",
+        latitude: c.lat,
+        longitude: c.lng,
+      };
+    };
+
+    const buildCountrySpain = () => ({
+      "@type": "Country",
+      name: "España",
+    });
+
+    const resolvedProvince = location.province || location.parent?.province;
+    const resolvedAutonomousCommunity = location.autonomousCommunity || location.parent?.autonomousCommunity;
+
+    const buildAutonomousCommunityNode = () => {
+      if (!resolvedAutonomousCommunity?.name) return undefined;
+      const geo = getGeo(resolvedAutonomousCommunity.coordinates);
+      return {
+        "@type": "AdministrativeArea",
+        name: resolvedAutonomousCommunity.name,
+        ...(resolvedAutonomousCommunity.wikipediaUrl ? { sameAs: resolvedAutonomousCommunity.wikipediaUrl } : {}),
+        ...(geo ? { geo } : {}),
+        containedInPlace: buildCountrySpain(),
+      };
+    };
+
+    const buildProvinceNode = () => {
+      if (!resolvedProvince?.name) return undefined;
+      const geo = getGeo(resolvedProvince.coordinates);
+      const parent = buildAutonomousCommunityNode() || buildCountrySpain();
+      return {
+        "@type": "AdministrativeArea",
+        name: resolvedProvince.name,
+        ...(resolvedProvince.wikipediaUrl ? { sameAs: resolvedProvince.wikipediaUrl } : {}),
+        ...(geo ? { geo } : {}),
+        containedInPlace: parent,
+      };
+    };
+
+    const buildAdminParentFallback = () => buildProvinceNode() || buildAutonomousCommunityNode() || buildCountrySpain();
+
+    const buildParentCityNode = () => {
+      if (!location.parent?.name) return undefined;
+      return {
+        "@type": "City",
+        name: location.parent.name,
+        ...(location.parent.slug ? { url: `${baseUrl}/${service.slug}/${location.parent.slug}` } : {}),
+        containedInPlace: buildAdminParentFallback(),
+      };
+    };
+
+    const geoCoordinates = getGeo(location.coordinates);
+    const containedInPlace = buildParentCityNode() || buildAdminParentFallback();
+
+    return {
+      "@type": location.type === "town" ? "AdministrativeArea" : "City",
+      name: location.name,
+      ...(location.wikipediaUrl ? { sameAs: location.wikipediaUrl } : {}),
+      ...(geoCoordinates ? { geo: geoCoordinates } : {}),
+      containedInPlace,
+    };
   };
 
   const localServiceSchema = {
     ...serviceSchema,
     areaServed: {
-      "@type": "City",
-      name: location.name,
-      ...(location.wikipediaUrl ? { sameAs: location.wikipediaUrl } : {})
+      ...buildGeographicArea(),
+      ...(location.slug ? { url: `${baseUrl}/${service.slug}/${location.slug}` } : {}),
     },
     name: schemaName,
     description: heroDescription,
     image: localHeroImageAbsolute,
-    ...(appendCity(service.serviceOutput)
-      ? { serviceOutput: { "@type": "Thing", name: appendCity(service.serviceOutput) } }
+    ...(serviceOutputName
+      ? {
+          serviceOutput: {
+            "@type": "WebApplication",
+            name: serviceOutputName,
+            ...(serviceOutputDescription ? { description: serviceOutputDescription } : {}),
+          },
+        }
       : {}),
-    ...(appendCity(service.audience)
-      ? { audience: { "@type": "Audience", audienceType: appendCity(service.audience) } }
-      : {})
+  ...(audienceName || audienceType || audienceDescription
+      ? {
+          audience: {
+            "@type": "BusinessAudience",
+            ...(audienceName ? { name: audienceName } : {}),
+            ...(audienceType ? { audienceType } : {}),
+            ...(audienceDescription ? { description: audienceDescription } : {}),
+            geographicArea: buildGeographicArea(),
+          },
+        }
+      : {}),
   };
 
   const faqSchema = generateFAQSchema(faqs || []);

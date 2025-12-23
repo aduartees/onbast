@@ -10,6 +10,8 @@ import projectsPage from './projectsPage'
 import servicesPage from './servicesPage'
 import contactPage from './contactPage'
 import location from './location'
+import province from './province'
+import autonomousCommunity from './autonomousCommunity'
 import serviceLocation from './serviceLocation'
 import pricingPlan from './pricingPlan'
 import pricingAddon from './pricingAddon'
@@ -32,6 +34,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
 
     // GEO Strategy & Commercial
     location,
+    province,
+    autonomousCommunity,
     serviceLocation,
     pricingPlan,
     pricingAddon

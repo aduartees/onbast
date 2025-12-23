@@ -45,6 +45,20 @@ export default defineType({
       hidden: ({ document }) => document?.type === 'city',
     }),
     defineField({
+      name: 'province',
+      title: 'Provincia',
+      type: 'reference',
+      to: [{ type: 'province' }],
+      description: 'Recomendado para jerarquía GEO (pueblo/ciudad → provincia → CCAA → España).',
+    }),
+    defineField({
+      name: 'autonomousCommunity',
+      title: 'Comunidad Autónoma (CCAA)',
+      type: 'reference',
+      to: [{ type: 'autonomousCommunity' }],
+      description: 'Recomendado para jerarquía GEO (pueblo/ciudad → provincia → CCAA → España).',
+    }),
+    defineField({
       name: 'population',
       title: 'Población Aproximada',
       type: 'number',

@@ -12,14 +12,29 @@ interface ServicePageProps {
   params: Promise<{ slug: string }>;
 }
 
+type SanityServiceOutput =
+  | {
+      name?: string;
+      description?: string;
+    }
+  | string;
+
+type SanityAudience =
+  | {
+      name?: string;
+      audienceType?: string;
+      description?: string;
+    }
+  | string;
+
 interface SanityServiceDetail {
   _id: string;
   title: string;
   slug: string;
   additionalType?: string;
   additionalTypes?: string[];
-  serviceOutput?: string;
-  audience?: string;
+  serviceOutput?: SanityServiceOutput;
+  audience?: SanityAudience;
   shortDescription: string;
   longDescription?: string;
   overviewText?: string;

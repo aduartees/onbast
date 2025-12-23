@@ -182,8 +182,12 @@ export function generateServiceSchema(service: any, agency?: any) {
         return trimmed.length ? trimmed : undefined;
     };
 
-    const serviceOutputText = normalizeText(service?.serviceOutput);
-    const audienceText = normalizeText(service?.audience);
+    const serviceOutputName = normalizeText(service?.serviceOutput?.name ?? service?.serviceOutput);
+    const serviceOutputDescription = normalizeText(service?.serviceOutput?.description);
+
+    const audienceName = normalizeText(service?.audience?.name);
+    const audienceType = normalizeText(service?.audience?.audienceType ?? service?.audience);
+    const audienceDescription = normalizeText(service?.audience?.description);
 
     const additionalTypeList = Array.from(
         new Set(
@@ -307,11 +311,28 @@ export function generateServiceSchema(service: any, agency?: any) {
             : {}),
         "description": service.seoDescription || service.shortDescription,
         ...(serviceImage ? { "image": serviceImage } : {}),
-        ...(serviceOutputText
-            ? { "serviceOutput": { "@type": "Thing", name: serviceOutputText } }
+        ...(serviceOutputName
+            ? {
+                "serviceOutput": {
+                    "@type": "WebApplication",
+                    name: serviceOutputName,
+                    ...(serviceOutputDescription ? { description: serviceOutputDescription } : {}),
+                },
+            }
             : {}),
-        ...(audienceText
-            ? { "audience": { "@type": "Audience", audienceType: audienceText } }
+        ...(audienceName || audienceType || audienceDescription
+            ? {
+                "audience": {
+                    "@type": "BusinessAudience",
+                    ...(audienceName ? { name: audienceName } : {}),
+                    ...(audienceType ? { audienceType } : {}),
+                    ...(audienceDescription ? { description: audienceDescription } : {}),
+                    geographicArea: {
+                        "@type": "Country",
+                        name: "España",
+                    },
+                },
+            }
             : {}),
         "provider": {
             "@type": "Organization",

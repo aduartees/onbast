@@ -31,101 +31,139 @@ export function parseScheduleToSchema(schedule: string | undefined) {
   return undefined;
 }
 
-export function generateOrganizationSchema(data: any, type: "Organization" | "LocalBusiness" | "AboutPage" | "ContactPage" = "Organization") {
-  if (!data || !data.siteSettings || !data.siteSettings.agency) return null;
+type OrganizationSchemaType = "Organization" | "LocalBusiness" | "AboutPage" | "ContactPage";
 
-  const { agency } = data.siteSettings;
+type KnowsAboutService = {
+  title?: string;
+  additionalType?: string | null;
+};
+
+type OrganizationSchemaInput = {
+  siteSettings?: {
+    agency?: {
+      name?: string;
+      email?: string;
+      phone?: string;
+      address?: {
+        street?: string;
+        city?: string;
+        zip?: string;
+      };
+      socialProfiles?: string[];
+      logo?: string;
+    };
+  };
+  seo?: {
+    description?: string;
+  };
+  contactInfo?: {
+    schedule?: string;
+  };
+};
+
+const toAbsoluteUrl = (baseUrl: string, path: string) => {
+  if (!path.startsWith("/")) return `${baseUrl}/${path}`;
+  return `${baseUrl}${path}`;
+};
+
+export function generateOrganizationSchema(
+  data: OrganizationSchemaInput | null | undefined,
+  type: OrganizationSchemaType = "Organization",
+  knowsAboutServices: KnowsAboutService[] = []
+) {
+  const agency = data?.siteSettings?.agency;
+  if (!agency) return null;
+
   const baseUrl = process.env.NEXT_PUBLIC_URL || "https://onbast.com";
-  
-  // Attempt to find schedule in contactInfo or fallback
-  const schedule = data.contactInfo?.schedule;
+  const organizationId = `${baseUrl}/#organization`;
+
+  const schedule = data?.contactInfo?.schedule;
   const hoursAvailable = parseScheduleToSchema(schedule);
 
-  // Base Properties
-  const organizationProps = {
+  const knowsAbout = Array.from(
+    new Map(
+      (knowsAboutServices || [])
+        .filter((service) => typeof service?.additionalType === "string" && service.additionalType.length > 0)
+        .map((service) => {
+          const wikidataUrl = service.additionalType as string;
+          return [
+            wikidataUrl,
+            {
+              "@type": "Thing",
+              "@id": wikidataUrl,
+              ...(service?.title ? { name: service.title } : {}),
+            },
+          ] as const;
+        })
+    ).values()
+  );
+
+  const organizationNode = {
     "@type": "Organization",
-    "name": agency.name || "ONBAST",
-    "url": baseUrl,
-    "logo": agency.logo,
-    "description": data.seo?.description || "Agencia de Desarrollo Web y Posicionamiento SEO y GEO. Desarrollo de paginas web impresionantes y posicionamiento digital para empresas en toda España.",
-    "email": agency.email,
-    "sameAs": agency.socialProfiles || [],
-    "areaServed": {
+    "@id": organizationId,
+    name: agency.name || "ONBAST",
+    url: baseUrl,
+    ...(agency.logo ? { logo: agency.logo } : {}),
+    description:
+      data?.seo?.description ||
+      "Agencia de Desarrollo Web y Posicionamiento SEO y GEO. Desarrollo de paginas web impresionantes y posicionamiento digital para empresas en toda España.",
+    ...(agency.email ? { email: agency.email } : {}),
+    ...(Array.isArray(agency.socialProfiles) ? { sameAs: agency.socialProfiles } : {}),
+    areaServed: {
       "@type": "Country",
-      "name": "España",
-      "identifier": "ES"
+      name: "España",
+      identifier: "ES",
     },
-    // Dirección fiscal por confianza, pero eclipsada por areaServed
-    "address": {
+    address: {
       "@type": "PostalAddress",
-      "addressCountry": "ES",
-      "addressLocality": agency.address?.city || "Santander",
-      "postalCode": agency.address?.zip || "39012",
-      "streetAddress": agency.address?.street || "C. la Tesilla, 6"
+      addressCountry: "ES",
+      addressLocality: agency.address?.city || "Santander",
+      postalCode: agency.address?.zip || "39012",
+      streetAddress: agency.address?.street || "C. la Tesilla, 6",
     },
-    "contactPoint": {
+    contactPoint: {
       "@type": "ContactPoint",
-      "telephone": agency.phone,
-      "contactType": "sales",
-      "areaServed": "ES",
-      "availableLanguage": ["Spanish", "English"],
-      ...(hoursAvailable ? { "hoursAvailable": hoursAvailable } : {})
-    }
+      ...(agency.phone ? { telephone: agency.phone } : {}),
+      contactType: "sales",
+      areaServed: "ES",
+      availableLanguage: ["Spanish", "English"],
+      ...(hoursAvailable ? { hoursAvailable } : {}),
+    },
+    ...(knowsAbout.length ? { knowsAbout } : {}),
   };
 
-  // 1. Home Page (Organization)
-  if (type === "Organization") {
-    return {
-      "@context": "https://schema.org",
-      ...organizationProps
-    };
+  if (type === "Organization" || type === "LocalBusiness") {
+    return organizationNode;
   }
 
-  // 3. About Page (/agencia)
   if (type === "AboutPage") {
     return {
-      "@context": "https://schema.org",
       "@type": "AboutPage",
-      "mainEntity": {
-        ...organizationProps,
-        "foundingDate": "2025",
-        "knowsAbout": ["Desarrollo Web", "Next.js", "Posicionamiento SEO", "Posicionamiento GEO", "Inteligencia Artificial"],
-        "numberOfEmployees": {
-          "@type": "QuantitativeValue",
-          "minValue": 2,
-          "maxValue": 10
-        }
-      }
+      "@id": `${baseUrl}/agencia#aboutpage`,
+      url: toAbsoluteUrl(baseUrl, "/agencia"),
+      mainEntity: {
+        "@id": organizationId,
+      },
     };
   }
 
-  // 4. Contact Page (/contacto)
   if (type === "ContactPage") {
     return {
-      "@context": "https://schema.org",
       "@type": "ContactPage",
-      "mainEntity": {
-        ...organizationProps,
-        "contactPoint": {
-          "@type": "ContactPoint",
-          "telephone": agency.phone,
-          "contactType": "customer service",
-          "areaServed": "ES",
-          "availableLanguage": ["Spanish", "English"]
-        }
-      }
+      "@id": `${baseUrl}/contacto#contactpage`,
+      url: toAbsoluteUrl(baseUrl, "/contacto"),
+      mainEntity: {
+        "@id": organizationId,
+      },
     };
   }
 
-  // Fallback
-  return {
-      "@context": "https://schema.org",
-      ...organizationProps
-  };
+  return organizationNode;
 }
 
 export function generateServiceSchema(service: any, agency?: any) {
     const baseUrl = process.env.NEXT_PUBLIC_URL || "https://onbast.com";
+    const organizationId = `${baseUrl}/#organization`;
     const serviceImage = service.seoImage || service.imageUrl;
 
     const parseNumericPrice = (value: unknown) => {
@@ -232,7 +270,6 @@ export function generateServiceSchema(service: any, agency?: any) {
     }
 
     return {
-        "@context": "https://schema.org",
         "@type": "Service",
         "serviceType": service.title,
         "name": service.title,
@@ -242,6 +279,7 @@ export function generateServiceSchema(service: any, agency?: any) {
         ...(serviceImage ? { "image": serviceImage } : {}),
         "provider": {
             "@type": "Organization",
+            "@id": organizationId,
             "name": agency?.name || "ONBAST",
             "url": baseUrl,
             ...(agency?.logo ? { "logo": agency.logo } : {}),
@@ -269,27 +307,26 @@ export function generateServiceSchema(service: any, agency?: any) {
 }
 
 export function generateHomeOrganizationServicesSchema(data: any, services: any[]) {
-  const organizationSchema = generateOrganizationSchema(data, "Organization");
-  if (!organizationSchema) return null;
+  const coreServices = (services || []).filter((service) => service?.isCoreService);
+  const fallbackServices = (services || []).filter(
+    (service) => typeof service?.additionalType === "string" && service.additionalType.length > 0
+  );
+  const knowsAboutServices = coreServices.length ? coreServices : fallbackServices;
 
-  const { ["@context"]: _organizationContext, ...organizationNode } = organizationSchema as any;
+  const organizationNode = generateOrganizationSchema(data, "Organization", knowsAboutServices);
+  if (!organizationNode) return null;
+
   const agency = data?.siteSettings?.agency;
-
-  const serviceNodes = (services || []).map((service) => {
-    const serviceSchema = generateServiceSchema(service, agency);
-    const { ["@context"]: _serviceContext, ...serviceNode } = serviceSchema as any;
-    return serviceNode;
-  });
+  const serviceNodes = (services || []).map((service) => generateServiceSchema(service, agency));
 
   return {
     "@context": "https://schema.org",
-    "@graph": [organizationNode, ...serviceNodes]
+    "@graph": [organizationNode, ...serviceNodes],
   };
 }
 
 export function generateBreadcrumbSchema(items: { name: string; item: string }[]) {
   return {
-    "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": items.map((item, index) => ({
       "@type": "ListItem",
@@ -304,7 +341,6 @@ export function generateFAQSchema(faqs: { question: string; answer: string }[]) 
   if (!faqs || faqs.length === 0) return null;
 
   return {
-    "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": faqs.map(faq => ({
       "@type": "Question",

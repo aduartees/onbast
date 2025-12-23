@@ -78,7 +78,7 @@ export default async function ProjectsPage() {
     "@graph": [
       organizationSchema,
       ...(faqSchema ? [faqSchema] : [])
-    ]
+    ].filter(Boolean)
   };
 
   return (

@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import crypto from 'crypto';
+import { z } from 'zod';
 
 // --- CONFIGURACIÓN DE ENTORNO ---
 const __filename = fileURLToPath(import.meta.url);
@@ -12,28 +13,25 @@ const envPath = path.resolve(__dirname, '../.env.local');
 // Cargar variables de entorno
 if (fs.existsSync(envPath)) {
   const envConfig = fs.readFileSync(envPath, 'utf8');
-  envConfig.split('\n').forEach(line => {
-    const [key, value] = line.split('=');
-    if (key && value) {
-      process.env[key.trim()] = value.trim().replace(/^["']|["']$/g, '');
-    }
+  envConfig.split('\n').forEach((rawLine) => {
+    const line = String(rawLine || '').trim();
+    if (!line.length || line.startsWith('#')) return;
+    const idx = line.indexOf('=');
+    if (idx === -1) return;
+    const key = line.slice(0, idx).trim();
+    const value = line.slice(idx + 1).trim();
+    if (!key.length) return;
+    process.env[key] = value.replace(/^["']|["']$/g, '');
   });
 }
 
-// Validar API Keys
 if (!process.env.GEMINI_API_KEY) {
   console.error('❌ ERROR: GEMINI_API_KEY no encontrada en .env.local');
   process.exit(1);
 }
 
-// Importar Google Generative AI dinámicamente
-let GoogleGenerativeAI;
-try {
-  const googleAIModule = await import('@google/generative-ai');
-  GoogleGenerativeAI = googleAIModule.GoogleGenerativeAI;
-} catch (e) {
-  console.error('❌ ERROR: El paquete "@google/generative-ai" no está instalado.');
-  console.error('👉 Ejecuta: npm install @google/generative-ai');
+if (!process.env.SANITY_WRITE_TOKEN) {
+  console.error('❌ ERROR: SANITY_WRITE_TOKEN no encontrada en .env.local');
   process.exit(1);
 }
 
@@ -46,14 +44,48 @@ const sanity = createClient({
   useCdn: false,
 });
 
+let GoogleGenerativeAI;
+try {
+  const googleAIModule = await import('@google/generative-ai');
+  GoogleGenerativeAI = googleAIModule.GoogleGenerativeAI;
+} catch (e) {
+  console.error('❌ ERROR: El paquete "@google/generative-ai" no está instalado.');
+  console.error('👉 Ejecuta: npm install @google/generative-ai');
+  process.exit(1);
+}
+
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3-pro-preview';
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-// Usamos el modelo más avanzado disponible (Gemini 3.0 Pro Preview)
-const model = genAI.getGenerativeModel({ 
-  model: "gemini-3-pro-preview",
+const model = genAI.getGenerativeModel({
+  model: GEMINI_MODEL,
   generationConfig: {
-    responseMimeType: "application/json",
-  }
+    responseMimeType: 'application/json',
+  },
 });
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+const generationState = {
+  delayMs: Number.parseInt(process.env.GEMINI_BASE_DELAY_MS || '45000', 10),
+  minDelayMs: Number.parseInt(process.env.GEMINI_MIN_DELAY_MS || '20000', 10),
+  maxDelayMs: Number.parseInt(process.env.GEMINI_MAX_DELAY_MS || '180000', 10),
+};
+
+const jitter = (ms) => {
+  const delta = Math.max(250, Math.floor(ms * 0.15));
+  return ms + Math.floor((Math.random() * 2 - 1) * delta);
+};
+
+const adaptDelay = ({ ok, retryAfterMs }) => {
+  if (!ok) {
+    const next = Math.min(generationState.maxDelayMs, Math.max(generationState.delayMs * 2, retryAfterMs || 0));
+    generationState.delayMs = next;
+    return;
+  }
+
+  const next = Math.max(generationState.minDelayMs, Math.floor(generationState.delayMs * 0.9));
+  generationState.delayMs = next;
+};
 
 // --- LÓGICA DE GENERACIÓN ---
 
@@ -76,9 +108,57 @@ async function getLocations() {
   return await sanity.fetch(`*[_type == "location" && defined(slug.current)]{ _id, name, type, "slug": slug.current, geoContext, "parentName": parent->name }`);
 }
 
+const geoContentSchema = z.object({
+  seoTitle: z.string().min(1).max(70),
+  seoDescription: z.string().min(1).max(160),
+  heroHeadline: z.string().min(1),
+  heroText: z.string().min(1),
+  localContentBlock: z.array(z.any()).min(3),
+  customFeatures: z.array(z.object({
+    title: z.string().min(1),
+    description: z.string().min(1),
+    icon: z.string().optional(),
+  }).passthrough()).min(1),
+  customProcess: z.array(z.object({
+    title: z.string().min(1),
+    description: z.string().min(1),
+  }).passthrough()).min(1),
+  customFaqs: z.array(z.object({
+    question: z.string().min(1),
+    answer: z.string().min(1),
+  }).passthrough()).min(1),
+  ctaSection: z.object({
+    title: z.string().min(1),
+    description: z.string().min(1),
+    buttonText: z.string().min(1),
+    buttonLink: z.string().min(1),
+    secondaryButtonText: z.string().min(1),
+    secondaryButtonLink: z.string().min(1),
+  }).passthrough(),
+}).passthrough();
+
+const addKeys = (obj) => {
+  if (!obj || typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) return obj.map(addKeys);
+  const out = { ...obj };
+  if (!out._key) out._key = crypto.randomUUID().replace(/-/g, '').slice(0, 12);
+  Object.keys(out).forEach((k) => {
+    out[k] = addKeys(out[k]);
+  });
+  return out;
+};
+
+const safeJsonParse = (input) => {
+  const trimmed = String(input || '').trim();
+  const withoutFences = trimmed
+    .replace(/^```json\s*/i, '')
+    .replace(/^```\s*/i, '')
+    .replace(/```\s*$/i, '');
+  return JSON.parse(withoutFences);
+};
+
 async function generateContent(service, location) {
   console.log(`🤖 Generando contenido (Gemini) para: ${service.title} en ${location.name}...`);
-  console.log('DEBUG: Iniciando petición a Gemini...');
 
   // Construir contexto rico del servicio para la IA
   const serviceContext = `
@@ -202,49 +282,43 @@ async function generateContent(service, location) {
     }
   `;
 
-  const addKeys = (obj) => {
-    if (!obj || typeof obj !== 'object') return obj;
-    if (Array.isArray(obj)) return obj.map(addKeys);
-    const out = { ...obj };
-    if (!out._key) out._key = crypto.randomUUID().replace(/-/g, '').slice(0, 12);
-    Object.keys(out).forEach((k) => {
-      out[k] = addKeys(out[k]);
-    });
-    return out;
-  };
-
-  const safeJsonParse = (input) => {
-    const trimmed = String(input || '').trim();
-    const withoutFences = trimmed
-      .replace(/^```json\s*/i, '')
-      .replace(/^```\s*/i, '')
-      .replace(/```\s*$/i, '');
-    return JSON.parse(withoutFences);
-  };
-
   try {
-    const result = await model.generateContent(prompt);
-    console.log('DEBUG: Petición completada. Procesando respuesta...');
-    const response = await result.response;
-    const text = response.text();
-    console.log('DEBUG: Respuesta de texto recibida. Longitud:', text.length);
+    let lastError = null;
 
-    const content = addKeys(safeJsonParse(text));
+    for (let attempt = 1; attempt <= 5; attempt++) {
+      try {
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
 
-    // Asegurar que customFeatures tenga iconos (reusar los del servicio base o poner uno por defecto)
-    if (content.customFeatures && service.features) {
-        content.customFeatures = content.customFeatures.map((f, i) => ({
+        adaptDelay({ ok: true });
+
+        const parsed = safeJsonParse(text);
+        const validated = geoContentSchema.parse(parsed);
+        const content = addKeys(validated);
+
+        if (content.customFeatures && service.features) {
+          content.customFeatures = content.customFeatures.map((f, i) => ({
             ...f,
-            icon: service.features[i]?.icon || 'CheckCircle2'
-        }));
+            icon: f.icon || service.features[i]?.icon || 'CheckCircle2',
+          }));
+        }
+
+        if (content.ctaSection) {
+          content.ctaSection.buttonLink = '/contacto';
+          content.ctaSection.secondaryButtonLink = '/proyectos';
+        }
+
+        return content;
+      } catch (err) {
+        lastError = err;
+        adaptDelay({ ok: false, retryAfterMs: undefined });
+        await sleep(jitter(generationState.delayMs));
+      }
     }
 
-    if (content.ctaSection) {
-      content.ctaSection.buttonLink = '/contacto';
-      content.ctaSection.secondaryButtonLink = '/proyectos';
-    }
-
-    return content;
+    console.error(`❌ Error generando contenido para ${location.name}:`, lastError);
+    return null;
   } catch (error) {
     console.error(`❌ Error generando contenido para ${location.name}:`, error);
     return null;
@@ -252,16 +326,53 @@ async function generateContent(service, location) {
 }
 
 async function main() {
-  console.log('🚀 Iniciando Generación de Contenido GEO con Gemini (Programmatic SEO)...');
-  console.log(`DEBUG: API Key cargada: ${process.env.GEMINI_API_KEY ? 'SÍ (' + process.env.GEMINI_API_KEY.slice(0,5) + '...)' : 'NO'}`);
+  const argv = process.argv.slice(2);
+  const arg = (name) => {
+    const hit = argv.find((a) => a === name || a.startsWith(`${name}=`));
+    if (!hit) return undefined;
+    const idx = hit.indexOf('=');
+    return idx === -1 ? '' : hit.slice(idx + 1);
+  };
+  const has = (name) => argv.includes(name);
+  const parseCsv = (value) => String(value || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const dryRun = has('--dry-run') || process.env.DRY_RUN === '1';
+  const limit = Number.parseInt(arg('--limit') || process.env.LIMIT || '0', 10);
+  const serviceSlugsFilter = parseCsv(arg('--service-slugs') || process.env.SERVICE_SLUGS);
+  const locationSlugsFilter = parseCsv(arg('--location-slugs') || process.env.LOCATION_SLUGS);
+  const batchSize = Number.parseInt(arg('--batch-size') || process.env.BATCH_SIZE || '5', 10);
+  const batchPauseMs = Number.parseInt(arg('--batch-pause-ms') || process.env.BATCH_PAUSE_MS || '60000', 10);
+
+  console.log('🚀 Iniciando Generación de Contenido GEO (Programmatic SEO)...');
+  console.log(`Modelo: ${GEMINI_MODEL}`);
+  console.log(`Dry-run: ${dryRun ? 'SÍ' : 'NO'}`);
 
   const services = await getServices();
   const locations = await getLocations();
 
-  console.log(`📍 Encontrados: ${services.length} Servicios y ${locations.length} Ubicaciones.`);
+  const selectedServices = serviceSlugsFilter.length
+    ? services.filter((s) => serviceSlugsFilter.includes(s.slug))
+    : services;
 
-  for (const service of services) {
-    for (const location of locations) {
+  const selectedLocations = locationSlugsFilter.length
+    ? locations.filter((l) => locationSlugsFilter.includes(l.slug))
+    : locations;
+
+  console.log(`📍 Servicios: ${selectedServices.length} | Ubicaciones: ${selectedLocations.length}`);
+
+  let createdCount = 0;
+  let processedCount = 0;
+
+  for (const service of selectedServices) {
+    for (const location of selectedLocations) {
+      if (limit > 0 && createdCount >= limit) {
+        console.log(`🏁 Límite alcanzado: ${createdCount}`);
+        return;
+      }
+
       // 1. Verificar si ya existe
       const exists = await sanity.fetch(
         `count(*[_type == "serviceLocation" && service._ref == $serviceId && location._ref == $locationId])`,
@@ -280,33 +391,39 @@ async function main() {
 
       // 3. Guardar en Sanity
       try {
-        await sanity.create({
-          _type: 'serviceLocation',
-          service: { _type: 'reference', _ref: service._id },
-          location: { _type: 'reference', _ref: location._id },
-          seoTitle: content.seoTitle,
-          seoDescription: content.seoDescription,
-          heroHeadline: content.heroHeadline,
-          heroText: content.heroText,
-          localContentBlock: content.localContentBlock,
-          ctaSection: content.ctaSection,
-          customFeatures: content.customFeatures,
-          customProcess: content.customProcess,
-          customFaqs: content.customFaqs
-        });
-        console.log(`✅ Guardado: ${service.title} en ${location.name}`);
+        if (!dryRun) {
+          await sanity.create({
+            _type: 'serviceLocation',
+            service: { _type: 'reference', _ref: service._id },
+            location: { _type: 'reference', _ref: location._id },
+            seoTitle: content.seoTitle,
+            seoDescription: content.seoDescription,
+            heroHeadline: content.heroHeadline,
+            heroText: content.heroText,
+            localContentBlock: content.localContentBlock,
+            ctaSection: content.ctaSection,
+            customFeatures: content.customFeatures,
+            customProcess: content.customProcess,
+            customFaqs: content.customFaqs,
+          });
+        }
+
+        createdCount += 1;
+        console.log(`✅ ${dryRun ? 'Dry-run' : 'Guardado'}: ${service.title} en ${location.name}`);
       } catch (err) {
         console.error(`❌ Error guardando en Sanity:`, err.message);
       }
 
-      // Pausa adaptativa para evitar Rate Limits (429)
-      // Gemini Free Tier es limitado. Aumentamos a 45 segundos entre peticiones para ir sobre seguro.
-      console.log('⏳ Esperando 45s para respetar cuota de API...');
-      await new Promise(r => setTimeout(r, 45000));
+      processedCount += 1;
+      if (batchSize > 0 && processedCount % batchSize === 0) {
+        await sleep(jitter(Math.max(generationState.delayMs, batchPauseMs)));
+      } else {
+        await sleep(jitter(generationState.delayMs));
+      }
     }
   }
 
-  console.log('🏁 Proceso Finalizado.');
+  console.log(`🏁 Proceso Finalizado. Creados: ${createdCount}`);
 }
 
 main().catch(console.error);

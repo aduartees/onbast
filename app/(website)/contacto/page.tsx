@@ -59,15 +59,17 @@ export default async function ContactPage() {
       schedule: data?.contactInfo?.schedule // Schedule typically remains specific to contact page
   };
 
-  const organizationSchema = generateOrganizationSchema(data, "ContactPage");
+  const organizationSchema = generateOrganizationSchema(data, "Organization");
+  const contactPageSchema = generateOrganizationSchema(data, "ContactPage");
   const faqSchema = generateFAQSchema(data?.faq?.questions || []);
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
       organizationSchema,
-      ...(faqSchema ? [faqSchema] : [])
-    ]
+      contactPageSchema,
+      ...(faqSchema ? [faqSchema] : []),
+    ].filter(Boolean),
   };
 
   return (

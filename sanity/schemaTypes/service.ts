@@ -37,6 +37,13 @@ export default defineType({
       description: 'URL de Wikidata para el tipo de servicio (ej: https://www.wikidata.org/wiki/Q56062435)',
     }),
     defineField({
+      name: 'isCoreService',
+      title: 'Servicio Core (Organization knowsAbout)',
+      type: 'boolean',
+      group: 'general',
+      initialValue: false,
+    }),
+    defineField({
       name: 'shortDescription',
       title: 'Descripción Corta (Para Cards)',
       type: 'text',

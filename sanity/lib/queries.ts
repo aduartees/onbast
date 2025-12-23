@@ -27,6 +27,7 @@ export const SERVICES_QUERY = defineQuery(`*[_type == "service"] | order(_create
   "slug": slug.current,
   "description": shortDescription,
   additionalType,
+  isCoreService,
   icon,
   "imageUrl": mainImage.asset->url,
   colSpan
@@ -40,7 +41,8 @@ export const HOME_SERVICES_SCHEMA_QUERY = defineQuery(`*[_type == "service"] | o
   seoDescription,
   "seoImage": seoImage.asset->url,
   "imageUrl": mainImage.asset->url,
-  additionalType
+  additionalType,
+  isCoreService
 }`);
 
 export const SERVICE_BY_SLUG_QUERY = defineQuery(`*[_type == "service" && slug.current == $slug][0] {
@@ -131,7 +133,7 @@ export const SERVICE_BY_SLUG_QUERY = defineQuery(`*[_type == "service" && slug.c
   testimonialsTitle,
   testimonialsHighlight,
   testimonialsDescription,
-  testimonials[]->{
+  "testimonials": *[_type == "testimonial"] | order(_createdAt desc) {
     name,
     role,
     quote,
@@ -402,6 +404,14 @@ export const AGENCY_PAGE_QUERY = defineQuery(`*[_type == "agencyPage"][0] {
     description,
     "image": image.asset->url
   },
+  "coreServices": *[_type == "service" && isCoreService == true] | order(_createdAt asc)[0...8] {
+    title,
+    additionalType
+  },
+  "fallbackServices": *[_type == "service" && defined(additionalType)] | order(_createdAt asc)[0...8] {
+    title,
+    additionalType
+  },
   "siteSettings": *[_type == "settings"][0] {
     "agency": agencyInfo {
       name,
@@ -616,7 +626,7 @@ export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
     testimonialsTitle,
     testimonialsHighlight,
     testimonialsDescription,
-    testimonials[]->{
+    "testimonials": *[_type == "testimonial"] | order(_createdAt desc) {
       name,
       role,
       quote,

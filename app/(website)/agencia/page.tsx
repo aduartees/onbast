@@ -63,7 +63,20 @@ export default async function AgencyPage() {
   }
 
   const { hero, methodology, teamSection, location, projects, testimonials, cta } = data;
-  const jsonLd = generateOrganizationSchema(data, "AboutPage");
+  const knowsAboutServices = (Array.isArray(data.coreServices) && data.coreServices.length > 0)
+    ? data.coreServices
+    : (Array.isArray(data.fallbackServices) ? data.fallbackServices : []);
+
+  const organizationNode = generateOrganizationSchema(data, "Organization", knowsAboutServices);
+  const aboutPageNode = generateOrganizationSchema(data, "AboutPage");
+
+  const graph = [organizationNode, aboutPageNode].filter(Boolean);
+  const jsonLd = graph.length
+    ? {
+        "@context": "https://schema.org",
+        "@graph": graph,
+      }
+    : null;
 
   return (
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-indigo-500 selection:text-white pt-0">

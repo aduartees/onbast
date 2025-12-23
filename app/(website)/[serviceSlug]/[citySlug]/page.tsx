@@ -25,6 +25,7 @@ interface SanityAgencyInfo {
 
 type SanityServiceOutput =
   | {
+      schemaType?: string;
       name?: string;
       description?: string;
     }
@@ -32,6 +33,7 @@ type SanityServiceOutput =
 
 type SanityAudience =
   | {
+      schemaType?: string;
       name?: string;
       audienceType?: string;
       description?: string;
@@ -115,6 +117,7 @@ interface SanityServiceDetail {
   pricing?: {
     title?: string;
     subtitle?: string;
+    schemaAdditionalProperty?: { name?: string; value?: string }[];
     badge?: string;
     price?: string;
     period?: string;
@@ -393,6 +396,9 @@ export default async function ServiceLocationPage({ params }: PageProps) {
   const serviceOutputDescription =
     typeof service.serviceOutput === "string" ? undefined : normalizeText(service.serviceOutput?.description);
 
+  const serviceOutputSchemaType =
+    typeof service.serviceOutput === "string" ? undefined : normalizeText(service.serviceOutput?.schemaType);
+
   const audienceName =
     typeof service.audience === "string"
       ? appendCityToText(service.audience)
@@ -403,6 +409,8 @@ export default async function ServiceLocationPage({ params }: PageProps) {
 
   const audienceDescription =
     typeof service.audience === "string" ? undefined : normalizeText(service.audience?.description);
+
+  const audienceSchemaType = typeof service.audience === "string" ? undefined : normalizeText(service.audience?.schemaType);
 
   const buildGeographicArea = () => {
     const getGeo = (coordinates: unknown) => {
@@ -485,7 +493,7 @@ export default async function ServiceLocationPage({ params }: PageProps) {
     ...(serviceOutputName
       ? {
           serviceOutput: {
-            "@type": "WebApplication",
+            "@type": serviceOutputSchemaType || "WebApplication",
             name: serviceOutputName,
             ...(serviceOutputDescription ? { description: serviceOutputDescription } : {}),
           },
@@ -494,7 +502,7 @@ export default async function ServiceLocationPage({ params }: PageProps) {
   ...(audienceName || audienceType || audienceDescription
       ? {
           audience: {
-            "@type": "BusinessAudience",
+            "@type": audienceSchemaType || "BusinessAudience",
             ...(audienceName ? { name: audienceName } : {}),
             ...(audienceType ? { audienceType } : {}),
             ...(audienceDescription ? { description: audienceDescription } : {}),

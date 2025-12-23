@@ -184,10 +184,27 @@ export function generateServiceSchema(service: any, agency?: any) {
 
     const serviceOutputName = normalizeText(service?.serviceOutput?.name ?? service?.serviceOutput);
     const serviceOutputDescription = normalizeText(service?.serviceOutput?.description);
+    const serviceOutputSchemaType = normalizeText(service?.serviceOutput?.schemaType) || "WebApplication";
 
     const audienceName = normalizeText(service?.audience?.name);
     const audienceType = normalizeText(service?.audience?.audienceType ?? service?.audience);
     const audienceDescription = normalizeText(service?.audience?.description);
+    const audienceSchemaType = normalizeText(service?.audience?.schemaType) || "BusinessAudience";
+
+    const schemaAdditionalProperty = (Array.isArray(service?.pricing?.schemaAdditionalProperty)
+        ? service.pricing.schemaAdditionalProperty
+        : [])
+        .map((item: any) => {
+            const name = normalizeText(item?.name);
+            const value = normalizeText(item?.value);
+            if (!name || !value) return null;
+            return {
+                "@type": "PropertyValue",
+                name,
+                value,
+            };
+        })
+        .filter(Boolean);
 
     const additionalTypeList = Array.from(
         new Set(
@@ -306,15 +323,20 @@ export function generateServiceSchema(service: any, agency?: any) {
         "serviceType": service.title,
         "name": service.title,
         "url": `${baseUrl}/servicios/${service.slug}`,
+        "hasDeliveryMethod": {
+            "@type": "DeliveryMethod",
+            "name": "Online / Remoto",
+        },
         ...(additionalTypeList.length
             ? { "additionalType": additionalTypeList.length === 1 ? additionalTypeList[0] : additionalTypeList }
             : {}),
         "description": service.seoDescription || service.shortDescription,
         ...(serviceImage ? { "image": serviceImage } : {}),
+        ...(schemaAdditionalProperty.length ? { "additionalProperty": schemaAdditionalProperty } : {}),
         ...(serviceOutputName
             ? {
                 "serviceOutput": {
-                    "@type": "WebApplication",
+                    "@type": serviceOutputSchemaType,
                     name: serviceOutputName,
                     ...(serviceOutputDescription ? { description: serviceOutputDescription } : {}),
                 },
@@ -323,7 +345,7 @@ export function generateServiceSchema(service: any, agency?: any) {
         ...(audienceName || audienceType || audienceDescription
             ? {
                 "audience": {
-                    "@type": "BusinessAudience",
+                    "@type": audienceSchemaType,
                     ...(audienceName ? { name: audienceName } : {}),
                     ...(audienceType ? { audienceType } : {}),
                     ...(audienceDescription ? { description: audienceDescription } : {}),

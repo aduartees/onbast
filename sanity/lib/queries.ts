@@ -28,8 +28,9 @@ export const SERVICES_QUERY = defineQuery(`*[_type == "service"] | order(_create
   "description": shortDescription,
   additionalType,
   additionalTypes,
-  serviceOutput { name, description },
-  audience { name, audienceType, description },
+  serviceOutput { schemaType, name, description },
+  audience { schemaType, name, audienceType, description },
+  pricing { schemaAdditionalProperty[]{ name, value } },
   isCoreService,
   icon,
   "imageUrl": mainImage.asset->url,
@@ -46,8 +47,9 @@ export const HOME_SERVICES_SCHEMA_QUERY = defineQuery(`*[_type == "service"] | o
   "imageUrl": mainImage.asset->url,
   additionalType,
   additionalTypes,
-  serviceOutput { name, description },
-  audience { name, audienceType, description },
+  serviceOutput { schemaType, name, description },
+  audience { schemaType, name, audienceType, description },
+  pricing { schemaAdditionalProperty[]{ name, value } },
   isCoreService
 }`);
 
@@ -57,8 +59,8 @@ export const SERVICE_BY_SLUG_QUERY = defineQuery(`*[_type == "service" && slug.c
   "slug": slug.current,
   additionalType,
   additionalTypes,
-  serviceOutput { name, description },
-  audience { name, audienceType, description },
+  serviceOutput { schemaType, name, description },
+  audience { schemaType, name, audienceType, description },
   shortDescription,
   longDescription,
   overviewText,
@@ -151,6 +153,7 @@ export const SERVICE_BY_SLUG_QUERY = defineQuery(`*[_type == "service" && slug.c
   pricing {
     title,
     subtitle,
+    schemaAdditionalProperty[]{ name, value },
     "plans": plans[]->{
       title,
       price,
@@ -565,8 +568,8 @@ export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
     "slug": slug.current,
     additionalType,
     additionalTypes,
-    serviceOutput { name, description },
-    audience { name, audienceType, description },
+    serviceOutput { schemaType, name, description },
+    audience { schemaType, name, audienceType, description },
     shortDescription,
     longDescription,
     overviewText,
@@ -649,6 +652,7 @@ export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
     pricing {
       title,
       subtitle,
+      schemaAdditionalProperty[]{ name, value },
       badge,
       price,
       period,

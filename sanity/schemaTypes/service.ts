@@ -51,9 +51,17 @@ export default defineType({
       title: 'serviceOutput (Resultado / Entregable)',
       type: 'object',
       group: 'general',
-      description: 'Se renderiza en JSON-LD como WebApplication (name + description).',
+      description: 'Se renderiza en JSON-LD dentro de Service como un objeto con @type + name + description.',
       hidden: ({ document }) => !document?.isCoreService,
       fields: [
+        defineField({
+          name: 'schemaType',
+          title: 'Schema @type',
+          type: 'string',
+          initialValue: 'WebApplication',
+          description: 'Ej: WebApplication, SoftwareApplication, Thing, CreativeWork.',
+          validation: (Rule) => Rule.max(64),
+        }),
         defineField({
           name: 'name',
           title: 'Nombre (name)',
@@ -74,9 +82,17 @@ export default defineType({
       title: 'audience (A quién va dirigido)',
       type: 'object',
       group: 'general',
-      description: 'Se renderiza en JSON-LD como BusinessAudience (name + audienceType).',
+      description: 'Se renderiza en JSON-LD dentro de Service como un objeto con @type + name + audienceType + geographicArea.',
       hidden: ({ document }) => !document?.isCoreService,
       fields: [
+        defineField({
+          name: 'schemaType',
+          title: 'Schema @type',
+          type: 'string',
+          initialValue: 'BusinessAudience',
+          description: 'Ej: BusinessAudience, Audience, PeopleAudience, EducationalAudience.',
+          validation: (Rule) => Rule.max(64),
+        }),
         defineField({
           name: 'name',
           title: 'Nombre (name)',
@@ -422,6 +438,48 @@ export default defineType({
         fields: [
             defineField({ name: 'title', title: 'Título Principal', type: 'string', initialValue: "Pricing that's so simple." }),
             defineField({ name: 'subtitle', title: 'Subtítulo', type: 'string', initialValue: "We like to keep things simple with one, limitless plan." }),
+
+            defineField({
+              name: 'schemaAdditionalProperty',
+              title: 'Schema: additionalProperty (Use Case / Ideal para)',
+              type: 'array',
+              description: 'Solo JSON-LD (no se renderiza en la UI). Se añade al Service principal como additionalProperty para IA y buscadores.',
+              of: [
+                defineArrayMember({
+                  name: 'schemaPropertyValue',
+                  title: 'PropertyValue',
+                  type: 'object',
+                  fields: [
+                    defineField({
+                      name: 'name',
+                      title: 'Name',
+                      type: 'string',
+                      validation: (Rule) => Rule.required().max(80),
+                    }),
+                    defineField({
+                      name: 'value',
+                      title: 'Value',
+                      type: 'text',
+                      rows: 3,
+                      validation: (Rule) => Rule.required().max(280),
+                    }),
+                  ],
+                }),
+              ],
+              initialValue: [
+                {
+                  _type: 'schemaPropertyValue',
+                  name: 'Ideal para',
+                  value: 'Empresas que necesitan una web rápida, escalable y siempre actualizada sin hacer una gran inversión inicial.',
+                },
+                {
+                  _type: 'schemaPropertyValue',
+                  name: 'Caso de uso',
+                  value: 'Negocios digitales, startups, marcas personales y pymes que quieren iterar su web constantemente y mejorar su visibilidad en buscadores e IA.',
+                },
+              ],
+              validation: (Rule) => Rule.max(10),
+            }),
             
             // Reemplazamos los campos inline por una referencia a los planes
             defineField({

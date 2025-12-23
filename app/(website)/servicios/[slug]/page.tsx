@@ -14,6 +14,7 @@ interface ServicePageProps {
 
 type SanityServiceOutput =
   | {
+      schemaType?: string;
       name?: string;
       description?: string;
     }
@@ -21,6 +22,7 @@ type SanityServiceOutput =
 
 type SanityAudience =
   | {
+      schemaType?: string;
       name?: string;
       audienceType?: string;
       description?: string;
@@ -104,6 +106,7 @@ interface SanityServiceDetail {
   pricing?: {
     title?: string;
     subtitle?: string;
+    schemaAdditionalProperty?: { name?: string; value?: string }[];
     badge?: string;
     price?: string;
     period?: string;

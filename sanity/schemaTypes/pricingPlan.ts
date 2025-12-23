@@ -64,9 +64,42 @@ export default defineType({
     }),
     defineField({
       name: 'allowedAddons',
-      title: 'Add-ons Permitidos (Configurador)',
+      title: 'Servicios Add-on Permitidos (Configurador)',
       type: 'array',
-      of: [{ type: 'reference', to: [{ type: 'pricingAddon' }] }],
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'service',
+              title: 'Servicio (Core)',
+              type: 'reference',
+              to: [{ type: 'service' }],
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'price',
+              title: 'Precio (Display)',
+              type: 'string',
+              description: 'Ej: +150€/mes, +900€',
+              validation: (Rule) => Rule.required().max(40),
+            }),
+            defineField({
+              name: 'description',
+              title: 'Descripción',
+              type: 'text',
+              rows: 2,
+              validation: (Rule) => Rule.max(200),
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'service.title',
+              subtitle: 'price',
+            },
+          },
+        },
+      ],
     }),
     defineField({
       name: 'buttonText',

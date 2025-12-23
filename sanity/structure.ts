@@ -86,7 +86,6 @@ export const structure = (S: StructureBuilder) =>
               S.documentTypeListItem('serviceLocation').title('🚀 Landings Locales (Overrides)'),
               S.divider(),
               S.documentTypeListItem('pricingPlan').title('💰 Planes de Precio'),
-              S.documentTypeListItem('pricingAddon').title('➕ Add-ons de Precio'),
             ])
         ),
 

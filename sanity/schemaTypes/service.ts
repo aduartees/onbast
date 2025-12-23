@@ -31,10 +31,20 @@ export default defineType({
     }),
     defineField({
       name: 'additionalType',
-      title: 'Additional Type (Wikidata URL)',
+      title: 'Wikidata URL (principal)',
       type: 'url',
       group: 'general',
       description: 'URL de Wikidata para el tipo de servicio (ej: https://www.wikidata.org/wiki/Q56062435)',
+    }),
+    defineField({
+      name: 'additionalTypes',
+      title: 'Wikidata URLs (additionalType)',
+      type: 'array',
+      of: [{ type: 'url' }],
+      group: 'general',
+      description: 'Añade varios enlaces de Wikidata (ej: diseño y desarrollo).',
+      validation: (Rule) => Rule.unique(),
+      hidden: ({ document }) => !document?.isCoreService,
     }),
     defineField({
       name: 'isCoreService',

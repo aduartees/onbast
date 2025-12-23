@@ -27,6 +27,7 @@ export const SERVICES_QUERY = defineQuery(`*[_type == "service"] | order(_create
   "slug": slug.current,
   "description": shortDescription,
   additionalType,
+  additionalTypes,
   isCoreService,
   icon,
   "imageUrl": mainImage.asset->url,
@@ -42,6 +43,7 @@ export const HOME_SERVICES_SCHEMA_QUERY = defineQuery(`*[_type == "service"] | o
   "seoImage": seoImage.asset->url,
   "imageUrl": mainImage.asset->url,
   additionalType,
+  additionalTypes,
   isCoreService
 }`);
 
@@ -50,6 +52,7 @@ export const SERVICE_BY_SLUG_QUERY = defineQuery(`*[_type == "service" && slug.c
   title,
   "slug": slug.current,
   additionalType,
+  additionalTypes,
   shortDescription,
   longDescription,
   overviewText,
@@ -406,11 +409,13 @@ export const AGENCY_PAGE_QUERY = defineQuery(`*[_type == "agencyPage"][0] {
   },
   "coreServices": *[_type == "service" && isCoreService == true] | order(_createdAt asc)[0...8] {
     title,
-    additionalType
+    additionalType,
+    additionalTypes
   },
-  "fallbackServices": *[_type == "service" && defined(additionalType)] | order(_createdAt asc)[0...8] {
+  "fallbackServices": *[_type == "service" && (defined(additionalType) || count(additionalTypes) > 0)] | order(_createdAt asc)[0...8] {
     title,
-    additionalType
+    additionalType,
+    additionalTypes
   },
   "siteSettings": *[_type == "settings"][0] {
     "agency": agencyInfo {
@@ -553,6 +558,7 @@ export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
     title,
     "slug": slug.current,
     additionalType,
+    additionalTypes,
     shortDescription,
     longDescription,
     overviewText,

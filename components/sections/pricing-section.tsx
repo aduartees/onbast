@@ -40,74 +40,10 @@ interface PricingProps {
 export function PricingSection({ pricing }: PricingProps) {
   if (!pricing) return null;
 
-  const jsonLd = React.useMemo(() => {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_URL ||
-      (typeof window !== "undefined" ? window.location.origin : "https://onbast.com");
-
-    const plans = Array.isArray(pricing.plans) ? pricing.plans : [];
-    const items = plans
-      .map((plan, idx) => {
-        const numericPrice = typeof plan.price === "string" ? plan.price.replace(/[^0-9]/g, "") : "";
-        if (!numericPrice.length) return null;
-
-        const params = new URLSearchParams();
-        if (plan.buttonLinkID) params.set("service", plan.buttonLinkID);
-        if (pricing.linkLocation) params.set("location", pricing.linkLocation);
-        const qs = params.toString();
-        const url = `${baseUrl}${qs ? `/planes?${qs}` : "/planes"}`;
-
-        const additionalProperty = (plan.features || [])
-          .filter((f) => typeof f === "string" && f.trim().length > 0)
-          .map((feature) => ({
-            "@type": "PropertyValue",
-            name: "Incluye",
-            value: feature,
-          }));
-
-        return {
-          "@type": "ListItem",
-          position: idx + 1,
-          item: {
-            "@type": "Offer",
-            name: plan.title,
-            ...(plan.description ? { description: plan.description } : {}),
-            price: numericPrice,
-            priceCurrency: plan.currency || "EUR",
-            availability: "https://schema.org/InStock",
-            url,
-            itemOffered: {
-              "@type": "Service",
-              name: plan.title,
-              ...(plan.description ? { description: plan.description } : {}),
-              ...(additionalProperty.length ? { additionalProperty } : {}),
-            },
-          },
-        };
-      })
-      .filter(Boolean);
-
-    if (!items.length) return null;
-
-    return {
-      "@context": "https://schema.org",
-      "@type": "OfferCatalog",
-      name: pricing.title || "Planes y ventajas",
-      itemListElement: items,
-    };
-  }, [pricing.linkLocation, pricing.plans, pricing.title]);
-
   return (
     <section className="py-0 relative" id="precios">
       {/* Background Elements */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[1200px] h-[600px] bg-indigo-900/20 blur-[120px] rounded-full pointer-events-none" />
-
-      {jsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      )}
 
       <div className="max-w-7xl mx-auto px-4 relative z-10 pt-10 md:pt-0">
         {/* Header */}

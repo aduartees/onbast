@@ -36,6 +36,7 @@ type OrganizationSchemaType = "Organization" | "LocalBusiness" | "AboutPage" | "
 type KnowsAboutService = {
   title?: string;
   additionalType?: string | null;
+  additionalTypes?: string[] | null;
 };
 
 type OrganizationSchemaInput = {
@@ -83,17 +84,26 @@ export function generateOrganizationSchema(
   const knowsAbout = Array.from(
     new Map(
       (knowsAboutServices || [])
-        .filter((service) => typeof service?.additionalType === "string" && service.additionalType.length > 0)
-        .map((service) => {
-          const wikidataUrl = service.additionalType as string;
-          return [
-            wikidataUrl,
-            {
-              "@type": "Thing",
-              "@id": wikidataUrl,
-              ...(service?.title ? { name: service.title } : {}),
-            },
-          ] as const;
+        .flatMap((service) => {
+          const urls = Array.from(
+            new Set(
+              [
+                typeof service?.additionalType === "string" ? service.additionalType : undefined,
+                ...(Array.isArray(service?.additionalTypes) ? service.additionalTypes : []),
+              ].filter((u): u is string => typeof u === "string" && u.length > 0)
+            )
+          );
+
+          return urls.map((wikidataUrl) => {
+            return [
+              wikidataUrl,
+              {
+                "@type": "Thing",
+                "@id": wikidataUrl,
+                ...(service?.title ? { name: service.title } : {}),
+              },
+            ] as const;
+          });
         })
     ).values()
   );
@@ -165,6 +175,15 @@ export function generateServiceSchema(service: any, agency?: any) {
     const baseUrl = process.env.NEXT_PUBLIC_URL || "https://onbast.com";
     const organizationId = `${baseUrl}/#organization`;
     const serviceImage = service.seoImage || service.imageUrl;
+
+    const additionalTypeList = Array.from(
+        new Set(
+            [
+                typeof service?.additionalType === "string" ? service.additionalType : undefined,
+                ...(Array.isArray(service?.additionalTypes) ? service.additionalTypes : []),
+            ].filter((u): u is string => typeof u === "string" && u.length > 0)
+        )
+    );
 
     const parseNumericPrice = (value: unknown) => {
         if (typeof value === "number" && Number.isFinite(value)) return String(Math.trunc(value));
@@ -274,7 +293,9 @@ export function generateServiceSchema(service: any, agency?: any) {
         "serviceType": service.title,
         "name": service.title,
         "url": `${baseUrl}/servicios/${service.slug}`,
-        ...(service.additionalType ? { "additionalType": service.additionalType } : {}),
+        ...(additionalTypeList.length
+            ? { "additionalType": additionalTypeList.length === 1 ? additionalTypeList[0] : additionalTypeList }
+            : {}),
         "description": service.seoDescription || service.shortDescription,
         ...(serviceImage ? { "image": serviceImage } : {}),
         "provider": {
@@ -306,10 +327,82 @@ export function generateServiceSchema(service: any, agency?: any) {
     };
 }
 
+export function generatePricingOfferCatalogSchema(
+  pricing: any,
+  opts: { baseUrl: string; organizationId?: string; location?: string }
+) {
+  const plans = Array.isArray(pricing?.plans) ? pricing.plans : [];
+  if (!plans.length) return null;
+
+  const parseNumericPrice = (value: unknown) => {
+    if (typeof value === "number" && Number.isFinite(value)) return String(Math.trunc(value));
+    if (typeof value !== "string") return undefined;
+    const numeric = value.replace(/[^0-9]/g, "");
+    return numeric.length ? numeric : undefined;
+  };
+
+  const itemListElement = plans
+    .map((plan: any, index: number) => {
+      const numericPrice = parseNumericPrice(plan?.price);
+      if (!numericPrice) return null;
+
+      const params = new URLSearchParams();
+      if (typeof plan?.buttonLinkID === "string" && plan.buttonLinkID.length) {
+        params.set("service", plan.buttonLinkID);
+      }
+      if (typeof opts.location === "string" && opts.location.length) {
+        params.set("location", opts.location);
+      }
+
+      const qs = params.toString();
+      const url = `${opts.baseUrl}${qs ? `/planes?${qs}` : "/planes"}`;
+
+      const additionalProperty = (Array.isArray(plan?.features) ? plan.features : [])
+        .filter((f: unknown) => typeof f === "string" && f.trim().length > 0)
+        .map((feature: string) => ({
+          "@type": "PropertyValue",
+          name: "Incluye",
+          value: feature,
+        }));
+
+      return {
+        "@type": "ListItem",
+        position: index + 1,
+        item: {
+          "@type": "Offer",
+          ...(plan?.title ? { name: plan.title } : {}),
+          ...(plan?.description ? { description: plan.description } : {}),
+          price: numericPrice,
+          priceCurrency: plan?.currency || "EUR",
+          availability: "https://schema.org/InStock",
+          url,
+          ...(opts.organizationId ? { seller: { "@id": opts.organizationId } } : {}),
+          itemOffered: {
+            "@type": "Service",
+            ...(plan?.title ? { name: plan.title } : {}),
+            ...(plan?.description ? { description: plan.description } : {}),
+            ...(additionalProperty.length ? { additionalProperty } : {}),
+          },
+        },
+      };
+    })
+    .filter(Boolean);
+
+  if (!itemListElement.length) return null;
+
+  return {
+    "@type": "OfferCatalog",
+    name: pricing?.title || "Planes y ventajas",
+    itemListElement,
+  };
+}
+
 export function generateHomeOrganizationServicesSchema(data: any, services: any[]) {
   const coreServices = (services || []).filter((service) => service?.isCoreService);
   const fallbackServices = (services || []).filter(
-    (service) => typeof service?.additionalType === "string" && service.additionalType.length > 0
+    (service) =>
+      (typeof service?.additionalType === "string" && service.additionalType.length > 0) ||
+      (Array.isArray(service?.additionalTypes) && service.additionalTypes.length > 0)
   );
   const knowsAboutServices = coreServices.length ? coreServices : fallbackServices;
 

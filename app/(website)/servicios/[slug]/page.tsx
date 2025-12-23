@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ServiceHeader } from "@/components/sections/service-header";
 import { ServiceContent } from "@/components/sections/service-content";
 import { ScrollReset } from "@/components/utils/scroll-reset";
-import { generateServiceSchema, generateFAQSchema, generateBreadcrumbSchema } from "@/lib/seo";
+import { generateServiceSchema, generateFAQSchema, generateBreadcrumbSchema, generatePricingOfferCatalogSchema } from "@/lib/seo";
 
 // --- Types ---
 interface ServicePageProps {
@@ -17,6 +17,7 @@ interface SanityServiceDetail {
   title: string;
   slug: string;
   additionalType?: string;
+  additionalTypes?: string[];
   shortDescription: string;
   longDescription?: string;
   overviewText?: string;
@@ -208,6 +209,9 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
   if (!service) return notFound();
 
+  const baseUrl = process.env.NEXT_PUBLIC_URL || "https://onbast.com";
+  const organizationId = `${baseUrl}/#organization`;
+
   const serviceSchema = generateServiceSchema(service, service.agency);
   const faqSchema = generateFAQSchema(service.faqs || []);
   const breadcrumbSchema = generateBreadcrumbSchema([
@@ -216,10 +220,19 @@ export default async function ServicePage({ params }: ServicePageProps) {
     { name: service.title, item: `https://onbast.com/servicios/${service.slug}` }
   ]);
 
+  const offerCatalogSchema = generatePricingOfferCatalogSchema(service.pricing, {
+    baseUrl,
+    organizationId,
+  });
+
+  const serviceSchemaWithCatalog = offerCatalogSchema
+    ? { ...serviceSchema, hasOfferCatalog: offerCatalogSchema }
+    : serviceSchema;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
-      serviceSchema,
+      serviceSchemaWithCatalog,
       breadcrumbSchema,
       ...(faqSchema ? [faqSchema] : [])
     ]

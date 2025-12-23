@@ -71,7 +71,7 @@ export default defineType({
     }),
     defineField({
       name: 'wikipediaUrl',
-      title: 'Enlace Wikipedia / Wikidata (sameAs)',
+      title: 'Enlace Wikipedia (sameAs)',
       type: 'url',
       description: 'Crítico para desambiguación de entidades en Schema.org.',
     }),

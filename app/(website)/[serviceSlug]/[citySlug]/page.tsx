@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ServiceHeader } from "@/components/sections/service-header";
 import { ServiceContent } from "@/components/sections/service-content";
 import { ScrollReset } from "@/components/utils/scroll-reset";
-import { generateServiceSchema, generateFAQSchema, generateBreadcrumbSchema } from "@/lib/seo";
+import { generateServiceSchema, generateFAQSchema, generateBreadcrumbSchema, generatePricingOfferCatalogSchema } from "@/lib/seo";
 
 // --- Types ---
 interface PageProps {
@@ -28,6 +28,7 @@ interface SanityServiceDetail {
   title: string;
   slug: string;
   additionalType?: string;
+  additionalTypes?: string[];
   shortDescription: string;
   longDescription?: string;
   overviewText?: string;
@@ -282,6 +283,7 @@ export default async function ServiceLocationPage({ params }: PageProps) {
   const { service, location, override } = data;
 
   const baseUrl = process.env.NEXT_PUBLIC_URL || "https://onbast.com";
+  const organizationId = `${baseUrl}/#organization`;
 
   const localHeroImage = `/api/hero?title=${encodeURIComponent(`${service.title} en ${location.name}`)}&subtitle=${encodeURIComponent("Desarrollo Web y Posicionamiento SEO & GEO")}`;
   const localHeroAlt = `${service.title} en ${location.name} | ONBAST`;
@@ -328,12 +330,13 @@ export default async function ServiceLocationPage({ params }: PageProps) {
   const serviceSchema = generateServiceSchema(service, service.agency);
   // We need to extend/modify it for Local SEO
   const schemaName = `${service.title} en ${location.name}`;
+
   const localServiceSchema = {
     ...serviceSchema,
     areaServed: {
       "@type": "City",
       name: location.name,
-      sameAs: location.wikipediaUrl
+      ...(location.wikipediaUrl ? { sameAs: location.wikipediaUrl } : {})
     },
     name: schemaName,
     description: heroDescription,
@@ -361,10 +364,20 @@ export default async function ServiceLocationPage({ params }: PageProps) {
 
   const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
 
+  const offerCatalogSchema = generatePricingOfferCatalogSchema(service.pricing, {
+    baseUrl,
+    organizationId,
+    location: location.slug,
+  });
+
+  const localServiceSchemaWithCatalog = offerCatalogSchema
+    ? { ...localServiceSchema, hasOfferCatalog: offerCatalogSchema }
+    : localServiceSchema;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
-      localServiceSchema,
+      localServiceSchemaWithCatalog,
       breadcrumbSchema,
       ...(faqSchema ? [faqSchema] : [])
     ]

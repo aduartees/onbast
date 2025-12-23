@@ -323,10 +323,6 @@ export function generateServiceSchema(service: any, agency?: any) {
         "serviceType": service.title,
         "name": service.title,
         "url": `${baseUrl}/servicios/${service.slug}`,
-        "hasDeliveryMethod": {
-            "@type": "DeliveryMethod",
-            "name": "Online / Remoto",
-        },
         ...(additionalTypeList.length
             ? { "additionalType": additionalTypeList.length === 1 ? additionalTypeList[0] : additionalTypeList }
             : {}),

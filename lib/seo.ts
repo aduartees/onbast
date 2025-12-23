@@ -176,6 +176,15 @@ export function generateServiceSchema(service: any, agency?: any) {
     const organizationId = `${baseUrl}/#organization`;
     const serviceImage = service.seoImage || service.imageUrl;
 
+    const normalizeText = (value: unknown) => {
+        if (typeof value !== "string") return undefined;
+        const trimmed = value.trim();
+        return trimmed.length ? trimmed : undefined;
+    };
+
+    const serviceOutputText = normalizeText(service?.serviceOutput);
+    const audienceText = normalizeText(service?.audience);
+
     const additionalTypeList = Array.from(
         new Set(
             [
@@ -298,6 +307,12 @@ export function generateServiceSchema(service: any, agency?: any) {
             : {}),
         "description": service.seoDescription || service.shortDescription,
         ...(serviceImage ? { "image": serviceImage } : {}),
+        ...(serviceOutputText
+            ? { "serviceOutput": { "@type": "Thing", name: serviceOutputText } }
+            : {}),
+        ...(audienceText
+            ? { "audience": { "@type": "Audience", audienceType: audienceText } }
+            : {}),
         "provider": {
             "@type": "Organization",
             "@id": organizationId,

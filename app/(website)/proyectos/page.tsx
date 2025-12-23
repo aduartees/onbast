@@ -212,22 +212,24 @@ export default async function ProjectsPage() {
       {/* FAQ Section */}
       {faq && (
         <section className="relative z-10 bg-neutral-950 py-20 border-t border-white/5">
-             <div className="max-w-7xl mx-auto px-6 mb-12 text-center">
-                <FadeIn>
-                    <SectionHeading 
-                        title={faq.title || "Preguntas Frecuentes"} 
-                        subtitle="Dudas" 
-                        highlight={faq.highlight || "Respuestas"}
-                        className="justify-center"
-                    />
-                    {faq.description && (
-                        <p className="text-neutral-400 mt-6 max-w-2xl mx-auto text-lg leading-relaxed font-light">
-                            {faq.description}
-                        </p>
-                    )}
-                </FadeIn>
-            </div>
-            <ServiceFAQ faqs={faq.questions || []} />
+          <div className="max-w-4xl mx-auto px-2 md:px-0">
+            <FadeIn>
+              <SectionHeading
+                title={faq.title || "Preguntas Frecuentes"}
+                subtitle="Dudas"
+                highlight={faq.highlight || "Respuestas"}
+                className="justify-center text-center"
+              />
+              {faq.description && (
+                <p className="text-neutral-400 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed text-center px-4">
+                  {faq.description}
+                </p>
+              )}
+            </FadeIn>
+            <FadeIn delay={0.2} className="mt-12 px-4 sm:px-6">
+              <ServiceFAQ faqs={faq.questions || []} />
+            </FadeIn>
+          </div>
         </section>
       )}
 

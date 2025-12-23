@@ -18,6 +18,8 @@ interface SanityServiceDetail {
   slug: string;
   additionalType?: string;
   additionalTypes?: string[];
+  serviceOutput?: string;
+  audience?: string;
   shortDescription: string;
   longDescription?: string;
   overviewText?: string;

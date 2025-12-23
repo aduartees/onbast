@@ -29,6 +29,8 @@ interface SanityServiceDetail {
   slug: string;
   additionalType?: string;
   additionalTypes?: string[];
+  serviceOutput?: string;
+  audience?: string;
   shortDescription: string;
   longDescription?: string;
   overviewText?: string;
@@ -331,6 +333,14 @@ export default async function ServiceLocationPage({ params }: PageProps) {
   // We need to extend/modify it for Local SEO
   const schemaName = `${service.title} en ${location.name}`;
 
+  const appendCity = (value: unknown) => {
+    if (typeof value !== "string") return undefined;
+    const trimmed = value.trim();
+    if (!trimmed.length) return undefined;
+    if (trimmed.toLowerCase().includes(location.name.toLowerCase())) return trimmed;
+    return `${trimmed} en ${location.name}`;
+  };
+
   const localServiceSchema = {
     ...serviceSchema,
     areaServed: {
@@ -340,7 +350,13 @@ export default async function ServiceLocationPage({ params }: PageProps) {
     },
     name: schemaName,
     description: heroDescription,
-    image: localHeroImageAbsolute
+    image: localHeroImageAbsolute,
+    ...(appendCity(service.serviceOutput)
+      ? { serviceOutput: { "@type": "Thing", name: appendCity(service.serviceOutput) } }
+      : {}),
+    ...(appendCity(service.audience)
+      ? { audience: { "@type": "Audience", audienceType: appendCity(service.audience) } }
+      : {})
   };
 
   const faqSchema = generateFAQSchema(faqs || []);

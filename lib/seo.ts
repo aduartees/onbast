@@ -127,55 +127,108 @@ export function generateOrganizationSchema(data: any, type: "Organization" | "Lo
 export function generateServiceSchema(service: any, agency?: any) {
     const baseUrl = process.env.NEXT_PUBLIC_URL || "https://onbast.com";
     const serviceImage = service.seoImage || service.imageUrl;
+
+    const parseNumericPrice = (value: unknown) => {
+        if (typeof value === "number" && Number.isFinite(value)) return String(Math.trunc(value));
+        if (typeof value !== "string") return undefined;
+        const numeric = value.replace(/[^0-9]/g, "");
+        return numeric.length ? numeric : undefined;
+    };
+
+    const buildUnitPriceSpecification = (period: unknown, price: string, currency: string) => {
+        if (typeof period !== "string") return undefined;
+        const p = period.toLowerCase();
+        if (p.includes("mes") || p.includes("mensual") || p.includes("month") || p.includes("/mo")) {
+            return {
+                "@type": "UnitPriceSpecification",
+                price,
+                priceCurrency: currency,
+                referenceQuantity: {
+                    "@type": "QuantitativeValue",
+                    value: "1",
+                    unitCode: "MON",
+                },
+            };
+        }
+
+        if (p.includes("año") || p.includes("anual") || p.includes("year") || p.includes("/yr")) {
+            return {
+                "@type": "UnitPriceSpecification",
+                price,
+                priceCurrency: currency,
+                referenceQuantity: {
+                    "@type": "QuantitativeValue",
+                    value: "1",
+                    unitCode: "ANN",
+                },
+            };
+        }
+
+        return undefined;
+    };
+
+    const buildOffer = (input: any) => {
+        const currency = typeof input?.currency === "string" && input.currency.length ? input.currency : "EUR";
+        const numericPrice = parseNumericPrice(input?.price);
+        if (!numericPrice) return null;
+
+        const url = typeof input?.buttonLinkID === "string" && input.buttonLinkID.length
+            ? `${baseUrl}/planes?service=${encodeURIComponent(input.buttonLinkID)}`
+            : `${baseUrl}/servicios/${service.slug}`;
+
+        const priceSpecification = buildUnitPriceSpecification(input?.period, numericPrice, currency);
+
+        return {
+            "@type": "Offer",
+            ...(input?.title ? { name: input.title } : {}),
+            price: numericPrice,
+            priceCurrency: currency,
+            availability: "https://schema.org/InStock",
+            url,
+            ...(input?.description || service?.shortDescription
+                ? { description: input?.description || service.shortDescription }
+                : {}),
+            priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split("T")[0],
+            ...(priceSpecification ? { priceSpecification } : {}),
+        };
+    };
     
     // Parse price if available
     let offers: any = undefined;
-    if (service.pricing && service.pricing.price) {
-        // Remove non-numeric chars except dot/comma, then normalize decimal
-        // Assuming format "2.500€" or "2500" -> extract digits
-        const numericPrice = service.pricing.price.replace(/[^0-9]/g, '');
-        
-        if (numericPrice) {
-             // Detect Recurring Payment (Subscription)
-             const period = service.pricing.period ? service.pricing.period.toLowerCase() : '';
-             let priceSpec = undefined;
+    const pricingPlans = Array.isArray(service?.pricing?.plans) ? service.pricing.plans : [];
+    if (pricingPlans.length) {
+        const planOffers = pricingPlans
+            .map((plan: any) => buildOffer(plan))
+            .filter(Boolean);
 
-             // Logic for UnitPriceSpecification (Recurring)
-             if (period.includes('mes') || period.includes('mensual') || period.includes('month') || period.includes('/mo')) {
-                priceSpec = {
-                    "@type": "UnitPriceSpecification",
-                    "price": numericPrice,
-                    "priceCurrency": "EUR",
-                    "referenceQuantity": {
-                        "@type": "QuantitativeValue",
-                        "value": "1",
-                        "unitCode": "MON"
-                    }
-                };
-             } else if (period.includes('año') || period.includes('anual') || period.includes('year') || period.includes('/yr')) {
-                 priceSpec = {
-                    "@type": "UnitPriceSpecification",
-                    "price": numericPrice,
-                    "priceCurrency": "EUR",
-                    "referenceQuantity": {
-                        "@type": "QuantitativeValue",
-                        "value": "1",
-                        "unitCode": "ANN"
-                    }
-                };
-             }
+        if (planOffers.length === 1) {
+            offers = planOffers[0];
+        } else if (planOffers.length > 1) {
+            const numericPrices = planOffers
+                .map((o: any) => Number.parseInt(String(o.price), 10))
+                .filter((n: number) => Number.isFinite(n));
 
-             offers = {
-                "@type": "Offer",
-                "price": numericPrice,
-                "priceCurrency": "EUR",
-                "availability": "https://schema.org/InStock",
-                "url": `${baseUrl}/servicios/${service.slug}`,
-                "description": service.pricing.description || service.shortDescription,
-                "priceValidUntil": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0], // Valid for 1 year
-                ...(priceSpec ? { "priceSpecification": priceSpec } : {})
-             };
+            const currency = typeof pricingPlans[0]?.currency === "string" && pricingPlans[0].currency.length
+                ? pricingPlans[0].currency
+                : "EUR";
+
+            offers = {
+                "@type": "AggregateOffer",
+                lowPrice: numericPrices.length ? String(Math.min(...numericPrices)) : undefined,
+                highPrice: numericPrices.length ? String(Math.max(...numericPrices)) : undefined,
+                priceCurrency: currency,
+                offerCount: planOffers.length,
+                offers: planOffers,
+            };
         }
+    } else if (service?.pricing?.price) {
+        offers = buildOffer({
+            title: service?.pricing?.title || service?.title,
+            price: service.pricing.price,
+            currency: "EUR",
+            period: service.pricing.period,
+            description: service.pricing.description,
+        });
     }
 
     return {
@@ -183,6 +236,7 @@ export function generateServiceSchema(service: any, agency?: any) {
         "@type": "Service",
         "serviceType": service.title,
         "name": service.title,
+        "url": `${baseUrl}/servicios/${service.slug}`,
         ...(service.additionalType ? { "additionalType": service.additionalType } : {}),
         "description": service.seoDescription || service.shortDescription,
         ...(serviceImage ? { "image": serviceImage } : {}),

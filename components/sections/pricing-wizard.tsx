@@ -22,6 +22,7 @@ interface PricingPlan {
     price: string;
     active?: boolean;
   };
+  allowedAddonIds?: string[];
   buttonText?: string;
   buttonLinkID: string;
 }
@@ -51,12 +52,27 @@ export function PricingWizard({ plans, addons, initialPlanId, initialLocation }:
     name: "",
     email: "",
     phone: "",
-    message: ""
+    message: "",
+    website: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const selectedPlan = useMemo(() => plans.find((p) => p.buttonLinkID === selectedPlanId), [plans, selectedPlanId]);
+
+  const visibleAddons = useMemo(() => {
+    const allowed = selectedPlan?.allowedAddonIds;
+    if (!allowed || allowed.length === 0) return addons;
+    const allowedSet = new Set(allowed);
+    return addons.filter((addon) => allowedSet.has(addon.id));
+  }, [addons, selectedPlan?.allowedAddonIds]);
+
+  React.useEffect(() => {
+    const allowed = selectedPlan?.allowedAddonIds;
+    if (!allowed || allowed.length === 0) return;
+    const allowedSet = new Set(allowed);
+    setSelectedAddons((prev) => prev.filter((id) => allowedSet.has(id)));
+  }, [selectedPlan?.allowedAddonIds]);
 
   const handleNext = () => {
     if (step === 1 && !selectedPlanId) return;
@@ -184,7 +200,12 @@ export function PricingWizard({ plans, addons, initialPlanId, initialLocation }:
         </div>
 
         <div className="space-y-3">
-          {addons.map((addon) => {
+          {visibleAddons.length === 0 ? (
+            <div className="rounded-2xl border border-white/10 bg-neutral-900/10 p-6 text-center text-sm text-neutral-400">
+              No hay add-ons disponibles para este plan.
+            </div>
+          ) : (
+            visibleAddons.map((addon) => {
             const active = selectedAddons.includes(addon.id);
             return (
               <button
@@ -221,7 +242,8 @@ export function PricingWizard({ plans, addons, initialPlanId, initialLocation }:
                 </div>
               </button>
             );
-          })}
+            })
+          )}
         </div>
       </div>
     ) : step === 3 ? (
@@ -262,6 +284,15 @@ export function PricingWizard({ plans, addons, initialPlanId, initialLocation }:
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            name="website"
+            value={formData.website}
+            onChange={(e) => setFormData((prev) => ({ ...prev, website: e.target.value }))}
+            style={{ display: "none" }}
+            tabIndex={-1}
+            autoComplete="off"
+          />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="text-sm text-neutral-400">Nombre</label>

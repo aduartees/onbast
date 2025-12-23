@@ -63,6 +63,12 @@ export default defineType({
       ]
     }),
     defineField({
+      name: 'allowedAddons',
+      title: 'Add-ons Permitidos (Configurador)',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'pricingAddon' }] }],
+    }),
+    defineField({
       name: 'buttonText',
       title: 'Texto del Botón',
       type: 'string',

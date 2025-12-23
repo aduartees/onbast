@@ -9,6 +9,7 @@ export const PRICING_PLANS_QUERY = defineQuery(`*[_type == "pricingPlan"] | orde
   description,
   features,
   addon,
+  "allowedAddonIds": allowedAddons[]->id.current,
   buttonText,
   "buttonLinkID": buttonLinkID.current
 }`);

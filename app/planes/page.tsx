@@ -88,6 +88,23 @@ export default async function PricingPage({
           .map((plan: any, index: number) => {
             const numericPrice = parseNumericPrice(plan?.price);
             if (!numericPrice) return null;
+
+            const additionalProperty = (Array.isArray(plan?.features) ? plan.features : [])
+              .filter((f: unknown) => typeof f === "string" && f.trim().length > 0)
+              .map((feature: string) => ({
+                "@type": "PropertyValue",
+                name: "Incluye",
+                value: feature,
+              }));
+
+            const itemOffered = {
+              "@type": "Service",
+              name: plan?.title,
+              ...(plan?.description ? { description: plan.description } : {}),
+              ...(additionalProperty.length ? { additionalProperty } : {}),
+              provider: { "@id": orgId },
+            };
+
             return {
               "@type": "ListItem",
               position: index + 1,
@@ -100,6 +117,7 @@ export default async function PricingPage({
                 availability: "https://schema.org/InStock",
                 url: `${baseUrl}/planes?service=${encodeURIComponent(plan?.buttonLinkID || "")}`,
                 seller: { "@id": orgId },
+                itemOffered,
               },
             };
           })

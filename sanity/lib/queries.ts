@@ -739,7 +739,13 @@ export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
     gentilicio,
     geoContext,
     coordinates,
+    altitude,
     wikipediaUrl,
+    "nearbyLocations": nearbyLocations[]-> {
+      name,
+      "slug": slug.current,
+      type
+    },
     "parentRef": parent._ref,
     parent->{
       name,
@@ -799,18 +805,18 @@ export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
       tags
     }
   },
-  "nearbyLocations": *[_type == "location" && slug.current != $citySlug && (
-    // Caso 1: Si la ubicación actual es hija (tiene parentRef), mostrar hermanos (mismo padre)
-    (defined(^.location.parentRef) && defined(parent) && parent._ref == ^.location.parentRef) ||
-    // Caso 2: Si la ubicación actual es hija (tiene parentRef), incluir su padre
-    (defined(^.location.parentRef) && _id == ^.location.parentRef) ||
-    // Caso 3: Si la ubicación actual es padre (no tiene parentRef), mostrar hijos
-    (!defined(^.location.parentRef) && defined(parent) && parent._ref == ^.location._id)
-  )][0...12] {
-    name,
-    "slug": slug.current,
-    type
-  }
+  "nearbyLocations": coalesce(
+    ^.location.nearbyLocations[slug != $citySlug][0...12],
+    *[_type == "location" && slug.current != $citySlug && (
+      (defined(^.location.parentRef) && defined(parent) && parent._ref == ^.location.parentRef) ||
+      (defined(^.location.parentRef) && _id == ^.location.parentRef) ||
+      (!defined(^.location.parentRef) && defined(parent) && parent._ref == ^.location._id)
+    )][0...12] {
+      name,
+      "slug": slug.current,
+      type
+    }
+  )
 }`);
 
 export const ALL_SERVICES_AND_LOCATIONS_QUERY = defineQuery(`{

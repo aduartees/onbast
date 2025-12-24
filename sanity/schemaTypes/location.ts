@@ -78,10 +78,24 @@ export default defineType({
       description: 'Resumen del tejido empresarial generado por IA. Ej: "Getafe es el corazón industrial del sur de Madrid..."',
     }),
     defineField({
+      name: 'nearbyLocations',
+      title: 'Ciudades Cercanas',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'location' }] }],
+      description: 'Para interlinking manual y contexto local (máx. 12).',
+      validation: (Rule) => Rule.max(12),
+    }),
+    defineField({
       name: 'coordinates',
       title: 'Coordenadas Geográficas',
       type: 'geopoint',
       description: 'Para mapas y Schema Local.',
+    }),
+    defineField({
+      name: 'altitude',
+      title: 'Altitud (m)',
+      type: 'number',
+      description: 'Altitud aproximada sobre el nivel del mar.',
     }),
     defineField({
       name: 'wikipediaUrl',

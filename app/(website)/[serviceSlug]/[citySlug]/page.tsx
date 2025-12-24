@@ -184,7 +184,13 @@ interface SanityLocation {
   gentilicio?: string;
   geoContext?: string;
   coordinates?: { lat: number; lng: number; alt?: number };
+  altitude?: number;
   wikipediaUrl?: string;
+  nearbyLocations?: {
+    name: string;
+    slug: string;
+    type: string;
+  }[];
   parentRef?: string;
   parent?: {
     name: string;

@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { BreadcrumbProvider } from "@/components/layout/breadcrumb-context";
+import Script from "next/script";
+import { CookieConsentManager } from "@/components/utils/cookie-consent";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const poppins = Poppins({ 
@@ -37,6 +39,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
+      <head>
+        <Script
+          id="consent-mode-default"
+          strategy="beforeInteractive"
+        >{`window.dataLayer = window.dataLayer || [];
+function gtag(){window.dataLayer.push(arguments);}
+gtag('consent', 'default', {
+  'ad_storage': 'denied',
+  'ad_user_data': 'denied',
+  'ad_personalization': 'denied',
+  'analytics_storage': 'denied',
+  'wait_for_update': 500
+});`}</Script>
+      </head>
       <body className={cn(
           "min-h-screen bg-background font-sans antialiased overflow-x-hidden scroll-smooth",
           inter.variable,
@@ -53,6 +69,7 @@ export default function RootLayout({
             <BreadcrumbProvider>
               {children}
             </BreadcrumbProvider>
+            <CookieConsentManager />
             <Analytics />
             <SpeedInsights />
           </ThemeProvider>

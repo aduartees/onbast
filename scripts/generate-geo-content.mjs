@@ -25,13 +25,13 @@ if (fs.existsSync(envPath)) {
   });
 }
 
-if (!process.env.GEMINI_API_KEY) {
-  console.error('❌ ERROR: GEMINI_API_KEY no encontrada en .env.local');
+if (!process.env.SANITY_WRITE_TOKEN) {
+  console.error('❌ ERROR: SANITY_WRITE_TOKEN no encontrada en .env.local');
   process.exit(1);
 }
 
-if (!process.env.SANITY_WRITE_TOKEN) {
-  console.error('❌ ERROR: SANITY_WRITE_TOKEN no encontrada en .env.local');
+if (!process.env.GEMINI_API_KEY) {
+  console.error('❌ ERROR: GEMINI_API_KEY no encontrada en .env.local');
   process.exit(1);
 }
 
@@ -339,7 +339,7 @@ async function main() {
     .map((s) => s.trim())
     .filter(Boolean);
 
-  const dryRun = has('--dry-run') || process.env.DRY_RUN === '1';
+  const dryRun = !has('--yes') || process.env.DRY_RUN === '1' || has('--dry-run');
   const limit = Number.parseInt(arg('--limit') || process.env.LIMIT || '0', 10);
   const serviceSlugsFilter = parseCsv(arg('--service-slugs') || process.env.SERVICE_SLUGS);
   const locationSlugsFilter = parseCsv(arg('--location-slugs') || process.env.LOCATION_SLUGS);

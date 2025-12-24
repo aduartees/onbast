@@ -17,8 +17,9 @@ type SanitySlugDoc = {
   _updatedAt?: string;
 };
 
-type SanityLocationSlugDoc = {
-  slug?: string;
+type SanityServiceLocationDoc = {
+  serviceSlug?: string;
+  citySlug?: string;
   _updatedAt?: string;
 };
 
@@ -30,13 +31,14 @@ const STATIC_UPDATED_AT_QUERY = `{
   "contact": *[_type == "contactPage"][0]._updatedAt
 }`;
 
-const SERVICES_SLUGS_QUERY = `*[_type == "service" && defined(slug.current)]{
+const SERVICES_SLUGS_QUERY = `*[_type == "service" && defined(slug.current) && !(_id in path("drafts.**"))]{
   "slug": slug.current,
   _updatedAt
 }`;
 
-const LOCATIONS_SLUGS_QUERY = `*[_type == "location" && defined(slug.current)]{
-  "slug": slug.current,
+const SERVICE_LOCATION_SLUGS_QUERY = `*[_type == "serviceLocation" && defined(service->slug.current) && defined(location->slug.current) && defined(seoTitle) && defined(seoDescription) && !(_id in path("drafts.**"))]{
+  "serviceSlug": service->slug.current,
+  "citySlug": location->slug.current,
   _updatedAt
 }`;
 
@@ -54,10 +56,10 @@ const toDate = (value: string | undefined) => {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getBaseUrl();
 
-  const [staticUpdatedAt, services, locations] = await Promise.all([
+  const [staticUpdatedAt, services, serviceLocations] = await Promise.all([
     client.fetch<StaticUpdatedAt>(STATIC_UPDATED_AT_QUERY, {}, { next: { revalidate } }),
     client.fetch<SanitySlugDoc[]>(SERVICES_SLUGS_QUERY, {}, { next: { revalidate } }),
-    client.fetch<SanityLocationSlugDoc[]>(LOCATIONS_SLUGS_QUERY, {}, { next: { revalidate } }),
+    client.fetch<SanityServiceLocationDoc[]>(SERVICE_LOCATION_SLUGS_QUERY, {}, { next: { revalidate } }),
   ]);
 
   const entries: MetadataRoute.Sitemap = [
@@ -109,36 +111,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  const serviceLastModifiedBySlug = new Map(
-    services
-      .filter((service) => typeof service?.slug === "string" && service.slug.length)
-      .map((service) => [service.slug as string, toDate(service._updatedAt)]),
-  );
-  const locationLastModifiedBySlug = new Map(
-    locations
-      .filter((location) => typeof location?.slug === "string" && location.slug.length)
-      .map((location) => [location.slug as string, toDate(location._updatedAt)]),
-  );
-
-  for (const service of services) {
-    if (!service?.slug) continue;
-    const serviceLastModified = serviceLastModifiedBySlug.get(service.slug) ?? new Date();
-
-    for (const location of locations) {
-      if (!location?.slug) continue;
-      const locationLastModified = locationLastModifiedBySlug.get(location.slug) ?? new Date();
-      const lastModified =
-        serviceLastModified.getTime() >= locationLastModified.getTime()
-          ? serviceLastModified
-          : locationLastModified;
-
-      entries.push({
-        url: `${baseUrl}/${service.slug}/${location.slug}`,
-        lastModified,
-        changeFrequency: "weekly",
-        priority: 0.7,
-      });
-    }
+  const seen = new Set<string>();
+  for (const pair of serviceLocations) {
+    if (!pair?.serviceSlug || !pair?.citySlug) continue;
+    const url = `${baseUrl}/${pair.serviceSlug}/${pair.citySlug}`;
+    if (seen.has(url)) continue;
+    seen.add(url);
+    entries.push({
+      url,
+      lastModified: toDate(pair._updatedAt),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    });
   }
 
   return entries;

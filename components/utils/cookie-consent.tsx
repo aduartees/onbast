@@ -1,29 +1,56 @@
 "use client";
 
 import { useEffect } from "react";
-import CookieConsent from "vanilla-cookieconsent";
+import * as CookieConsent from "vanilla-cookieconsent";
+
+type ConsentState = "granted" | "denied";
+
+type ConsentUpdate = {
+  analytics_storage: ConsentState;
+  ad_storage: ConsentState;
+  ad_user_data: ConsentState;
+  ad_personalization: ConsentState;
+};
+
+type WindowWithConsentHelpers = Window & {
+  gtag?: (command: "consent", action: "update", params: ConsentUpdate) => void;
+  dataLayer?: unknown[];
+  __onbastCookieConsentInited?: boolean;
+  __onbastOpenCookiePreferences?: () => void;
+};
 
 const updateGtagConsent = (cookie: CookieConsent.CookieValue | undefined) => {
   const categories = Array.isArray(cookie?.categories) ? cookie.categories : [];
 
-  const granted = {
+  const granted: ConsentUpdate = {
     analytics_storage: categories.includes("analytics") ? "granted" : "denied",
     ad_storage: categories.includes("marketing") ? "granted" : "denied",
     ad_user_data: categories.includes("marketing") ? "granted" : "denied",
     ad_personalization: categories.includes("marketing") ? "granted" : "denied",
   };
 
-  const gtag = (window as unknown as { gtag?: (...args: any[]) => void }).gtag;
-  if (typeof gtag === "function") {
-    gtag("consent", "update", granted);
-  }
+  const w = window as WindowWithConsentHelpers;
+  if (typeof w.gtag === "function") w.gtag("consent", "update", granted);
+  else if (Array.isArray(w.dataLayer)) w.dataLayer.push(["consent", "update", granted]);
 };
 
 export const CookieConsentManager = () => {
   useEffect(() => {
-    const w = window as unknown as { __onbastCookieConsentInited?: boolean };
+    const w = window as WindowWithConsentHelpers;
     if (w.__onbastCookieConsentInited) return;
     w.__onbastCookieConsentInited = true;
+
+    const cc = CookieConsent as unknown as {
+      showPreferences?: () => void;
+      showPreferencesModal?: () => void;
+      showSettings?: () => void;
+    };
+
+    w.__onbastOpenCookiePreferences = () => {
+      if (typeof cc.showPreferences === "function") cc.showPreferences();
+      else if (typeof cc.showPreferencesModal === "function") cc.showPreferencesModal();
+      else if (typeof cc.showSettings === "function") cc.showSettings();
+    };
 
     CookieConsent.run({
       cookie: {

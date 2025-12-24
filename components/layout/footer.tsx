@@ -36,6 +36,11 @@ export function Footer({ data }: FooterProps) {
   const pathname = usePathname();
   const currentYear = new Date().getFullYear();
 
+  const openCookiePreferences = () => {
+    const w = window as Window & { __onbastOpenCookiePreferences?: () => void };
+    w.__onbastOpenCookiePreferences?.();
+  };
+
   // Don't show footer in Sanity Studio
   if (pathname?.startsWith("/studio")) {
     return null;
@@ -132,6 +137,13 @@ export function Footer({ data }: FooterProps) {
           <p className="text-neutral-400 text-xs text-center md:text-left w-full">
             © {currentYear} {agency?.name || "ONBAST Agency"}. {footer?.copyrightText || "Todos los derechos reservados."}
           </p>
+          <button
+            type="button"
+            onClick={openCookiePreferences}
+            className="text-neutral-400 hover:text-white text-xs transition-colors duration-200"
+          >
+            Configurar cookies
+          </button>
         </div>
       </div>
 

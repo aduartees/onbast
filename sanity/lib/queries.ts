@@ -9,16 +9,16 @@ export const PRICING_PLANS_QUERY = defineQuery(`*[_type == "pricingPlan"] | orde
   description,
   features,
   addon,
-  "allowedAddonIds": allowedAddons[].service->slug.current,
+  "allowedAddonIds": allowedAddons[].plan->buttonLinkID.current,
+  "allowedAddons": allowedAddons[]{
+    "id": plan->buttonLinkID.current,
+    "title": plan->title,
+    "price": coalesce(price, plan->price),
+    "period": plan->period,
+    "description": coalesce(description, plan->description)
+  },
   buttonText,
   "buttonLinkID": buttonLinkID.current
-}`);
-
-export const PRICING_SERVICE_ADDONS_QUERY = defineQuery(`*[_type == "pricingPlan"].allowedAddons[]{
-  "id": service->slug.current,
-  "title": service->title,
-  price,
-  description
 }`);
 
 export const SERVICES_QUERY = defineQuery(`*[_type == "service"] | order(_createdAt asc) {

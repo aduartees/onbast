@@ -23,6 +23,7 @@ interface PricingPlan {
     active?: boolean;
   };
   allowedAddonIds?: string[];
+  allowedAddons?: PricingAddon[];
   buttonText?: string;
   buttonLinkID: string;
 }
@@ -31,19 +32,19 @@ interface PricingAddon {
   id: string;
   title: string;
   price: string;
+  period?: string;
   description?: string;
 }
 
 interface PricingWizardProps {
   plans: PricingPlan[];
-  addons: PricingAddon[];
   initialPlanId?: string;
   initialLocation?: string;
 }
 
 type Step = 1 | 2 | 3 | 4 | 5;
 
-export function PricingWizard({ plans, addons, initialPlanId, initialLocation }: PricingWizardProps) {
+export function PricingWizard({ plans, initialPlanId, initialLocation }: PricingWizardProps) {
   const [step, setStep] = useState<Step>(1);
   const [selectedPlanId, setSelectedPlanId] = useState<string>(initialPlanId || "");
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
@@ -61,18 +62,13 @@ export function PricingWizard({ plans, addons, initialPlanId, initialLocation }:
   const selectedPlan = useMemo(() => plans.find((p) => p.buttonLinkID === selectedPlanId), [plans, selectedPlanId]);
 
   const visibleAddons = useMemo(() => {
-    const allowed = selectedPlan?.allowedAddonIds;
-    if (!allowed || allowed.length === 0) return addons;
-    const allowedSet = new Set(allowed);
-    return addons.filter((addon) => allowedSet.has(addon.id));
-  }, [addons, selectedPlan?.allowedAddonIds]);
+    return Array.isArray(selectedPlan?.allowedAddons) ? selectedPlan.allowedAddons : [];
+  }, [selectedPlan?.allowedAddons]);
 
   React.useEffect(() => {
-    const allowed = selectedPlan?.allowedAddonIds;
-    if (!allowed || allowed.length === 0) return;
-    const allowedSet = new Set(allowed);
+    const allowedSet = new Set(visibleAddons.map((a) => a.id));
     setSelectedAddons((prev) => prev.filter((id) => allowedSet.has(id)));
-  }, [selectedPlan?.allowedAddonIds]);
+  }, [visibleAddons]);
 
   const handleNext = () => {
     if (step === 1 && !selectedPlanId) return;
@@ -207,6 +203,10 @@ export function PricingWizard({ plans, addons, initialPlanId, initialLocation }:
           ) : (
             visibleAddons.map((addon) => {
             const active = selectedAddons.includes(addon.id);
+            const priceLabel =
+              addon.period && typeof addon.price === "string" && !addon.price.includes("/")
+                ? `${addon.price} ${addon.period}`
+                : addon.price;
             return (
               <button
                 key={addon.id}
@@ -236,7 +236,7 @@ export function PricingWizard({ plans, addons, initialPlanId, initialLocation }:
                   </div>
                   <div className="text-right">
                     <span className="inline-flex items-center rounded-full bg-white/5 px-3 py-1 text-sm font-semibold text-indigo-200 border border-white/10">
-                      {addon.price}
+                      {priceLabel}
                     </span>
                   </div>
                 </div>

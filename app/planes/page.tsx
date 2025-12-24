@@ -1,7 +1,7 @@
 import React from "react";
 import { Metadata } from "next";
 import { client } from "@/sanity/lib/client";
-import { PRICING_PLANS_QUERY, PRICING_SERVICE_ADDONS_QUERY, SETTINGS_QUERY } from "@/sanity/lib/queries";
+import { PRICING_PLANS_QUERY, SETTINGS_QUERY } from "@/sanity/lib/queries";
 import { PricingWizard } from "@/components/sections/pricing-wizard";
 import { FadeIn } from "@/components/ui/fade-in";
 import { ScrollReset } from "@/components/utils/scroll-reset";
@@ -25,16 +25,16 @@ export default async function PricingPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
-  const [settings, plans, addons] = await Promise.all([
+  const [settings, plans] = await Promise.all([
     client.fetch(SETTINGS_QUERY, {}, { next: { revalidate: 60 } }),
     client.fetch(PRICING_PLANS_QUERY, {}, { next: { revalidate } }),
-    client.fetch(PRICING_SERVICE_ADDONS_QUERY, {}, { next: { revalidate } }),
   ]);
 
-  const uniqueAddons = Array.isArray(addons)
+  const uniqueAddons = Array.isArray(plans)
     ? Array.from(
         new Map(
-          addons
+          plans
+            .flatMap((p: any) => (Array.isArray(p?.allowedAddons) ? p.allowedAddons : []))
             .filter((a: any) => typeof a?.id === "string" && a.id.length)
             .map((a: any) => [a.id, a])
         ).values()
@@ -215,7 +215,7 @@ export default async function PricingPage({
               <article className="relative rounded-3xl border border-white/10 bg-neutral-900/10 p-4 md:p-10 shadow-2xl overflow-hidden">
                 <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-white/5 to-transparent" />
                 <div className="relative">
-          <PricingWizard plans={plans} addons={uniqueAddons} initialPlanId={planId} initialLocation={loc} />
+          <PricingWizard plans={plans} initialPlanId={planId} initialLocation={loc} />
                 </div>
               </article>
             </FadeIn>

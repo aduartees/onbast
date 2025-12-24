@@ -21,8 +21,8 @@ export const InfiniteMovingLogos = ({
   className?: string;
 }) => {
   const duplicatedItems = React.useMemo(() => {
-    const duplicationFactor = items.length < 5 ? 8 : 4;
-    return Array.from({ length: duplicationFactor + 1 }).flatMap(() => items);
+    if (!items || items.length === 0) return [];
+    return [...items, ...items];
   }, [items]);
 
   const duration = speed === "fast" ? "20s" : speed === "normal" ? "40s" : "80s";

@@ -64,17 +64,17 @@ export default defineType({
     }),
     defineField({
       name: 'allowedAddons',
-      title: 'Servicios Add-on Permitidos (Configurador)',
+      title: 'Planes Add-on Permitidos (Configurador)',
       type: 'array',
       of: [
         {
           type: 'object',
           fields: [
             defineField({
-              name: 'service',
-              title: 'Servicio (Core)',
+              name: 'plan',
+              title: 'Plan (Add-on)',
               type: 'reference',
-              to: [{ type: 'service' }],
+              to: [{ type: 'pricingPlan' }],
               validation: (Rule) => Rule.required(),
             }),
             defineField({
@@ -82,7 +82,7 @@ export default defineType({
               title: 'Precio (Display)',
               type: 'string',
               description: 'Ej: +150€/mes, +900€',
-              validation: (Rule) => Rule.required().max(40),
+              validation: (Rule) => Rule.max(40),
             }),
             defineField({
               name: 'description',
@@ -94,7 +94,7 @@ export default defineType({
           ],
           preview: {
             select: {
-              title: 'service.title',
+              title: 'plan.title',
               subtitle: 'price',
             },
           },

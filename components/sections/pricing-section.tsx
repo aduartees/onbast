@@ -132,6 +132,9 @@ function PricingCard({ plan, index, linkLocation }: { plan: PricingPlan, index: 
     return qs ? `/planes?${qs}` : "/planes";
   }, [linkLocation, plan.buttonLinkID]);
 
+  const ctaText = plan.buttonText || "Empezar ahora";
+  const ctaLabel = `${ctaText} - ${plan.title}`;
+
   return (
     <FadeIn delay={0.2 + (index * 0.1)} className="relative w-full h-full">
        <div className={cn(
@@ -206,16 +209,16 @@ function PricingCard({ plan, index, linkLocation }: { plan: PricingPlan, index: 
               </li>
             ))}
           </ul>
-
+          
           {/* CTA */}
-          <Link href={finalLink} className="w-full mt-auto">
+          <Link href={finalLink} className="w-full mt-auto" title={ctaLabel} aria-label={ctaLabel}>
               <Button className={cn(
                 "w-full font-medium h-12 rounded-full transition-all",
                 plan.badge 
                   ? "bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_20px_-5px_rgba(79,70,229,0.5)]" 
                   : "bg-white text-black hover:bg-neutral-200"
               )}>
-                {plan.buttonText || "Empezar ahora"}
+                {ctaText}
               </Button>
           </Link>
        </div>

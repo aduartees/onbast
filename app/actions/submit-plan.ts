@@ -44,12 +44,12 @@ const PlanRequestSchema = z.object({
 });
 
 const PRICING_PLAN_ALLOWED_ADDONS_QUERY = `*[_type == "pricingPlan" && buttonLinkID.current == $planId][0]{
-  "allowedAddonIds": allowedAddons[].service->slug.current
+  "allowedAddonIds": allowedAddons[].plan->buttonLinkID.current
 }`;
 
-const PRICING_ADDON_TITLES_BY_IDS_QUERY = `*[_type == "service" && slug.current in $addonIds] | order(title asc) {
+const PRICING_ADDON_TITLES_BY_IDS_QUERY = `*[_type == "pricingPlan" && buttonLinkID.current in $addonIds] | order(title asc) {
   title,
-  "id": slug.current
+  "id": buttonLinkID.current
 }`;
 
 type PricingAddonTitle = { id: string; title: string };

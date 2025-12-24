@@ -3,8 +3,6 @@ import { Inter, Space_Grotesk, Instrument_Serif, Poppins } from "next/font/googl
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { BreadcrumbProvider } from "@/components/layout/breadcrumb-context";
 import Script from "next/script";
 import { CookieConsentManager } from "@/components/utils/cookie-consent";
@@ -70,8 +68,6 @@ gtag('consent', 'default', {
               {children}
             </BreadcrumbProvider>
             <CookieConsentManager />
-            <Analytics />
-            <SpeedInsights />
           </ThemeProvider>
       </body>
     </html>

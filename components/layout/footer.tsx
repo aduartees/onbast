@@ -111,8 +111,10 @@ export function Footer({ data }: FooterProps) {
               </div>
               <div className="md:col-span-2 flex flex-col gap-4 items-center md:items-start text-center md:text-left">
                 <p className="text-white font-medium mb-2">Legal</p>
-                <FooterLink href="/privacy">Privacidad</FooterLink>
-                <FooterLink href="/terms">Términos</FooterLink>
+                <FooterLink href="/politica-de-privacidad">Política de Privacidad</FooterLink>
+                <FooterLink href="/aviso-legal">Aviso Legal</FooterLink>
+                <FooterLink href="/cookies">Cookies</FooterLink>
+                <FooterLink href="/condiciones-del-servicio">Condiciones del Servicio</FooterLink>
               </div>
             </>
           )}

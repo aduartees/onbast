@@ -59,8 +59,6 @@ export default async function PricingPage({
     { name: "Planes", item: `${baseUrl}/planes` },
   ]);
 
-  const termsOfServiceUrl = `${baseUrl}/condiciones-del-servicio`;
-
   const orgId = `${baseUrl}#org`;
   const websiteId = `${baseUrl}#website`;
   const pageId = `${baseUrl}/planes#webpage`;
@@ -129,7 +127,6 @@ export default async function PricingPage({
                 availability: "https://schema.org/InStock",
                 url: `${baseUrl}/planes?service=${encodeURIComponent(plan?.buttonLinkID || "")}`,
                 seller: { "@id": orgId },
-                termsOfService: termsOfServiceUrl,
                 itemOffered,
               },
             };
@@ -153,7 +150,6 @@ export default async function PricingPage({
                 availability: "https://schema.org/InStock",
                 url: `${baseUrl}/planes`,
                 seller: { "@id": orgId },
-                termsOfService: termsOfServiceUrl,
               },
             };
           })

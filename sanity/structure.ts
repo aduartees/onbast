@@ -38,6 +38,11 @@ export const structure = (S: StructureBuilder) =>
               singletonListItem(S, 'servicesPage', 'Servicios (Landing)'),
               singletonListItem(S, 'projectsPage', 'Proyectos (Landing)'),
               singletonListItem(S, 'contactPage', 'Contacto'),
+              S.divider(),
+              singletonListItem(S, 'privacyPolicyPage', 'Política de Privacidad'),
+              singletonListItem(S, 'legalNoticePage', 'Aviso Legal'),
+              singletonListItem(S, 'cookiesPage', 'Política de Cookies'),
+              singletonListItem(S, 'termsOfServicePage', 'Condiciones del Servicio'),
             ])
         ),
 

@@ -1,6 +1,14 @@
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const projectRoot = path.dirname(fileURLToPath(import.meta.url))
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   poweredByHeader: false,
+  turbopack: {
+    root: projectRoot,
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
     localPatterns: [
@@ -58,6 +66,30 @@ const nextConfig = {
       'tailwind-merge',
       '@radix-ui/react-slot',
     ],
+  },
+  async redirects() {
+    return [
+      {
+        source: '/politica-de-cookies',
+        destination: '/cookies',
+        permanent: true,
+      },
+      {
+        source: '/politica-cookies',
+        destination: '/cookies',
+        permanent: true,
+      },
+      {
+        source: '/cookie-policy',
+        destination: '/cookies',
+        permanent: true,
+      },
+      {
+        source: '/cookies-policy',
+        destination: '/cookies',
+        permanent: true,
+      },
+    ];
   },
   async headers() {
     return [

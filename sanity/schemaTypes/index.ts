@@ -15,6 +15,10 @@ import autonomousCommunity from './autonomousCommunity'
 import serviceLocation from './serviceLocation'
 import pricingPlan from './pricingPlan'
 import pricingAddon from './pricingAddon'
+import privacyPolicyPage from './privacyPolicyPage'
+import legalNoticePage from './legalNoticePage'
+import cookiesPage from './cookiesPage'
+import termsOfServicePage from './termsOfServicePage'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -31,6 +35,12 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     projectsPage, 
     servicesPage, 
     contactPage,
+
+    // Legal
+    privacyPolicyPage,
+    legalNoticePage,
+    cookiesPage,
+    termsOfServicePage,
 
     // GEO Strategy & Commercial
     location,

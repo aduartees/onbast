@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import * as CookieConsent from "vanilla-cookieconsent";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 type ConsentState = "granted" | "denied";
 
@@ -34,7 +36,30 @@ const updateGtagConsent = (cookie: CookieConsent.CookieValue | undefined) => {
   else if (Array.isArray(w.dataLayer)) w.dataLayer.push(["consent", "update", granted]);
 };
 
+const getConsentCategories = () => {
+  if (typeof document === "undefined") return [];
+  const name = "onbast_cookie_consent=";
+  const cookie = document.cookie
+    .split(";")
+    .map((c) => c.trim())
+    .find((c) => c.startsWith(name));
+
+  if (!cookie) return [];
+  const rawValue = cookie.slice(name.length);
+
+  try {
+    const parsed = JSON.parse(decodeURIComponent(rawValue));
+    return Array.isArray(parsed?.categories) ? parsed.categories : [];
+  } catch {
+    return [];
+  }
+};
+
+const hasAnalyticsConsent = () => getConsentCategories().includes("analytics");
+
 export const CookieConsentManager = () => {
+  const [analyticsEnabled, setAnalyticsEnabled] = useState(() => hasAnalyticsConsent());
+
   useEffect(() => {
     const w = window as WindowWithConsentHelpers;
     if (w.__onbastCookieConsentInited) return;
@@ -61,7 +86,7 @@ export const CookieConsentManager = () => {
       guiOptions: {
         consentModal: {
           layout: "box",
-          position: "bottom center",
+          position: "bottom left",
           equalWeightButtons: true,
           flipButtons: false,
         },
@@ -118,7 +143,7 @@ export const CookieConsentManager = () => {
                 },
                 {
                   title: "Analítica",
-                  description: "Nos ayudan a entender el uso del sitio (p. ej. Google Analytics).",
+                  description: "Nos ayudan a medir el rendimiento y uso del sitio (p. ej. Vercel Analytics).",
                   linkedCategory: "analytics",
                 },
                 {
@@ -133,15 +158,30 @@ export const CookieConsentManager = () => {
       },
       onFirstConsent: ({ cookie }) => {
         updateGtagConsent(cookie);
+        const categories = Array.isArray(cookie?.categories) ? cookie.categories : [];
+        setAnalyticsEnabled(categories.includes("analytics"));
       },
       onConsent: ({ cookie }) => {
         updateGtagConsent(cookie);
+        const categories = Array.isArray(cookie?.categories) ? cookie.categories : [];
+        setAnalyticsEnabled(categories.includes("analytics"));
       },
       onChange: ({ cookie }) => {
         updateGtagConsent(cookie);
+        const categories = Array.isArray(cookie?.categories) ? cookie.categories : [];
+        setAnalyticsEnabled(categories.includes("analytics"));
       },
     });
   }, []);
 
-  return null;
+  return (
+    <>
+      {analyticsEnabled ? (
+        <>
+          <Analytics />
+          <SpeedInsights />
+        </>
+      ) : null}
+    </>
+  );
 };

@@ -60,32 +60,111 @@
   }
 }
 
-@layer base {
-  :root {
-    --cc-font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-      sans-serif;
-    --cc-bg: hsl(var(--background));
-    --cc-primary-color: hsl(var(--foreground));
-    --cc-secondary-color: hsl(var(--muted-foreground));
-    --cc-btn-primary-bg: hsl(var(--primary));
-    --cc-btn-primary-color: hsl(var(--primary-foreground));
-    --cc-btn-secondary-bg: hsl(var(--secondary));
-    --cc-btn-secondary-color: hsl(var(--secondary-foreground));
-    --cc-separator-border-color: hsl(var(--border));
-    --cc-toggle-on-bg: hsl(var(--primary));
-    --cc-toggle-off-bg: hsl(var(--muted));
-    --cc-toggle-on-knob-bg: hsl(var(--primary-foreground));
-    --cc-toggle-off-knob-bg: hsl(var(--foreground));
-  }
+:root {
+  --cc-font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --cc-bg: hsl(var(--background));
+  --cc-primary-color: hsl(var(--foreground));
+  --cc-secondary-color: hsl(240 3.8% 30%);
 
-  .dark {
-    --cc-bg: hsl(var(--background));
-    --cc-primary-color: hsl(var(--foreground));
-    --cc-secondary-color: hsl(var(--muted-foreground));
-    --cc-btn-primary-bg: hsl(var(--primary));
-    --cc-btn-primary-color: hsl(var(--primary-foreground));
-    --cc-btn-secondary-bg: hsl(var(--muted));
-    --cc-btn-secondary-color: hsl(var(--foreground));
-    --cc-separator-border-color: hsl(var(--border));
-  }
+  --cc-modal-border-radius: 0.75rem;
+  --cc-btn-border-radius: 0.75rem;
+  --cc-link-color: hsl(var(--primary));
+
+  --cc-btn-primary-bg: hsl(var(--primary));
+  --cc-btn-primary-color: hsl(var(--primary-foreground));
+  --cc-btn-primary-border-color: hsl(var(--primary));
+  --cc-btn-primary-hover-bg: hsl(252 59% 42%);
+  --cc-btn-primary-hover-color: hsl(var(--primary-foreground));
+  --cc-btn-primary-hover-border-color: hsl(252 59% 42%);
+
+  --cc-btn-secondary-bg: hsl(var(--secondary));
+  --cc-btn-secondary-color: hsl(var(--secondary-foreground));
+  --cc-btn-secondary-border-color: hsl(var(--secondary));
+  --cc-btn-secondary-hover-bg: hsl(240 4.8% 92%);
+  --cc-btn-secondary-hover-color: hsl(var(--secondary-foreground));
+  --cc-btn-secondary-hover-border-color: hsl(240 4.8% 92%);
+
+  --cc-separator-border-color: hsl(var(--border));
+
+  --cc-toggle-on-bg: hsl(var(--primary));
+  --cc-toggle-off-bg: hsl(var(--muted));
+  --cc-toggle-on-knob-bg: hsl(var(--primary-foreground));
+  --cc-toggle-off-knob-bg: hsl(var(--foreground));
+  --cc-toggle-enabled-icon-color: hsl(var(--primary-foreground));
+  --cc-toggle-disabled-icon-color: hsl(var(--foreground));
+  --cc-toggle-readonly-bg: hsl(240 4.8% 90%);
+  --cc-toggle-readonly-knob-bg: hsl(0 0% 100%);
+  --cc-toggle-readonly-knob-icon-color: hsl(240 4.8% 90%);
+
+  --cc-section-category-border: hsl(var(--border));
+  --cc-cookie-category-block-bg: hsl(var(--secondary));
+  --cc-cookie-category-block-border: hsl(var(--border));
+  --cc-cookie-category-block-hover-bg: hsl(240 4.8% 92%);
+  --cc-cookie-category-block-hover-border: hsl(var(--border));
+  --cc-cookie-category-expanded-block-bg: transparent;
+  --cc-cookie-category-expanded-block-hover-bg: hsl(240 4.8% 92%);
+
+  --cc-overlay-bg: rgba(0, 0, 0, 0.65);
+  --cc-webkit-scrollbar-bg: hsl(var(--border));
+  --cc-webkit-scrollbar-hover-bg: hsl(252 59% 42%);
+
+  --cc-footer-bg: hsl(var(--secondary));
+  --cc-footer-color: hsl(240 3.8% 30%);
+  --cc-footer-border-color: hsl(var(--border));
+}
+
+.dark {
+  --cc-bg: hsl(var(--background));
+  --cc-primary-color: hsl(var(--foreground));
+  --cc-secondary-color: hsl(var(--muted-foreground));
+
+  --cc-modal-border-radius: 0.75rem;
+  --cc-btn-border-radius: 0.75rem;
+  --cc-link-color: hsl(var(--primary));
+
+  --cc-btn-primary-bg: hsl(var(--primary));
+  --cc-btn-primary-color: hsl(var(--primary-foreground));
+  --cc-btn-primary-border-color: hsl(var(--primary));
+  --cc-btn-primary-hover-bg: hsl(252 59% 42%);
+  --cc-btn-primary-hover-color: hsl(var(--primary-foreground));
+  --cc-btn-primary-hover-border-color: hsl(252 59% 42%);
+
+  --cc-btn-secondary-bg: hsl(var(--muted));
+  --cc-btn-secondary-color: hsl(var(--foreground));
+  --cc-btn-secondary-border-color: hsl(var(--muted));
+  --cc-btn-secondary-hover-bg: hsl(240 3.7% 20%);
+  --cc-btn-secondary-hover-color: hsl(var(--foreground));
+  --cc-btn-secondary-hover-border-color: hsl(240 3.7% 20%);
+
+  --cc-separator-border-color: hsl(var(--border));
+
+  --cc-toggle-on-bg: hsl(var(--primary));
+  --cc-toggle-off-bg: hsl(var(--muted));
+  --cc-toggle-on-knob-bg: hsl(var(--primary-foreground));
+  --cc-toggle-off-knob-bg: hsl(var(--foreground));
+  --cc-toggle-enabled-icon-color: hsl(var(--primary-foreground));
+  --cc-toggle-disabled-icon-color: hsl(var(--foreground));
+  --cc-toggle-readonly-bg: hsl(240 3.7% 22%);
+  --cc-toggle-readonly-knob-bg: hsl(240 5% 65%);
+  --cc-toggle-readonly-knob-icon-color: hsl(240 3.7% 22%);
+
+  --cc-section-category-border: hsl(var(--border));
+  --cc-cookie-category-block-bg: hsl(240 3.7% 12%);
+  --cc-cookie-category-block-border: hsl(var(--border));
+  --cc-cookie-category-block-hover-bg: hsl(240 3.7% 15.9%);
+  --cc-cookie-category-block-hover-border: hsl(var(--border));
+  --cc-cookie-category-expanded-block-bg: transparent;
+  --cc-cookie-category-expanded-block-hover-bg: hsl(240 3.7% 15.9%);
+
+  --cc-overlay-bg: rgba(0, 0, 0, 0.65);
+  --cc-webkit-scrollbar-bg: hsl(var(--border));
+  --cc-webkit-scrollbar-hover-bg: hsl(252 59% 42%);
+
+  --cc-footer-bg: hsl(var(--background));
+  --cc-footer-color: hsl(var(--muted-foreground));
+  --cc-footer-border-color: hsl(var(--border));
+}
+
+.dark #cc-main {
+  color-scheme: dark;
 }

@@ -297,6 +297,7 @@ export const SERVICES_PAGE_QUERY = defineQuery(`*[_type == "servicesPage"][0] {
 export const SETTINGS_QUERY = defineQuery(`*[_type == "settings"][0] {
   "agency": agencyInfo {
     name,
+    url,
     email,
     address,
     socialProfiles,
@@ -331,6 +332,86 @@ export const SETTINGS_QUERY = defineQuery(`*[_type == "settings"][0] {
       }
     },
     copyrightText
+  }
+}`);
+
+export const PRIVACY_POLICY_PAGE_QUERY = defineQuery(`*[_type == "privacyPolicyPage"][0] {
+  title,
+  updatedAt,
+  content[]{
+    ...,
+    _type == "image" => {
+      ...,
+      "url": asset->url
+    }
+  },
+  "siteSettings": *[_type == "settings"][0] {
+    "agency": agencyInfo {
+      name,
+      url,
+      "logo": logo.asset->url
+    }
+  }
+}`);
+
+export const LEGAL_NOTICE_PAGE_QUERY = defineQuery(`*[_type == "legalNoticePage"][0] {
+  title,
+  updatedAt,
+  content[]{
+    ...,
+    _type == "image" => {
+      ...,
+      "url": asset->url
+    }
+  },
+  "siteSettings": *[_type == "settings"][0] {
+    "agency": agencyInfo {
+      name,
+      url,
+      "logo": logo.asset->url
+    }
+  }
+}`);
+
+export const COOKIES_PAGE_QUERY = defineQuery(`*[_type == "cookiesPage"][0] {
+  title,
+  updatedAt,
+  content[]{
+    ...,
+    _type == "image" => {
+      ...,
+      "url": asset->url
+    }
+  },
+  "siteSettings": *[_type == "settings"][0] {
+    "agency": agencyInfo {
+      name,
+      url,
+      "logo": logo.asset->url
+    }
+  }
+}`);
+
+export const TERMS_OF_SERVICE_PAGE_QUERY = defineQuery(`*[_type == "termsOfServicePage"][0] {
+  title,
+  updatedAt,
+  content[]{
+    ...,
+    _type == "image" => {
+      ...,
+      "url": asset->url
+    }
+  },
+  seo {
+    title,
+    description
+  },
+  "siteSettings": *[_type == "settings"][0] {
+    "agency": agencyInfo {
+      name,
+      url,
+      "logo": logo.asset->url
+    }
   }
 }`);
 

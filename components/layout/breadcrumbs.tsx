@@ -18,7 +18,11 @@ const PATH_MAP: Record<string, string> = {
   "blog": "Blog",
   "legal": "Legal",
   "privacy": "Privacidad",
-  "terms": "Términos"
+  "terms": "Términos",
+  "politica-de-privacidad": "Política de Privacidad",
+  "aviso-legal": "Aviso Legal",
+  "cookies": "Cookies",
+  "condiciones-del-servicio": "Condiciones del Servicio"
 };
 
 export function Breadcrumbs() {

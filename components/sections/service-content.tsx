@@ -477,9 +477,9 @@ const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProject
                 <FadeIn>
                   <div className="mb-12 text-center">
                       <SectionHeading 
-                        title={`Servicios en ${cityName || 'la Región'}`}
+                        title="Análisis del Ecosistema Digital en "
                         subtitle="Información Local" 
-                        highlight="Detallada" 
+                        highlight={cityName || 'la Región'} 
                         className="justify-center"
                       />
                   </div>

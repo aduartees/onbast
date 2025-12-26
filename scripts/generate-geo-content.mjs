@@ -512,13 +512,13 @@ async function generateContent(service, location, model) {
        - Habla de la economía local de ${location.name}, polígonos industriales o zonas comerciales reales.
     
     ESTRUCTURA DE ARRAYS REQUERIDA (NO FALLAR EN CANTIDADES):
-    - customFeatures: EXACTAMENTE ${desiredFeaturesCount} objetos, reescritura 1:1 de features base, pero puedes añadir el nombre o referencia local.
-    - customProcess: EXACTAMENTE ${desiredProcessCount} objetos, reescritura 1:1 de process base, pero puedes añadir el nombre o referencia local.
-    - customFaqs: EXACTAMENTE ${desiredFaqCount} objetos, reescritura 1:1 de FAQs base, pero añade el nombre y referencias locales.
-    - benefits: EXACTAMENTE ${desiredBenefitsCount} strings, reescritura de benefits base.
-    - technologies: EXACTAMENTE ${desiredTechCount} strings, reescritura de technologies base.
+    - customFeatures: EXACTAMENTE ${desiredFeaturesCount} objetos, reescritura 1:1 del concepto de features base, pero readaptalas para evitar thin content y añadir nombre y referencias locales.
+    - customProcess: EXACTAMENTE ${desiredProcessCount} objetos, reescritura 1:1 del concepto del process base, pero readaptalas para evitar thin content y añadir nombre y referencias locales.
+    - customFaqs: EXACTAMENTE ${desiredFaqCount} objetos, reescritura 1:1 del concepto de las FAQs base, pero readaptalas para evitar thin content y añadir nombre y referencias locales en las preguntas y en las respuestas.
+    - benefits: EXACTAMENTE ${desiredBenefitsCount} strings, reescritura de benefits base, pero debes adaptar para evitar thin content y añadir nombre y referencias locales.
+    - technologies: EXACTAMENTE ${desiredTechCount} strings, reescritura de technologies base, pero debes adaptar para evitar thin content y añadir nombre y referencias locales.
     - pricingSchemaAdditionalProperty: EXACTAMENTE el mismo número de items que la base.
-    - impactSection.stats: Debes mantener los valores numéricos exactos, pero puedes adaptar labels/descripciones.
+    - impactSection.stats: Debes mantener los valores numéricos exactos, pero debes adaptar labels/descripciones.
 
     FORMATO JSON DE SALIDA:
     {

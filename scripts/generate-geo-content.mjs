@@ -30,6 +30,11 @@ if (fs.existsSync(envPath)) {
   });
 }
 
+const argv = process.argv.slice(2);
+const runEnabled = argv.includes('--run') || process.env.RUN_GENERATION === '1';
+const writeEnabled = argv.includes('--write') || process.env.WRITE_TO_SANITY === '1';
+const purgeEnabled = argv.includes('--purge') || process.env.PURGE_SERVICE_LOCATIONS === '1';
+
 if (!process.env.SANITY_WRITE_TOKEN) {
   console.error('❌ ERROR: SANITY_WRITE_TOKEN no encontrada en .env.local');
   process.exit(1);
@@ -40,14 +45,15 @@ if (!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || !process.env.NEXT_PUBLIC_SANIT
   process.exit(1);
 }
 
-if (!process.env.GEMINI_API_KEY) {
-  console.error('❌ ERROR: GEMINI_API_KEY no encontrada en .env.local');
+if (purgeEnabled && !writeEnabled) {
+  console.error('❌ ERROR: Para borrar landings debes usar --write (o WRITE_TO_SANITY=1).');
   process.exit(1);
 }
 
-const argv = process.argv.slice(2);
-const runEnabled = argv.includes('--run') || process.env.RUN_GENERATION === '1';
-const writeEnabled = argv.includes('--write') || process.env.WRITE_TO_SANITY === '1';
+if (runEnabled && !process.env.GEMINI_API_KEY) {
+  console.error('❌ ERROR: GEMINI_API_KEY no encontrada en .env.local');
+  process.exit(1);
+}
 
 // --- CLIENTES ---
 const sanity = createClient({
@@ -142,6 +148,8 @@ const generationState = {
   minDelayMs: Number.parseInt(process.env.GEMINI_MIN_DELAY_MS || '5000', 10),
   maxDelayMs: Number.parseInt(process.env.GEMINI_MAX_DELAY_MS || '60000', 10),
 };
+
+const landingDelayMs = Number.parseInt(process.env.GEO_LANDING_DELAY_MS || '120000', 10);
 
 const jitter = (ms) => {
   const delta = Math.max(250, Math.floor(ms * 0.15));
@@ -675,7 +683,38 @@ async function generateContent(service, location, model) {
   }
 }
 
+const purgeServiceLocations = async () => {
+  const ids = await sanity.fetch(`*[_type == "serviceLocation"]{ _id }`);
+  const list = Array.isArray(ids)
+    ? ids.map((d) => d?._id).filter((id) => typeof id === 'string' && id.length)
+    : [];
+
+  if (!list.length) {
+    console.log('ℹ️ No hay landings locales (serviceLocation) para borrar.');
+    return;
+  }
+
+  console.log(`🧨 Borrando ${list.length} landings locales (serviceLocation)...`);
+
+  const chunkSize = 50;
+  let deleted = 0;
+  for (let i = 0; i < list.length; i += chunkSize) {
+    const chunk = list.slice(i, i + chunkSize);
+    let tx = sanity.transaction();
+    for (const id of chunk) tx = tx.delete(id);
+    await tx.commit();
+    deleted += chunk.length;
+    console.log(`🗑️ Borradas: ${deleted}/${list.length}`);
+    await sleep(500);
+  }
+};
+
 async function main() {
+  if (purgeEnabled) {
+    await purgeServiceLocations();
+    return;
+  }
+
   if (!runEnabled) {
     console.log('ℹ️ Modo seguro: añade --run para ejecutar (y --write para escribir en Sanity).');
     return;
@@ -737,7 +776,7 @@ async function main() {
         }
       }
       // Pausa para evitar rate limits
-      await sleep(50000); 
+      await sleep(landingDelayMs);
     }
   }
 }

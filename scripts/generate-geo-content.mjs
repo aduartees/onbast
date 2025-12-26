@@ -24,7 +24,9 @@ if (fs.existsSync(envPath)) {
     if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
       value = value.slice(1, -1);
     }
-    process.env[key] = value;
+    if (process.env[key] === undefined) {
+      process.env[key] = value;
+    }
   });
 }
 
@@ -42,6 +44,10 @@ if (!process.env.GEMINI_API_KEY) {
   console.error('❌ ERROR: GEMINI_API_KEY no encontrada en .env.local');
   process.exit(1);
 }
+
+const argv = process.argv.slice(2);
+const runEnabled = argv.includes('--run') || process.env.RUN_GENERATION === '1';
+const writeEnabled = argv.includes('--write') || process.env.WRITE_TO_SANITY === '1';
 
 // --- CLIENTES ---
 const sanity = createClient({
@@ -128,7 +134,7 @@ const withTimeout = async (promise, ms, label) => {
 };
 
 const generationState = {
-  delayMs: Number.parseInt(process.env.GEMINI_BASE_DELAY_MS || '15000', 10), // Optimizado para 1.5 Pro
+  delayMs: Number.parseInt(process.env.GEMINI_BASE_DELAY_MS || '15000', 10),
   minDelayMs: Number.parseInt(process.env.GEMINI_MIN_DELAY_MS || '5000', 10),
   maxDelayMs: Number.parseInt(process.env.GEMINI_MAX_DELAY_MS || '60000', 10),
 };
@@ -199,7 +205,12 @@ async function getServices() {
     faqHighlight,
     faqDescription,
     faqs[] { question, answer },
-    pricing { title, subtitle },
+    pricing {
+      title,
+      subtitle,
+      trustedCompaniesTitle,
+      schemaAdditionalProperty[]{ name, value }
+    },
     ctaSection { title, description, buttonText, buttonLink, secondaryButtonText, secondaryButtonLink }
   }`);
 }
@@ -241,8 +252,15 @@ const geoContentSchema = z.object({
       suffix: z.string().optional(),
       label: z.string().min(1),
       description: z.string().optional(),
-    }).passthrough()),
-  }).passthrough().optional(),
+    })),
+  }).optional(),
+  pricingTitle: z.string().min(1),
+  pricingSubtitle: z.string().min(1),
+  pricingTrustedCompaniesTitle: z.string().min(1),
+  pricingSchemaAdditionalProperty: z.array(z.object({
+    name: z.string().min(1),
+    value: z.string().min(1),
+  })).min(1),
   teamTitle: z.string().min(1),
   teamHighlight: z.string().min(1),
   teamDescription: z.string().min(1),
@@ -260,15 +278,15 @@ const geoContentSchema = z.object({
     title: z.string().min(1),
     description: z.string().min(1),
     icon: z.string().optional(),
-  }).passthrough()).min(1),
+  })).min(1),
   customProcess: z.array(z.object({
     title: z.string().min(1),
     description: z.string().min(1),
-  }).passthrough()).min(1),
+  })).min(1),
   customFaqs: z.array(z.object({
     question: z.string().min(1),
     answer: z.string().min(1),
-  }).passthrough()).min(1),
+  })).min(1),
   ctaSection: z.object({
     title: z.string().min(1),
     description: z.string().min(1),
@@ -276,16 +294,16 @@ const geoContentSchema = z.object({
     buttonLink: z.string().optional(),
     secondaryButtonText: z.string().optional(),
     secondaryButtonLink: z.string().optional(),
-  }).passthrough(),
-}).passthrough();
+  }),
+});
 
-const addKeys = (obj) => {
-  if (!obj || typeof obj !== 'object') return obj;
-  if (Array.isArray(obj)) return obj.map(addKeys);
-  const out = { ...obj };
-  if (!out._key) out._key = crypto.randomUUID().replace(/-/g, '').slice(0, 12);
+const addKeys = (value, isArrayItemObject = false) => {
+  if (!value || typeof value !== 'object') return value;
+  if (Array.isArray(value)) return value.map((item) => addKeys(item, true));
+  const out = { ...value };
+  if (isArrayItemObject && !out._key) out._key = crypto.randomUUID().replace(/-/g, '').slice(0, 12);
   Object.keys(out).forEach((k) => {
-    out[k] = addKeys(out[k]);
+    out[k] = addKeys(out[k], false);
   });
   return out;
 };
@@ -315,7 +333,7 @@ const countPortableTextH2 = (nodes) => {
 };
 
 async function generateContent(service, location, model) {
-  console.log(`🤖 Generando contenido (Gemini 1.5 Pro) para: ${service.title} en ${location.name}...`);
+  console.log(`🤖 Generando contenido (Gemini 3 Pro) para: ${service.title} en ${location.name}...`);
 
   const desiredFeaturesCount = Array.isArray(service.features) && service.features.length ? service.features.length : 6;
   const desiredProcessCount = Array.isArray(service.process) && service.process.length ? service.process.length : 5;
@@ -324,23 +342,138 @@ async function generateContent(service, location, model) {
   const desiredTechCount = Array.isArray(service.technologies) && service.technologies.length ? service.technologies.length : 8;
   const baseImpactStats = Array.isArray(service.impactSection?.stats) ? service.impactSection.stats : [];
 
-  const serviceContext = `
-    DATOS EXISTENTES DEL SERVICIO (BASE PARA LOCALIZAR):
-    - Título: ${service.title}
-    - SEO Desc: ${service.seoDescription}
-    - Hero: ${service.heroHeadline}
-    - Features (${desiredFeaturesCount} items)
-    - Process (${desiredProcessCount} steps)
-    - FAQ (${desiredFaqCount} items)
-    
-    IMPACT STATS: ${JSON.stringify(baseImpactStats)}
-  `;
+  const clampText = (value, maxLen = 600) => {
+    const str = typeof value === 'string' ? value.trim() : '';
+    if (!str) return '';
+    if (str.length <= maxLen) return str;
+    return `${str.slice(0, maxLen).trim()}…`;
+  };
+
+  const baseServiceForRewrite = {
+    title: clampText(service.title, 160),
+    seoTitle: clampText(service.seoTitle, 220),
+    seoDescription: clampText(service.seoDescription, 320),
+    shortDescription: clampText(service.shortDescription, 320),
+    longDescription: clampText(service.longDescription, 1400),
+    overviewText: clampText(service.overviewText, 1200),
+    hero: {
+      headline: clampText(service.heroHeadline, 220),
+      highlight: clampText(service.heroHighlight, 140),
+      introduction: clampText(service.heroIntroduction, 900),
+      buttonText: clampText(service.heroButtonText, 80),
+      secondaryButtonText: clampText(service.heroSecondaryButtonText, 80),
+    },
+    sections: {
+      team: {
+        title: clampText(service.teamTitle, 140),
+        highlight: clampText(service.teamHighlight, 120),
+        description: clampText(service.teamDescription, 700),
+      },
+      features: {
+        title: clampText(service.featuresTitle, 140),
+        highlight: clampText(service.featuresHighlight, 120),
+        description: clampText(service.featuresDescription, 800),
+        benefits: Array.isArray(service.benefits) ? service.benefits.map((b) => clampText(b, 140)).filter(Boolean) : [],
+        items: Array.isArray(service.features)
+          ? service.features
+              .map((f) => ({
+                title: clampText(f?.title, 140),
+                description: clampText(f?.description, 600),
+                icon: typeof f?.icon === 'string' ? f.icon : undefined,
+              }))
+              .filter((f) => f.title && f.description)
+          : [],
+      },
+      process: {
+        title: clampText(service.processTitle, 140),
+        highlight: clampText(service.processHighlight, 120),
+        description: clampText(service.processDescription, 800),
+        steps: Array.isArray(service.process)
+          ? service.process
+              .map((p) => ({
+                title: clampText(p?.title, 140),
+                description: clampText(p?.description, 700),
+              }))
+              .filter((p) => p.title && p.description)
+          : [],
+      },
+      tech: {
+        title: clampText(service.techTitle, 140),
+        highlight: clampText(service.techHighlight, 120),
+        description: clampText(service.techDescription, 800),
+        technologies: Array.isArray(service.technologies) ? service.technologies.map((t) => clampText(t, 80)).filter(Boolean) : [],
+      },
+      impactSection: service.impactSection
+        ? {
+            title: clampText(service.impactSection?.title, 160),
+            highlight: clampText(service.impactSection?.highlight, 140),
+            subtitle: clampText(service.impactSection?.subtitle, 220),
+            stats: baseImpactStats,
+          }
+        : undefined,
+      testimonials: {
+        title: clampText(service.testimonialsTitle, 140),
+        highlight: clampText(service.testimonialsHighlight, 120),
+        description: clampText(service.testimonialsDescription, 700),
+      },
+      relatedProjects: {
+        title: clampText(service.relatedProjectsTitle, 140),
+        highlight: clampText(service.relatedProjectsHighlight, 120),
+        description: clampText(service.relatedProjectsDescription, 700),
+      },
+      faq: {
+        title: clampText(service.faqTitle, 140),
+        highlight: clampText(service.faqHighlight, 120),
+        description: clampText(service.faqDescription, 700),
+        items: Array.isArray(service.faqs)
+          ? service.faqs
+              .map((q) => ({
+                question: clampText(q?.question, 200),
+                answer: clampText(q?.answer, 800),
+              }))
+              .filter((q) => q.question && q.answer)
+          : [],
+      },
+      pricing: service.pricing
+        ? {
+            title: clampText(service.pricing?.title, 140),
+            subtitle: clampText(service.pricing?.subtitle, 320),
+            trustedCompaniesTitle: clampText(service.pricing?.trustedCompaniesTitle, 160),
+            schemaAdditionalProperty: Array.isArray(service.pricing?.schemaAdditionalProperty)
+              ? service.pricing.schemaAdditionalProperty
+                  .map((p) => ({
+                    name: clampText(p?.name, 80),
+                    value: clampText(p?.value, 320),
+                  }))
+                  .filter((p) => p.name && p.value)
+              : [],
+          }
+        : undefined,
+      ctaSection: service.ctaSection
+        ? {
+            title: clampText(service.ctaSection?.title, 160),
+            description: clampText(service.ctaSection?.description, 700),
+            buttonText: clampText(service.ctaSection?.buttonText, 80),
+            secondaryButtonText: clampText(service.ctaSection?.secondaryButtonText, 80),
+          }
+        : undefined,
+    },
+  };
+
+  const serviceContext = JSON.stringify(baseServiceForRewrite);
 
   const prompt = `
     Actúa como un Ingeniero de Contenidos y Copywriter Senior para ONBAST (Agencia Tech de Élite).
     Estilo: Cyberpunk corporativo, técnico, directo, agresivo (estilo Vercel/Linear).
     
-    OBJETIVO: Generar el JSON de contenido para la landing page local de:
+    OBJETIVO: Reescribir y enriquecer semánticamente (anti thin content) el contenido base del servicio
+    para crear la landing page local, manteniendo EXACTAMENTE la propuesta de valor y estructura.
+    No inventes ofertas, stacks, procesos o claims que no existan en la base.
+
+    BASE DEL SERVICIO (JSON REAL, ÚSALO COMO FUENTE):
+    ${serviceContext}
+
+    OBJETIVO: Devolver el JSON final de contenido para la landing page local de:
     - Servicio: ${service.title}
     - Ubicación: ${location.name} (${location.type})
     - Contexto: ${location.geoContext || 'Zona estratégica empresarial'}
@@ -348,17 +481,21 @@ async function generateContent(service, location, model) {
     REGLAS ESTRICTAS DE RESPUESTA:
     1. Responde SOLO con un objeto JSON válido. Sin markdown, sin explicaciones previas.
     2. Debes localizar TODOS los textos para ${location.name}.
-    3. El campo "localContentBlock" debe ser un array de bloques Portable Text (Sanity) válido.
+    3. Reescribe sobre la base: cada field debe ser una reescritura del field base correspondiente.
+       - Mantén intención, estructura y significado.
+       - Cambia léxico/semántica y añade señales locales de forma natural.
+    4. El campo "localContentBlock" debe ser un array de bloques Portable Text (Sanity) válido.
        - Usa al menos 6 encabezados estilo "h2".
        - Extensión total: 800-1200 palabras.
        - Habla de la economía local de ${location.name}, polígonos industriales o zonas comerciales reales.
     
     ESTRUCTURA DE ARRAYS REQUERIDA (NO FALLAR EN CANTIDADES):
-    - customFeatures: Debes generar EXACTAMENTE ${desiredFeaturesCount} objetos.
-    - customProcess: Debes generar EXACTAMENTE ${desiredProcessCount} objetos.
-    - customFaqs: Debes generar EXACTAMENTE ${desiredFaqCount} objetos.
-    - benefits: Debes generar ${desiredBenefitsCount} strings.
-    - technologies: Debes generar ${desiredTechCount} strings.
+    - customFeatures: EXACTAMENTE ${desiredFeaturesCount} objetos, reescritura 1:1 de features base.
+    - customProcess: EXACTAMENTE ${desiredProcessCount} objetos, reescritura 1:1 de process base.
+    - customFaqs: EXACTAMENTE ${desiredFaqCount} objetos, reescritura 1:1 de FAQs base.
+    - benefits: EXACTAMENTE ${desiredBenefitsCount} strings, reescritura de benefits base.
+    - technologies: EXACTAMENTE ${desiredTechCount} strings, reescritura de technologies base.
+    - pricingSchemaAdditionalProperty: EXACTAMENTE el mismo número de items que la base.
     - impactSection.stats: Debes mantener los valores numéricos exactos, pero puedes adaptar labels/descripciones.
 
     FORMATO JSON DE SALIDA:
@@ -388,6 +525,12 @@ async function generateContent(service, location, model) {
         "subtitle": "...",
         "stats": [ { "value": 100, "prefix": "+", "suffix": "%", "label": "...", "description": "..." } ]
       },
+      "pricingTitle": "...",
+      "pricingSubtitle": "...",
+      "pricingTrustedCompaniesTitle": "...",
+      "pricingSchemaAdditionalProperty": [
+        { "name": "Ideal para", "value": "..." }
+      ],
       "testimonialsTitle": "...",
       "testimonialsHighlight": "...",
       "testimonialsDescription": "...",
@@ -475,6 +618,21 @@ async function generateContent(service, location, model) {
             });
         }
 
+        const basePricingProps = Array.isArray(service.pricing?.schemaAdditionalProperty)
+          ? service.pricing.schemaAdditionalProperty
+          : [];
+        if (basePricingProps.length && Array.isArray(content.pricingSchemaAdditionalProperty)) {
+          content.pricingSchemaAdditionalProperty = basePricingProps
+            .map((base, idx) => {
+              const generated = content.pricingSchemaAdditionalProperty[idx];
+              return {
+                name: base?.name,
+                value: generated?.value || base?.value,
+              };
+            })
+            .filter((p) => p?.name && p?.value);
+        }
+
         return content;
 
       } catch (err) {
@@ -491,6 +649,11 @@ async function generateContent(service, location, model) {
 }
 
 async function main() {
+  if (!runEnabled) {
+    console.log('ℹ️ Modo seguro: añade --run para ejecutar (y --write para escribir en Sanity).');
+    return;
+  }
+
   const resolvedGeminiModel = resolveGeminiModel();
   console.log('🚀 Iniciando Generación GEO (ONBAST Engine)...');
   console.log(`🧠 Modelo IA: ${resolvedGeminiModel}`);
@@ -498,10 +661,23 @@ async function main() {
   const services = await getServices();
   const locations = await getLocations();
 
-  console.log(`📍 Servicios: ${services.length} | Ubicaciones: ${locations.length}`);
+  const hasTypesEnv = Object.prototype.hasOwnProperty.call(process.env, 'GEO_LOCATION_TYPES');
+  const rawTypes = hasTypesEnv ? String(process.env.GEO_LOCATION_TYPES ?? '') : 'city';
+  const normalizedTypes = String(rawTypes).trim().toLowerCase();
+  const allowedTypes = !normalizedTypes || normalizedTypes === 'all' || normalizedTypes === '*'
+    ? []
+    : String(rawTypes)
+        .split(',')
+        .map((t) => t.trim())
+        .filter(Boolean);
+  const filteredLocations = allowedTypes.length
+    ? locations.filter((l) => allowedTypes.includes(String(l?.type || '').trim()))
+    : locations;
+
+  console.log(`📍 Servicios: ${services.length} | Ubicaciones: ${filteredLocations.length}/${locations.length} | Tipos: ${allowedTypes.join(',')}`);
 
   for (const service of services) {
-    for (const location of locations) {
+    for (const location of filteredLocations) {
       // Verificar si ya existe
       const existing = await sanity.fetch(
         `*[_type == "serviceLocation" && service._ref == $serviceId && location._ref == $locationId][0]._id`,
@@ -523,12 +699,14 @@ async function main() {
             ...content
         };
 
-        if (existing) {
-             await sanity.patch(existing).set(content).commit();
-             console.log(`✅ Actualizado: ${service.title} en ${location.name}`);
+        if (!writeEnabled) {
+          console.log(`🧪 DRY-RUN: ${existing ? 'Actualizaría' : 'Crearía'}: ${service.title} en ${location.name}`);
+        } else if (existing) {
+          await sanity.patch(existing).set(content).commit();
+          console.log(`✅ Actualizado: ${service.title} en ${location.name}`);
         } else {
-             await sanity.create(doc);
-             console.log(`✅ Creado: ${service.title} en ${location.name}`);
+          await sanity.create(doc);
+          console.log(`✅ Creado: ${service.title} en ${location.name}`);
         }
       }
       // Pausa para evitar rate limits

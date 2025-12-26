@@ -142,31 +142,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  const serviceUpdatedAtBySlug = new Map<string, string | undefined>();
-  for (const service of services) {
-    if (!service?.slug) continue;
-    serviceUpdatedAtBySlug.set(service.slug, service._updatedAt);
-  }
-
-  const cityUpdatedAtBySlug = new Map<string, string | undefined>();
-  for (const city of cities) {
-    if (!city?.slug) continue;
-    cityUpdatedAtBySlug.set(city.slug, city._updatedAt);
-  }
-
-  for (const [serviceSlug, serviceUpdatedAt] of serviceUpdatedAtBySlug.entries()) {
-    for (const [citySlug, cityUpdatedAt] of cityUpdatedAtBySlug.entries()) {
-      const url = `${baseUrl}/${serviceSlug}/${citySlug}`;
-      if (seen.has(url)) continue;
-      seen.add(url);
-      entries.push({
-        url,
-        lastModified: maxDate(serviceUpdatedAt, cityUpdatedAt),
-        changeFrequency: "weekly",
-        priority: 0.65,
-      });
-    }
-  }
-
   return entries;
 }

@@ -1,11 +1,13 @@
 import { Metadata } from "next";
 import { client } from "@/sanity/lib/client";
-import { SERVICE_LOCATION_PAGE_QUERY, ALL_SERVICES_AND_LOCATIONS_QUERY } from "@/sanity/lib/queries";
+import { SERVICE_LOCATION_PAGE_QUERY, SERVICE_LOCATION_STATIC_PARAMS_QUERY } from "@/sanity/lib/queries";
 import { notFound } from "next/navigation";
 import { ServiceHeader } from "@/components/sections/service-header";
 import { ServiceContent } from "@/components/sections/service-content";
 import { ScrollReset } from "@/components/utils/scroll-reset";
 import { generateServiceSchema, generateFAQSchema, generateBreadcrumbSchema, generatePricingOfferCatalogSchema } from "@/lib/seo";
+
+export const dynamicParams = false;
 
 // --- Types ---
 interface PageProps {
@@ -253,6 +255,10 @@ interface SanityServiceLocationOverride {
   relatedProjectsTitle?: string;
   relatedProjectsHighlight?: string;
   relatedProjectsDescription?: string;
+  pricingTitle?: string;
+  pricingSubtitle?: string;
+  pricingTrustedCompaniesTitle?: string;
+  pricingSchemaAdditionalProperty?: { name?: string; value?: string }[];
   faqTitle?: string;
   faqHighlight?: string;
   faqDescription?: string;
@@ -299,18 +305,17 @@ const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1600880292203-757bb62b4
 
 // --- Static Params for ISR ---
 export async function generateStaticParams() {
-  const data = await client.fetch(ALL_SERVICES_AND_LOCATIONS_QUERY);
-  const params: { serviceSlug: string; citySlug: string }[] = [];
+  const pairs = await client.fetch<{ serviceSlug: string; citySlug: string }[]>(
+    SERVICE_LOCATION_STATIC_PARAMS_QUERY,
+    {},
+    { next: { revalidate: 3600 } }
+  );
 
-  if (data?.services && data?.locations) {
-    for (const service of data.services) {
-      for (const location of data.locations) {
-        params.push({ serviceSlug: service.slug, citySlug: location.slug });
-      }
-    }
-  }
-
-  return params;
+  return Array.isArray(pairs)
+    ? pairs
+        .filter((p) => typeof p?.serviceSlug === "string" && typeof p?.citySlug === "string")
+        .map((p) => ({ serviceSlug: p.serviceSlug, citySlug: p.citySlug }))
+    : [];
 }
 
 // --- Dynamic Metadata ---
@@ -318,9 +323,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { serviceSlug, citySlug } = await params;
   const data: QueryResult = await client.fetch(SERVICE_LOCATION_PAGE_QUERY, { serviceSlug, citySlug });
 
-  if (!data?.service || !data?.location) {
+  if (!data?.service || !data?.location || !data?.override) {
     return {
       title: "Página No Encontrada - ONBAST",
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
@@ -369,7 +378,7 @@ export default async function ServiceLocationPage({ params }: PageProps) {
       next: { revalidate: 3600 } // Revalidate every hour
   });
 
-  if (!data?.service || !data?.location) return notFound();
+  if (!data?.service || !data?.location || !data?.override) return notFound();
 
   const { service, location, override } = data;
 
@@ -389,6 +398,23 @@ export default async function ServiceLocationPage({ params }: PageProps) {
   const heroButtonLink = override?.heroButtonLink || service.heroButtonLink;
   const heroSecondaryButtonText = override?.heroSecondaryButtonText || service.heroSecondaryButtonText;
   const heroSecondaryButtonLink = override?.heroSecondaryButtonLink || service.heroSecondaryButtonLink;
+
+  const pricing = (() => {
+    const base = service.pricing || {};
+    const schemaAdditionalProperty = override?.pricingSchemaAdditionalProperty?.length
+      ? override.pricingSchemaAdditionalProperty
+      : base.schemaAdditionalProperty;
+
+    return {
+      ...base,
+      ...(override?.pricingTitle ? { title: override.pricingTitle } : {}),
+      ...(override?.pricingSubtitle ? { subtitle: override.pricingSubtitle } : {}),
+      ...(override?.pricingTrustedCompaniesTitle
+        ? { trustedCompaniesTitle: override.pricingTrustedCompaniesTitle }
+        : {}),
+      ...(schemaAdditionalProperty ? { schemaAdditionalProperty } : {}),
+    };
+  })();
   
   // Testimonials: Local > Service
   const testimonials = override?.customTestimonials?.length ? override.customTestimonials : service.testimonials?.map(t => ({
@@ -458,7 +484,7 @@ export default async function ServiceLocationPage({ params }: PageProps) {
 
   // --- Schema Generation ---
   // We need to generate Service schema but with AreaServed
-  const serviceSchema = generateServiceSchema(service, service.agency);
+  const serviceSchema = generateServiceSchema({ ...service, pricing }, service.agency);
   // We need to extend/modify it for Local SEO
   const schemaName = `${service.title} en ${location.name}`;
 
@@ -491,15 +517,19 @@ export default async function ServiceLocationPage({ params }: PageProps) {
       ? appendCityToText(service.audience)
       : appendCityToText(service.audience?.name);
 
-  const audienceType =
-    typeof service.audience === "string" ? undefined : normalizeText(service.audience?.audienceType);
-
-  const audienceDescription =
-    typeof service.audience === "string" ? undefined : normalizeText(service.audience?.description);
-
+  const audienceType = typeof service.audience === "string" ? undefined : normalizeText(service.audience?.audienceType);
+  const audienceDescription = typeof service.audience === "string" ? undefined : normalizeText(service.audience?.description);
   const audienceSchemaType = typeof service.audience === "string" ? undefined : normalizeText(service.audience?.schemaType);
 
+  const localLandingUrl = `${baseUrl}/${service.slug}/${location.slug}`;
+  const genericServiceUrl = `${baseUrl}/servicios/${service.slug}`;
+
   const buildGeographicArea = () => {
+    const normalizeName = (value: unknown) => {
+      if (typeof value !== "string") return "";
+      return value.trim().toLowerCase();
+    };
+
     const getGeo = (coordinates: unknown) => {
       if (!coordinates || typeof coordinates !== "object") return undefined;
       const c = coordinates as { lat?: unknown; lng?: unknown };
@@ -519,6 +549,11 @@ export default async function ServiceLocationPage({ params }: PageProps) {
     const resolvedProvince = location.province || location.parent?.province;
     const resolvedAutonomousCommunity = location.autonomousCommunity || location.parent?.autonomousCommunity;
 
+    const sameAdminName =
+      normalizeName(resolvedProvince?.name) &&
+      normalizeName(resolvedAutonomousCommunity?.name) &&
+      normalizeName(resolvedProvince?.name) === normalizeName(resolvedAutonomousCommunity?.name);
+
     const buildAutonomousCommunityNode = () => {
       if (!resolvedAutonomousCommunity?.name) return undefined;
       const geo = getGeo(resolvedAutonomousCommunity.coordinates);
@@ -533,6 +568,7 @@ export default async function ServiceLocationPage({ params }: PageProps) {
 
     const buildProvinceNode = () => {
       if (!resolvedProvince?.name) return undefined;
+      if (sameAdminName) return undefined;
       const geo = getGeo(resolvedProvince.coordinates);
       const parent = buildAutonomousCommunityNode() || buildCountrySpain();
       return {
@@ -544,23 +580,63 @@ export default async function ServiceLocationPage({ params }: PageProps) {
       };
     };
 
-    const buildAdminParentFallback = () => buildProvinceNode() || buildAutonomousCommunityNode() || buildCountrySpain();
+    const buildAdministrativeArea = () => {
+      if (sameAdminName) return buildAutonomousCommunityNode() || buildCountrySpain();
+      return buildProvinceNode() || buildAutonomousCommunityNode() || buildCountrySpain();
+    };
+
+    const isAdministrativeLocation = () => {
+      const name = normalizeName(location.name);
+      const provinceName = normalizeName(location.province?.name);
+      const autonomousCommunityName = normalizeName(location.autonomousCommunity?.name);
+      return Boolean((provinceName && provinceName === name) || (autonomousCommunityName && autonomousCommunityName === name));
+    };
+
+    const isAdministrativeParent = () => {
+      if (!location.parent?.name) return false;
+      const parentName = normalizeName(location.parent.name);
+      const provinceName = normalizeName(location.parent.province?.name);
+      const autonomousCommunityName = normalizeName(location.parent.autonomousCommunity?.name);
+      return Boolean(
+        (provinceName && provinceName === parentName) ||
+          (autonomousCommunityName && autonomousCommunityName === parentName) ||
+          (normalizeName(resolvedProvince?.name) && parentName === normalizeName(resolvedProvince?.name)) ||
+          (normalizeName(resolvedAutonomousCommunity?.name) && parentName === normalizeName(resolvedAutonomousCommunity?.name))
+      );
+    };
 
     const buildParentCityNode = () => {
       if (!location.parent?.name) return undefined;
+      if (isAdministrativeParent()) return undefined;
       return {
         "@type": "City",
         name: location.parent.name,
         ...(location.parent.slug ? { url: `${baseUrl}/${service.slug}/${location.parent.slug}` } : {}),
-        containedInPlace: buildAdminParentFallback(),
+        containedInPlace: buildAdministrativeArea(),
       };
     };
 
     const geoCoordinates = getGeo(location.coordinates);
-    const containedInPlace = buildParentCityNode() || buildAdminParentFallback();
+
+    if (isAdministrativeLocation()) {
+      const admin = buildAdministrativeArea();
+      const adminContainedInPlace =
+        admin && typeof admin === "object" && "containedInPlace" in admin
+          ? (admin as { containedInPlace?: unknown }).containedInPlace
+          : undefined;
+      return {
+        "@type": "AdministrativeArea",
+        name: location.name,
+        ...(location.wikipediaUrl ? { sameAs: location.wikipediaUrl } : {}),
+        ...(geoCoordinates ? { geo: geoCoordinates } : {}),
+        containedInPlace: adminContainedInPlace || buildCountrySpain(),
+      };
+    }
+
+    const containedInPlace = buildParentCityNode() || buildAdministrativeArea();
 
     return {
-      "@type": location.type === "town" ? "AdministrativeArea" : "City",
+      "@type": "City",
       name: location.name,
       ...(location.wikipediaUrl ? { sameAs: location.wikipediaUrl } : {}),
       ...(geoCoordinates ? { geo: geoCoordinates } : {}),
@@ -570,9 +646,16 @@ export default async function ServiceLocationPage({ params }: PageProps) {
 
   const localServiceSchema = {
     ...serviceSchema,
+    url: localLandingUrl,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": localLandingUrl,
+      url: localLandingUrl,
+    },
+    isBasedOn: genericServiceUrl,
     areaServed: {
       ...buildGeographicArea(),
-      ...(location.slug ? { url: `${baseUrl}/${service.slug}/${location.slug}` } : {}),
+      url: localLandingUrl,
     },
     name: schemaName,
     description: heroDescription,
@@ -620,7 +703,7 @@ export default async function ServiceLocationPage({ params }: PageProps) {
 
   const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
 
-  const offerCatalogSchema = generatePricingOfferCatalogSchema(service.pricing, {
+  const offerCatalogSchema = generatePricingOfferCatalogSchema(pricing, {
     baseUrl,
     organizationId,
     location: location.slug,
@@ -712,7 +795,7 @@ export default async function ServiceLocationPage({ params }: PageProps) {
         testimonialsDescription={testimonialsDescription}
         
         // Pricing should eventually link to /planes?service=...&location=...
-        pricing={service.pricing} // TODO: Adapt pricing button link in Phase 5
+        pricing={pricing} // TODO: Adapt pricing button link in Phase 5
         
         relatedProjects={projects as any} // Cast to match type if needed
         relatedProjectsTitle={relatedProjectsTitle}

@@ -643,6 +643,11 @@ export const CONTACT_PAGE_QUERY = defineQuery(`*[_type == "contactPage"][0] {
 
 // --- GEO STRATEGY QUERIES ---
 
+export const SERVICE_LOCATION_STATIC_PARAMS_QUERY = defineQuery(`*[_type == "serviceLocation" && defined(service->slug.current) && defined(location->slug.current) && !(_id in path("drafts.**"))]{
+  "serviceSlug": service->slug.current,
+  "citySlug": location->slug.current
+}`);
+
 export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
   "service": *[_type == "service" && slug.current == $serviceSlug][0] {
     _id,
@@ -881,6 +886,13 @@ export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
         label,
         description
       }
+    },
+    pricingTitle,
+    pricingSubtitle,
+    pricingTrustedCompaniesTitle,
+    pricingSchemaAdditionalProperty[]{
+      name,
+      value
     },
     teamTitle,
     teamHighlight,

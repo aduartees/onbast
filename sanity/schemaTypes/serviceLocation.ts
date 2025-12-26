@@ -200,6 +200,41 @@ export default defineType({
     }),
 
     defineField({
+      name: 'pricingTitle',
+      title: 'Pricing Title (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'pricingSubtitle',
+      title: 'Pricing Subtitle (Override)',
+      type: 'text',
+      rows: 2,
+      group: 'content',
+    }),
+    defineField({
+      name: 'pricingTrustedCompaniesTitle',
+      title: 'Pricing Trusted Companies Title (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'pricingSchemaAdditionalProperty',
+      title: 'Pricing Schema additionalProperty (Override)',
+      type: 'array',
+      group: 'content',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({ name: 'name', title: 'Name', type: 'string' }),
+            defineField({ name: 'value', title: 'Value', type: 'text', rows: 3 }),
+          ],
+        },
+      ],
+    }),
+
+    defineField({
       name: 'teamTitle',
       title: 'Team Title (Override)',
       type: 'string',
@@ -288,7 +323,17 @@ export default defineType({
       description: 'Texto rico generado por IA sobre la economía local y el servicio.',
       of: [
         { type: 'block' },
-        { type: 'image' }
+        {
+          type: 'image',
+          options: { hotspot: true },
+          fields: [
+            defineField({
+              name: 'alt',
+              title: 'Alt',
+              type: 'string',
+            }),
+          ],
+        }
       ]
     }),
 

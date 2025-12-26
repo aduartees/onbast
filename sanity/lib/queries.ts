@@ -850,6 +850,47 @@ export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
     seoDescription,
     heroHeadline,
     heroText,
+    heroButtonText,
+    heroButtonLink,
+    heroSecondaryButtonText,
+    heroSecondaryButtonLink,
+    longDescription,
+    overviewText,
+    featuresTitle,
+    featuresHighlight,
+    featuresDescription,
+    benefits,
+    processTitle,
+    processHighlight,
+    processDescription,
+    techTitle,
+    techHighlight,
+    techDescription,
+    technologies,
+    impactSection {
+      title,
+      highlight,
+      subtitle,
+      stats[] {
+        value,
+        prefix,
+        suffix,
+        label,
+        description
+      }
+    },
+    teamTitle,
+    teamHighlight,
+    teamDescription,
+    testimonialsTitle,
+    testimonialsHighlight,
+    testimonialsDescription,
+    relatedProjectsTitle,
+    relatedProjectsHighlight,
+    relatedProjectsDescription,
+    faqTitle,
+    faqHighlight,
+    faqDescription,
     localContentBlock,
     ctaSection {
       title,
@@ -887,11 +928,15 @@ export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
     }
   },
   "nearbyLocations": coalesce(
-    ^.location.nearbyLocations[slug != $citySlug][0...12],
+    *[_type == "location" && slug.current == $citySlug][0].nearbyLocations[]-> {
+      name,
+      "slug": slug.current,
+      type
+    }[slug != $citySlug][0...12],
     *[_type == "location" && slug.current != $citySlug && (
-      (defined(^.location.parentRef) && defined(parent) && parent._ref == ^.location.parentRef) ||
-      (defined(^.location.parentRef) && _id == ^.location.parentRef) ||
-      (!defined(^.location.parentRef) && defined(parent) && parent._ref == ^.location._id)
+      (defined(*[_type == "location" && slug.current == $citySlug][0].parent._ref) && defined(parent) && parent._ref == *[_type == "location" && slug.current == $citySlug][0].parent._ref) ||
+      (defined(*[_type == "location" && slug.current == $citySlug][0].parent._ref) && _id == *[_type == "location" && slug.current == $citySlug][0].parent._ref) ||
+      (!defined(*[_type == "location" && slug.current == $citySlug][0].parent._ref) && defined(parent) && parent._ref == *[_type == "location" && slug.current == $citySlug][0]._id)
     )][0...12] {
       name,
       "slug": slug.current,

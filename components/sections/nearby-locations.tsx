@@ -9,6 +9,8 @@ interface NearbyLocationsProps {
   currentServiceTitle?: string;
   currentLocationName?: string;
   currentLocationSlug?: string;
+  title?: string;
+  description?: string;
   locations: {
     name: string;
     slug: string;
@@ -16,7 +18,7 @@ interface NearbyLocationsProps {
   }[];
 }
 
-export function NearbyLocations({ currentServiceSlug, currentServiceTitle, currentLocationName, currentLocationSlug, locations }: NearbyLocationsProps) {
+export function NearbyLocations({ currentServiceSlug, currentServiceTitle, currentLocationName, currentLocationSlug, title, description, locations }: NearbyLocationsProps) {
   if ((!locations || locations.length === 0) && !currentLocationName) return null;
 
   const label = currentServiceTitle || currentServiceSlug;
@@ -35,10 +37,10 @@ export function NearbyLocations({ currentServiceSlug, currentServiceTitle, curre
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
             <h3 className="text-2xl font-bold text-white mb-2">
-              También trabajamos en
+              {title || "También trabajamos en"}
             </h3>
             <p className="text-neutral-400">
-              Servicios disponibles en otras ubicaciones.
+              {description || "Servicios disponibles en otras ubicaciones."}
             </p>
           </div>
 

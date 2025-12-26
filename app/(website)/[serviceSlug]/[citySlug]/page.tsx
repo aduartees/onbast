@@ -215,6 +215,47 @@ interface SanityServiceLocationOverride {
   seoDescription?: string;
   heroHeadline?: string;
   heroText?: string;
+  heroButtonText?: string;
+  heroButtonLink?: string;
+  heroSecondaryButtonText?: string;
+  heroSecondaryButtonLink?: string;
+  longDescription?: string;
+  overviewText?: string;
+  featuresTitle?: string;
+  featuresHighlight?: string;
+  featuresDescription?: string;
+  benefits?: string[];
+  processTitle?: string;
+  processHighlight?: string;
+  processDescription?: string;
+  technologies?: string[];
+  techTitle?: string;
+  techHighlight?: string;
+  techDescription?: string;
+  impactSection?: {
+    title?: string;
+    highlight?: string;
+    subtitle?: string;
+    stats?: {
+      value: number;
+      prefix?: string;
+      suffix?: string;
+      label: string;
+      description?: string;
+    }[];
+  };
+  teamTitle?: string;
+  teamHighlight?: string;
+  teamDescription?: string;
+  testimonialsTitle?: string;
+  testimonialsHighlight?: string;
+  testimonialsDescription?: string;
+  relatedProjectsTitle?: string;
+  relatedProjectsHighlight?: string;
+  relatedProjectsDescription?: string;
+  faqTitle?: string;
+  faqHighlight?: string;
+  faqDescription?: string;
   localContentBlock?: any; // Portable Text
   ctaSection?: {
     title?: string;
@@ -343,6 +384,11 @@ export default async function ServiceLocationPage({ params }: PageProps) {
   // Prioritize Local Overrides, but fallback to Service Defaults for structure
   const heroTitle = override?.heroHeadline || `${service.title} en ${location.name}`;
   const heroDescription = override?.heroText || `Agencia experta en ${service.title} con servicio en ${location.name} y alrededores.`;
+
+  const heroButtonText = override?.heroButtonText || service.heroButtonText;
+  const heroButtonLink = override?.heroButtonLink || service.heroButtonLink;
+  const heroSecondaryButtonText = override?.heroSecondaryButtonText || service.heroSecondaryButtonText;
+  const heroSecondaryButtonLink = override?.heroSecondaryButtonLink || service.heroSecondaryButtonLink;
   
   // Testimonials: Local > Service
   const testimonials = override?.customTestimonials?.length ? override.customTestimonials : service.testimonials?.map(t => ({
@@ -356,11 +402,46 @@ export default async function ServiceLocationPage({ params }: PageProps) {
   // Features: Local > Service
   const features = override?.customFeatures?.length ? override.customFeatures : service.features;
 
+  const featuresTitle = override?.featuresTitle || service.featuresTitle;
+  const featuresHighlight = override?.featuresHighlight || service.featuresHighlight;
+  const featuresDescription = override?.featuresDescription || service.featuresDescription;
+  const benefits = override?.benefits?.length ? override.benefits : service.benefits;
+
   // Process: Local > Service
   const processSteps = override?.customProcess?.length ? override.customProcess : service.process;
 
+  const processTitle = override?.processTitle || service.processTitle;
+  const processHighlight = override?.processHighlight || service.processHighlight;
+  const processDescription = override?.processDescription || service.processDescription;
+
   // FAQs: Local > Service
   const faqs = override?.customFaqs?.length ? override.customFaqs : service.faqs;
+
+  const faqTitle = override?.faqTitle || service.faqTitle;
+  const faqHighlight = override?.faqHighlight || service.faqHighlight;
+  const faqDescription = override?.faqDescription || service.faqDescription;
+
+  const longDescription = override?.longDescription || service.longDescription;
+  const overviewText = override?.overviewText || service.overviewText;
+
+  const technologies = override?.technologies?.length ? override.technologies : service.technologies;
+  const techTitle = override?.techTitle || service.techTitle;
+  const techHighlight = override?.techHighlight || service.techHighlight;
+  const techDescription = override?.techDescription || service.techDescription;
+
+  const impactSection = override?.impactSection || service.impactSection;
+
+  const teamTitle = override?.teamTitle || service.teamTitle;
+  const teamHighlight = override?.teamHighlight || service.teamHighlight;
+  const teamDescription = override?.teamDescription || service.teamDescription;
+
+  const testimonialsTitle = override?.testimonialsTitle || service.testimonialsTitle;
+  const testimonialsHighlight = override?.testimonialsHighlight || service.testimonialsHighlight;
+  const testimonialsDescription = override?.testimonialsDescription || service.testimonialsDescription;
+
+  const relatedProjectsTitle = override?.relatedProjectsTitle || service.relatedProjectsTitle;
+  const relatedProjectsHighlight = override?.relatedProjectsHighlight || service.relatedProjectsHighlight;
+  const relatedProjectsDescription = override?.relatedProjectsDescription || service.relatedProjectsDescription;
 
   const ctaSection = override?.ctaSection || {
     title: `¿Listo para activar ${service.title} en ${location.name}?`,
@@ -582,10 +663,10 @@ export default async function ServiceLocationPage({ params }: PageProps) {
         highlight={location.name} 
         introduction={heroDescription}
         trustedLogos={service.heroTrustedLogos}
-        buttonText={service.heroButtonText}
-        buttonLink={service.heroButtonLink}
-        secondaryButtonText={service.heroSecondaryButtonText}
-        secondaryButtonLink={service.heroSecondaryButtonLink}
+        buttonText={heroButtonText}
+        buttonLink={heroButtonLink}
+        secondaryButtonText={heroSecondaryButtonText}
+        secondaryButtonLink={heroSecondaryButtonLink}
         breadcrumbsOverride={breadcrumbsOverride}
       />
       
@@ -601,47 +682,47 @@ export default async function ServiceLocationPage({ params }: PageProps) {
         localContentBlock={override?.localContentBlock}
 
         features={features} 
-        featuresTitle={service.featuresTitle}
-        featuresHighlight={service.featuresHighlight}
-        featuresDescription={service.featuresDescription}
-        benefits={service.benefits} 
+        featuresTitle={featuresTitle}
+        featuresHighlight={featuresHighlight}
+        featuresDescription={featuresDescription}
+        benefits={benefits} 
         process={processSteps} 
-        processTitle={service.processTitle}
-        processHighlight={service.processHighlight}
-        processDescription={service.processDescription}
+        processTitle={processTitle}
+        processHighlight={processHighlight}
+        processDescription={processDescription}
         
         // Fallbacks if local block not present
-        longDescription={service.longDescription} 
-        overviewText={service.overviewText} 
+        longDescription={longDescription} 
+        overviewText={overviewText} 
         
-        technologies={service.technologies} 
-        techTitle={service.techTitle}
-        techHighlight={service.techHighlight}
-        techDescription={service.techDescription}
-        impactSection={service.impactSection} 
+        technologies={technologies} 
+        techTitle={techTitle}
+        techHighlight={techHighlight}
+        techDescription={techDescription}
+        impactSection={impactSection} 
         team={service.team} 
-        teamTitle={service.teamTitle}
-        teamHighlight={service.teamHighlight}
-        teamDescription={service.teamDescription}
+        teamTitle={teamTitle}
+        teamHighlight={teamHighlight}
+        teamDescription={teamDescription}
         
         // Overridden Lists
         testimonials={testimonials} 
-        testimonialsTitle={service.testimonialsTitle}
-        testimonialsHighlight={service.testimonialsHighlight}
-        testimonialsDescription={service.testimonialsDescription}
+        testimonialsTitle={testimonialsTitle}
+        testimonialsHighlight={testimonialsHighlight}
+        testimonialsDescription={testimonialsDescription}
         
         // Pricing should eventually link to /planes?service=...&location=...
         pricing={service.pricing} // TODO: Adapt pricing button link in Phase 5
         
         relatedProjects={projects as any} // Cast to match type if needed
-        relatedProjectsTitle={service.relatedProjectsTitle}
-        relatedProjectsHighlight={service.relatedProjectsHighlight}
-        relatedProjectsDescription={service.relatedProjectsDescription}
+        relatedProjectsTitle={relatedProjectsTitle}
+        relatedProjectsHighlight={relatedProjectsHighlight}
+        relatedProjectsDescription={relatedProjectsDescription}
         
         faqs={faqs} 
-        faqTitle={service.faqTitle}
-        faqHighlight={service.faqHighlight}
-        faqDescription={service.faqDescription}
+        faqTitle={faqTitle}
+        faqHighlight={faqHighlight}
+        faqDescription={faqDescription}
         ctaSection={ctaSection}
         nearbyLocations={nearbyLocations}
         cityName={location.name}

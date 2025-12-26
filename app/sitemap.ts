@@ -36,7 +36,7 @@ const SERVICES_SLUGS_QUERY = `*[_type == "service" && defined(slug.current) && !
   _updatedAt
 }`;
 
-const SERVICE_LOCATION_SLUGS_QUERY = `*[_type == "serviceLocation" && defined(service->slug.current) && defined(location->slug.current) && defined(seoTitle) && defined(seoDescription) && !(_id in path("drafts.**"))]{
+const SERVICE_LOCATION_SLUGS_QUERY = `*[_type == "serviceLocation" && defined(service->slug.current) && defined(location->slug.current) && !(_id in path("drafts.**"))]{
   "serviceSlug": service->slug.current,
   "citySlug": location->slug.current,
   _updatedAt

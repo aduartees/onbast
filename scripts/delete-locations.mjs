@@ -26,6 +26,7 @@ const argSet = new Set(process.argv.slice(2));
 const dryRun = !argSet.has('--yes');
 const includeServiceLocation = !argSet.has('--skip-service-location');
 const includeAdmin = argSet.has('--include-admin');
+const onlyServiceLocations = argSet.has('--only-service-locations');
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
@@ -58,6 +59,37 @@ const chunk = (items, size) => {
 const uniq = (items) => Array.from(new Set(items));
 
 async function main() {
+  if (onlyServiceLocations) {
+    const serviceLocationDocs = await sanity.fetch(`*[_type == "serviceLocation"]{ _id }`);
+    const ids = uniq(serviceLocationDocs.map((d) => d?._id).filter(Boolean));
+
+    console.log(`Sanity dataset: ${projectId}.${dataset}`);
+    console.log(`ServiceLocation encontradas: ${ids.length}`);
+
+    if (!ids.length) return;
+
+    if (dryRun) {
+      console.log('Modo DRY RUN. Para borrar de verdad ejecuta con: --yes');
+      console.log('Opciones:');
+      console.log('  --only-service-locations  Borra SOLO docs _type == "serviceLocation"');
+      return;
+    }
+
+    const batches = chunk(ids, 100);
+    for (let i = 0; i < batches.length; i += 1) {
+      const batchIds = batches[i];
+      let tx = sanity.transaction();
+      batchIds.forEach((id) => {
+        tx = tx.delete(id);
+      });
+      await tx.commit();
+      console.log(`Borrado batch ${i + 1}/${batches.length} (${batchIds.length} docs)`);
+    }
+
+    console.log('Borrado completado.');
+    return;
+  }
+
   const locations = await sanity.fetch(
     `*[_type == "location"] | order(_createdAt desc) { _id, name, "slug": slug.current }`
   );
@@ -107,6 +139,7 @@ async function main() {
   if (dryRun) {
     console.log('Modo DRY RUN. Para borrar de verdad ejecuta con: --yes');
     console.log('Opciones:');
+    console.log('  --only-service-locations  Borra SOLO docs _type == "serviceLocation"');
     console.log('  --skip-service-location   No borra docs _type == "serviceLocation" relacionados');
     console.log('  --include-admin           También borra docs _type == "province" y "autonomousCommunity"');
     return;
@@ -130,4 +163,3 @@ main().catch((err) => {
   console.error('ERROR:', err?.message || err);
   process.exit(1);
 });
-

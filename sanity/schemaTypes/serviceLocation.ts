@@ -55,6 +55,229 @@ export default defineType({
       group: 'content',
       description: 'Bajada del H1 adaptada.',
     }),
+
+    defineField({
+      name: 'heroButtonText',
+      title: 'Hero Button Text (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'heroButtonLink',
+      title: 'Hero Button Link (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'heroSecondaryButtonText',
+      title: 'Hero Secondary Button Text (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'heroSecondaryButtonLink',
+      title: 'Hero Secondary Button Link (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+
+    defineField({
+      name: 'longDescription',
+      title: 'Long Description (Override)',
+      type: 'text',
+      rows: 6,
+      group: 'content',
+    }),
+    defineField({
+      name: 'overviewText',
+      title: 'Overview Text (Override)',
+      type: 'text',
+      rows: 4,
+      group: 'content',
+    }),
+
+    defineField({
+      name: 'featuresTitle',
+      title: 'Features Title (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'featuresHighlight',
+      title: 'Features Highlight (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'featuresDescription',
+      title: 'Features Description (Override)',
+      type: 'text',
+      rows: 3,
+      group: 'content',
+    }),
+    defineField({
+      name: 'benefits',
+      title: 'Benefits (Override)',
+      type: 'array',
+      group: 'content',
+      of: [{ type: 'string' }],
+    }),
+
+    defineField({
+      name: 'processTitle',
+      title: 'Process Title (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'processHighlight',
+      title: 'Process Highlight (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'processDescription',
+      title: 'Process Description (Override)',
+      type: 'text',
+      rows: 3,
+      group: 'content',
+    }),
+
+    defineField({
+      name: 'techTitle',
+      title: 'Tech Title (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'techHighlight',
+      title: 'Tech Highlight (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'techDescription',
+      title: 'Tech Description (Override)',
+      type: 'text',
+      rows: 3,
+      group: 'content',
+    }),
+    defineField({
+      name: 'technologies',
+      title: 'Technologies (Override)',
+      type: 'array',
+      group: 'content',
+      of: [{ type: 'string' }],
+    }),
+
+    defineField({
+      name: 'impactSection',
+      title: 'Impact Section (Override)',
+      type: 'object',
+      group: 'content',
+      fields: [
+        defineField({ name: 'title', title: 'Título', type: 'string' }),
+        defineField({ name: 'highlight', title: 'Highlight', type: 'string' }),
+        defineField({ name: 'subtitle', title: 'Subtítulo', type: 'text', rows: 2 }),
+        defineField({
+          name: 'stats',
+          title: 'Stats',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                defineField({ name: 'value', title: 'Value', type: 'number' }),
+                defineField({ name: 'prefix', title: 'Prefix', type: 'string' }),
+                defineField({ name: 'suffix', title: 'Suffix', type: 'string' }),
+                defineField({ name: 'label', title: 'Label', type: 'string' }),
+                defineField({ name: 'description', title: 'Description', type: 'text', rows: 2 }),
+              ],
+            },
+          ],
+        }),
+      ],
+    }),
+
+    defineField({
+      name: 'teamTitle',
+      title: 'Team Title (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'teamHighlight',
+      title: 'Team Highlight (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'teamDescription',
+      title: 'Team Description (Override)',
+      type: 'text',
+      rows: 3,
+      group: 'content',
+    }),
+
+    defineField({
+      name: 'testimonialsTitle',
+      title: 'Testimonials Title (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'testimonialsHighlight',
+      title: 'Testimonials Highlight (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'testimonialsDescription',
+      title: 'Testimonials Description (Override)',
+      type: 'text',
+      rows: 3,
+      group: 'content',
+    }),
+
+    defineField({
+      name: 'relatedProjectsTitle',
+      title: 'Related Projects Title (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'relatedProjectsHighlight',
+      title: 'Related Projects Highlight (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'relatedProjectsDescription',
+      title: 'Related Projects Description (Override)',
+      type: 'text',
+      rows: 3,
+      group: 'content',
+    }),
+
+    defineField({
+      name: 'faqTitle',
+      title: 'FAQ Title (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'faqHighlight',
+      title: 'FAQ Highlight (Override)',
+      type: 'string',
+      group: 'content',
+    }),
+    defineField({
+      name: 'faqDescription',
+      title: 'FAQ Description (Override)',
+      type: 'text',
+      rows: 3,
+      group: 'content',
+    }),
     
     // --- BLOQUE DE CONTENIDO SEO DENSO ---
     defineField({

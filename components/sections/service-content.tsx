@@ -609,6 +609,7 @@ const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProject
               <NearbyLocations
                 currentServiceSlug={serviceSlug}
                 currentServiceTitle={serviceTitle}
+                title="También ofrecemos servicio en:"
                 locations={serviceLocations}
               />
             </div>

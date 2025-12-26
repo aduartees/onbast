@@ -649,7 +649,7 @@ export const SERVICE_LOCATION_STATIC_PARAMS_QUERY = defineQuery(`*[_type == "ser
 }`);
 
 export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
-  "service": *[_type == "service" && slug.current == $serviceSlug][0] {
+  "service": *[_type == "service" && slug.current == $serviceSlug && !(_id in path("drafts.**"))][0] {
     _id,
     title,
     "slug": slug.current,
@@ -807,7 +807,7 @@ export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
       socialProfiles
     }
   },
-  "location": *[_type == "location" && slug.current == $citySlug][0] {
+  "location": *[_type == "location" && slug.current == $citySlug && !(_id in path("drafts.**"))][0] {
     _id,
     name,
     "slug": slug.current,
@@ -853,7 +853,7 @@ export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
       }
     }
   },
-  "override": *[_type == "serviceLocation" && service->slug.current == $serviceSlug && location->slug.current == $citySlug][0] {
+  "override": *[_type == "serviceLocation" && service->slug.current == $serviceSlug && location->slug.current == $citySlug && !(_id in path("drafts.**"))][0] {
     seoTitle,
     seoDescription,
     heroHeadline,

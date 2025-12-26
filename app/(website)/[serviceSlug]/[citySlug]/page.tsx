@@ -7,8 +7,6 @@ import { ServiceContent } from "@/components/sections/service-content";
 import { ScrollReset } from "@/components/utils/scroll-reset";
 import { generateServiceSchema, generateFAQSchema, generateBreadcrumbSchema, generatePricingOfferCatalogSchema } from "@/lib/seo";
 
-export const dynamicParams = false;
-
 // --- Types ---
 interface PageProps {
   params: Promise<{ serviceSlug: string; citySlug: string }>;

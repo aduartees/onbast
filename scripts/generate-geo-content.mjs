@@ -230,9 +230,9 @@ const geoContentSchema = z.object({
   heroHeadline: z.string().min(1),
   heroText: z.string().min(1),
   heroButtonText: z.string().min(1),
-  heroButtonLink: z.string().optional(),
-  heroSecondaryButtonText: z.string().optional(),
-  heroSecondaryButtonLink: z.string().optional(),
+  heroButtonLink: z.string().nullable().optional(),
+  heroSecondaryButtonText: z.string().nullable().optional(),
+  heroSecondaryButtonLink: z.string().nullable().optional(),
   longDescription: z.string().min(1),
   overviewText: z.string().min(1),
   featuresTitle: z.string().min(1),
@@ -252,10 +252,10 @@ const geoContentSchema = z.object({
     subtitle: z.string().min(1),
     stats: z.array(z.object({
       value: z.number(),
-      prefix: z.string().optional(),
-      suffix: z.string().optional(),
+      prefix: z.string().nullable().optional(),
+      suffix: z.string().nullable().optional(),
       label: z.string().min(1),
-      description: z.string().optional(),
+      description: z.string().nullable().optional(),
     })),
   }).optional(),
   pricingTitle: z.string().min(1),
@@ -281,7 +281,7 @@ const geoContentSchema = z.object({
   customFeatures: z.array(z.object({
     title: z.string().min(1),
     description: z.string().min(1),
-    icon: z.string().optional(),
+    icon: z.string().nullable().optional(),
   })).min(1),
   customProcess: z.array(z.object({
     title: z.string().min(1),
@@ -295,11 +295,29 @@ const geoContentSchema = z.object({
     title: z.string().min(1),
     description: z.string().min(1),
     buttonText: z.string().min(1),
-    buttonLink: z.string().optional(),
-    secondaryButtonText: z.string().optional(),
-    secondaryButtonLink: z.string().optional(),
+    buttonLink: z.string().nullable().optional(),
+    secondaryButtonText: z.string().nullable().optional(),
+    secondaryButtonLink: z.string().nullable().optional(),
   }),
 });
+
+const stripNullsDeep = (value) => {
+  if (value === null) return undefined;
+  if (Array.isArray(value)) {
+    const next = value
+      .map((v) => stripNullsDeep(v))
+      .filter((v) => v !== undefined);
+    return next;
+  }
+  if (!value || typeof value !== 'object') return value;
+
+  const out = {};
+  Object.entries(value).forEach(([k, v]) => {
+    const next = stripNullsDeep(v);
+    if (next !== undefined) out[k] = next;
+  });
+  return out;
+};
 
 const addKeys = (value, isArrayItemObject = false) => {
   if (!value || typeof value !== 'object') return value;
@@ -637,6 +655,7 @@ async function generateContent(service, location, model) {
             .filter((p) => p?.name && p?.value);
         }
 
+        content = stripNullsDeep(content);
         return content;
 
       } catch (err) {

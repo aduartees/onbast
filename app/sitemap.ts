@@ -10,6 +10,10 @@ type StaticUpdatedAt = {
   services?: string;
   projects?: string;
   contact?: string;
+  privacy?: string;
+  cookies?: string;
+  legalNotice?: string;
+  terms?: string;
 };
 
 type SanitySlugDoc = {
@@ -33,7 +37,11 @@ const STATIC_UPDATED_AT_QUERY = `{
   "agency": *[_type == "agencyPage"][0]._updatedAt,
   "services": *[_type == "servicesPage"][0]._updatedAt,
   "projects": *[_type == "projectsPage"][0]._updatedAt,
-  "contact": *[_type == "contactPage"][0]._updatedAt
+  "contact": *[_type == "contactPage"][0]._updatedAt,
+  "privacy": *[_type == "privacyPolicyPage"][0]._updatedAt,
+  "cookies": *[_type == "cookiesPage"][0]._updatedAt,
+  "legalNotice": *[_type == "legalNoticePage"][0]._updatedAt,
+  "terms": *[_type == "termsOfServicePage"][0]._updatedAt
 }`;
 
 const SERVICES_SLUGS_QUERY = `*[_type == "service" && defined(slug.current) && !(_id in path("drafts.**"))]{
@@ -115,6 +123,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/politica-de-privacidad`,
+      lastModified: toDate(staticUpdatedAt?.privacy),
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/aviso-legal`,
+      lastModified: toDate(staticUpdatedAt?.legalNotice),
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/cookies`,
+      lastModified: toDate(staticUpdatedAt?.cookies),
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/condiciones-del-servicio`,
+      lastModified: toDate(staticUpdatedAt?.terms),
+      changeFrequency: "yearly",
+      priority: 0.3,
     },
   ];
 

@@ -60,7 +60,7 @@ const CITY_SLUGS_QUERY = `*[_type == "location" && type == "city" && defined(slu
   _updatedAt
 }`;
 
-const getBaseUrl = (fallback = "https://onbast.com") => {
+const getBaseUrl = (fallback = "https://www.onbast.com") => {
   const raw = process.env.NEXT_PUBLIC_URL;
   const value = typeof raw === "string" && raw.trim().length ? raw.trim() : fallback;
   return value.endsWith("/") ? value.slice(0, -1) : value;

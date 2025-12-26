@@ -73,6 +73,9 @@ const geminiGenerateContent = async ({ prompt, model }) => {
   const requestTimeoutMs = Number.parseInt(process.env.GEMINI_REQUEST_TIMEOUT_MS || '240000', 10);
   const maxOutputTokens = Number.parseInt(process.env.GEMINI_MAX_OUTPUT_TOKENS || '8192', 10); // Aumentado para respuestas largas
   const temperature = Number.parseFloat(process.env.GEMINI_TEMPERATURE || '0.7');
+  const thinkingLevelRaw = String(process.env.GEMINI_THINKING_LEVEL || 'high').trim().toLowerCase();
+  const thinkingLevel = thinkingLevelRaw === 'low' ? 'low' : 'high';
+  const shouldSendThinkingConfig = normalizedModel.includes('gemini-3');
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), requestTimeoutMs);
 
@@ -89,6 +92,7 @@ const geminiGenerateContent = async ({ prompt, model }) => {
           responseMimeType: 'application/json',
           maxOutputTokens,
           temperature,
+          ...(shouldSendThinkingConfig ? { thinkingConfig: { thinkingLevel } } : {}),
         },
       }),
       signal: controller.signal,
@@ -463,8 +467,8 @@ async function generateContent(service, location, model) {
   const serviceContext = JSON.stringify(baseServiceForRewrite);
 
   const prompt = `
-    Actúa como un Ingeniero de Contenidos y Copywriter Senior para ONBAST (Agencia Tech de Élite).
-    Estilo: Cyberpunk corporativo, técnico, directo, agresivo (estilo Vercel/Linear).
+    Actúa como un Ingeniero de Contenidos y Copywriter Senior para ONBAST (Agencia de desarrollo web y Posicionamiento SEO y GEO).
+    Estilo: Corporativo, cercano, directo, disruptivo (estilo Vercel/Linear).
     
     OBJETIVO: Reescribir y enriquecer semánticamente (anti thin content) el contenido base del servicio
     para crear la landing page local, manteniendo EXACTAMENTE la propuesta de valor y estructura.
@@ -490,9 +494,9 @@ async function generateContent(service, location, model) {
        - Habla de la economía local de ${location.name}, polígonos industriales o zonas comerciales reales.
     
     ESTRUCTURA DE ARRAYS REQUERIDA (NO FALLAR EN CANTIDADES):
-    - customFeatures: EXACTAMENTE ${desiredFeaturesCount} objetos, reescritura 1:1 de features base.
-    - customProcess: EXACTAMENTE ${desiredProcessCount} objetos, reescritura 1:1 de process base.
-    - customFaqs: EXACTAMENTE ${desiredFaqCount} objetos, reescritura 1:1 de FAQs base.
+    - customFeatures: EXACTAMENTE ${desiredFeaturesCount} objetos, reescritura 1:1 de features base, pero puedes añadir el nombre o referencia local.
+    - customProcess: EXACTAMENTE ${desiredProcessCount} objetos, reescritura 1:1 de process base, pero puedes añadir el nombre o referencia local.
+    - customFaqs: EXACTAMENTE ${desiredFaqCount} objetos, reescritura 1:1 de FAQs base, pero añade el nombre y referencias locales.
     - benefits: EXACTAMENTE ${desiredBenefitsCount} strings, reescritura de benefits base.
     - technologies: EXACTAMENTE ${desiredTechCount} strings, reescritura de technologies base.
     - pricingSchemaAdditionalProperty: EXACTAMENTE el mismo número de items que la base.
@@ -710,7 +714,7 @@ async function main() {
         }
       }
       // Pausa para evitar rate limits
-      await sleep(10000); 
+      await sleep(50000); 
     }
   }
 }

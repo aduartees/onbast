@@ -530,6 +530,35 @@ export default async function ServiceLocationPage({ params }: PageProps) {
       return value.trim().toLowerCase();
     };
 
+    const canonicalizeAdminName = (value: unknown) => {
+      if (typeof value !== "string") return "";
+      const raw = value
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/\p{Diacritic}/gu, "")
+        .replace(/\s+/g, " ");
+
+      const prefixes = [
+        "principado de ",
+        "principado del ",
+        "comunidad autonoma de ",
+        "comunidad autonoma del ",
+        "comunidad foral de ",
+        "comunidad foral del ",
+        "comunidad de ",
+        "comunidad del ",
+        "region de ",
+        "region del ",
+        "provincia de ",
+        "provincia del ",
+      ];
+
+      const hit = prefixes.find((p) => raw.startsWith(p));
+      const stripped = hit ? raw.slice(hit.length) : raw;
+      return stripped.trim();
+    };
+
     const getGeo = (coordinates: unknown) => {
       if (!coordinates || typeof coordinates !== "object") return undefined;
       const c = coordinates as { lat?: unknown; lng?: unknown };
@@ -550,9 +579,9 @@ export default async function ServiceLocationPage({ params }: PageProps) {
     const resolvedAutonomousCommunity = location.autonomousCommunity || location.parent?.autonomousCommunity;
 
     const sameAdminName =
-      normalizeName(resolvedProvince?.name) &&
-      normalizeName(resolvedAutonomousCommunity?.name) &&
-      normalizeName(resolvedProvince?.name) === normalizeName(resolvedAutonomousCommunity?.name);
+      canonicalizeAdminName(resolvedProvince?.name) &&
+      canonicalizeAdminName(resolvedAutonomousCommunity?.name) &&
+      canonicalizeAdminName(resolvedProvince?.name) === canonicalizeAdminName(resolvedAutonomousCommunity?.name);
 
     const buildAutonomousCommunityNode = () => {
       if (!resolvedAutonomousCommunity?.name) return undefined;
@@ -652,7 +681,11 @@ export default async function ServiceLocationPage({ params }: PageProps) {
       "@id": localLandingUrl,
       url: localLandingUrl,
     },
-    isBasedOn: genericServiceUrl,
+    isRelatedTo: {
+      "@type": "Service",
+      url: genericServiceUrl,
+      name: service.title,
+    },
     areaServed: {
       ...buildGeographicArea(),
       url: localLandingUrl,

@@ -31,6 +31,18 @@ interface PricingProps {
     title?: string;
     subtitle?: string;
     plans?: PricingPlan[];
+    badge?: string;
+    price?: string;
+    currency?: string;
+    period?: string;
+    description?: string;
+    buttonText?: string;
+    addon?: {
+      title: string;
+      price: string;
+      active?: boolean;
+    };
+    features?: string[];
     trustedCompaniesTitle?: string;
     trustedLogos?: { logo: string | null; name: string }[];
     linkLocation?: string;
@@ -39,6 +51,24 @@ interface PricingProps {
 
 export function PricingSection({ pricing }: PricingProps) {
   if (!pricing) return null;
+
+  const plans: PricingPlan[] = Array.isArray(pricing.plans) && pricing.plans.length
+    ? pricing.plans
+    : typeof pricing.price === "string" && pricing.price.trim().length
+      ? [
+          {
+            title: pricing.title || "Plan",
+            price: pricing.price,
+            currency: pricing.currency || "EUR",
+            period: pricing.period,
+            badge: pricing.badge,
+            description: pricing.description,
+            features: pricing.features,
+            addon: pricing.addon,
+            buttonText: pricing.buttonText,
+          },
+        ]
+      : [];
 
   return (
     <section className="py-0 relative" id="precios">
@@ -61,11 +91,11 @@ export function PricingSection({ pricing }: PricingProps) {
         {/* Pricing Cards Grid */}
         <div className={cn(
           "grid gap-8 mx-auto",
-          pricing.plans?.length === 1 ? "max-w-md grid-cols-1" :
-          pricing.plans?.length === 2 ? "max-w-4xl grid-cols-1 md:grid-cols-2" :
+          plans.length === 1 ? "max-w-md grid-cols-1" :
+          plans.length === 2 ? "max-w-4xl grid-cols-1 md:grid-cols-2" :
           "max-w-7xl grid-cols-1 md:grid-cols-3"
         )}>
-          {pricing.plans?.map((plan, index) => (
+          {plans.map((plan, index) => (
             <PricingCard 
               key={plan.buttonLinkID || plan.title} 
               plan={plan} 
@@ -109,11 +139,13 @@ function PricingCard({ plan, index, linkLocation }: { plan: PricingPlan, index: 
 
   // Helper to parse price string
   const basePrice = React.useMemo(() => {
-     return parseInt(plan.price?.replace(/[^0-9]/g, '') || "0") || 0;
+     const raw = typeof plan.price === "string" ? plan.price : String(plan.price ?? "");
+     return parseInt(raw.replace(/[^0-9]/g, "") || "0") || 0;
   }, [plan.price]);
 
   const addonPrice = React.useMemo(() => {
-     return plan.addon ? parseInt(plan.addon.price.replace(/[^0-9]/g, '') || "0") || 0 : 0;
+     const raw = typeof plan.addon?.price === "string" ? plan.addon.price : "";
+     return raw ? parseInt(raw.replace(/[^0-9]/g, "") || "0") || 0 : 0;
   }, [plan.addon]);
 
   const totalPrice = addonActive ? basePrice + addonPrice : basePrice;
@@ -194,9 +226,11 @@ function PricingCard({ plan, index, linkLocation }: { plan: PricingPlan, index: 
                     {plan.addon.title}
                   </span>
                </div>
-               <span className="text-xs font-mono text-neutral-500">
-                  {plan.addon.price}
-               </span>
+               {plan.addon.price ? (
+                 <span className="text-xs font-mono text-neutral-500">
+                    {plan.addon.price}
+                 </span>
+               ) : null}
             </div>
           )}
 

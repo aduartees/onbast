@@ -213,11 +213,12 @@ export const SERVICE_BY_SLUG_QUERY = defineQuery(`*[_type == "service" && slug.c
   seoTitle,
   seoDescription,
   "seoImage": seoImage.asset->url,
-  "serviceLocations": array::unique(*[_type == "serviceLocation" && service->slug.current == $slug].location-> [type == "city"] {
-    name,
-    "slug": slug.current,
-    type
-  })
+  "serviceLocations": *[_type == "location" && type == "city" && defined(slug.current)]
+    | order(coalesce(population, 0) desc, name asc)[0...24] {
+      name,
+      "slug": slug.current,
+      type
+    }
 }`);
 
 export const PROJECTS_QUERY = defineQuery(`*[_type == "project"] | order(_createdAt desc)[0...3] {
@@ -734,20 +735,22 @@ export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
       title,
       subtitle,
       schemaAdditionalProperty[]{ name, value },
-      badge,
-      price,
-      period,
-      description,
-      buttonText,
-      buttonLink,
-      secondaryButtonText,
-      secondaryButtonLink,
-      features,
-      addon,
+      "plans": plans[]->{
+        title,
+        price,
+        currency,
+        period,
+        badge,
+        description,
+        features,
+        addon,
+        buttonText,
+        "buttonLinkID": buttonLinkID.current
+      },
       trustedCompaniesTitle,
       "trustedLogos": trustedLogos[] {
-          "logo": image.asset->url,
-          name
+        "logo": image.asset->url,
+        name
       }
     },
     relatedProjectsTitle,
@@ -927,21 +930,35 @@ export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
       tags
     }
   },
-  "nearbyLocations": coalesce(
-    *[_type == "location" && slug.current == $citySlug][0].nearbyLocations[]-> {
-      name,
-      "slug": slug.current,
-      type
-    }[slug != $citySlug][0...12],
-    *[_type == "location" && slug.current != $citySlug && (
-      (defined(*[_type == "location" && slug.current == $citySlug][0].parent._ref) && defined(parent) && parent._ref == *[_type == "location" && slug.current == $citySlug][0].parent._ref) ||
-      (defined(*[_type == "location" && slug.current == $citySlug][0].parent._ref) && _id == *[_type == "location" && slug.current == $citySlug][0].parent._ref) ||
-      (!defined(*[_type == "location" && slug.current == $citySlug][0].parent._ref) && defined(parent) && parent._ref == *[_type == "location" && slug.current == $citySlug][0]._id)
-    )][0...12] {
-      name,
-      "slug": slug.current,
-      type
-    }
+  "nearbyLocations": select(
+    count(*[_type == "location" && slug.current == $citySlug][0].nearbyLocations) > 0 =>
+      *[_type == "location" && slug.current == $citySlug][0].nearbyLocations[]-> {
+        name,
+        "slug": slug.current,
+        type
+      }[slug != $citySlug][0...12],
+    *[_type == "location" && slug.current == $citySlug][0].type == "city" =>
+      *[_type == "location" && type == "town" && parent._ref == *[_type == "location" && slug.current == $citySlug][0]._id]
+        | order(coalesce(population, 0) desc, name asc)[0...12] {
+          name,
+          "slug": slug.current,
+          type
+        },
+    *[_type == "location" && slug.current == $citySlug][0].type == "town" =>
+      array::compact([
+        *[_type == "location" && slug.current == $citySlug][0].parent-> {
+          name,
+          "slug": slug.current,
+          type
+        },
+        ...*[_type == "location" && type == "town" && parent._ref == *[_type == "location" && slug.current == $citySlug][0].parent._ref && slug.current != $citySlug]
+          | order(coalesce(population, 0) desc, name asc)[0...11] {
+            name,
+            "slug": slug.current,
+            type
+          }
+      ])[0...12],
+    []
   )
 }`);
 

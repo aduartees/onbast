@@ -1,0 +1,14 @@
+🚀 Iniciando Generación de Contenido GEO (Programmatic SEO)...
+Modelo: gemini-3-pro-preview
+Dry-run: NO
+Update existing: NO
+Limit: 0
+Filtro tipos ubicación: city
+📍 Servicios: 4 | Ubicaciones: 4
+🤖 Generando contenido (Gemini) para: Desarrollo y Diseño Web en Asturias...
+↻ Attempt 1/5 (delay 45000ms)
+→ Gemini request chars: 16616 (timeout 240000ms)
+→ Gemini call start
+→ Gemini promise then=function
+… esperando Gemini (desarrollo-diseno-web/asturias)
+… esperando Gemini (desarrollo-diseno-web/asturias)

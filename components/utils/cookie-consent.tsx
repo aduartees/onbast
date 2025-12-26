@@ -58,9 +58,15 @@ const getConsentCategories = () => {
 const hasAnalyticsConsent = () => getConsentCategories().includes("analytics");
 
 export const CookieConsentManager = () => {
-  const [analyticsEnabled, setAnalyticsEnabled] = useState(() => hasAnalyticsConsent());
+  const [analyticsEnabled, setAnalyticsEnabled] = useState(false);
 
   useEffect(() => {
+    const schedule = typeof queueMicrotask === "function"
+      ? queueMicrotask
+      : (cb: () => void) => setTimeout(cb, 0);
+
+    schedule(() => setAnalyticsEnabled(hasAnalyticsConsent()));
+
     const w = window as WindowWithConsentHelpers;
     if (w.__onbastCookieConsentInited) return;
     w.__onbastCookieConsentInited = true;

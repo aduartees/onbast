@@ -945,31 +945,35 @@ export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
   "nearbyLocations": select(
     count(*[_type == "location" && slug.current == $citySlug][0].nearbyLocations) > 0 =>
       *[_type == "location" && slug.current == $citySlug][0].nearbyLocations[]-> {
+        _id,
         name,
         "slug": slug.current,
         type
-      }[slug != $citySlug][0...12],
+      }[slug != $citySlug && count(*[_type == "serviceLocation" && service->slug.current == $serviceSlug && location._ref == ^._id && !(_id in path("drafts.**"))]) > 0][0...12],
     *[_type == "location" && slug.current == $citySlug][0].type == "city" =>
       *[_type == "location" && type == "town" && parent._ref == *[_type == "location" && slug.current == $citySlug][0]._id]
-        | order(coalesce(population, 0) desc, name asc)[0...12] {
+        | order(coalesce(population, 0) desc, name asc) {
+          _id,
           name,
           "slug": slug.current,
           type
-        },
+        }[count(*[_type == "serviceLocation" && service->slug.current == $serviceSlug && location._ref == ^._id && !(_id in path("drafts.**"))]) > 0][0...12],
     *[_type == "location" && slug.current == $citySlug][0].type == "town" =>
       array::compact([
         *[_type == "location" && slug.current == $citySlug][0].parent-> {
+          _id,
           name,
           "slug": slug.current,
           type
         },
         ...*[_type == "location" && type == "town" && parent._ref == *[_type == "location" && slug.current == $citySlug][0].parent._ref && slug.current != $citySlug]
           | order(coalesce(population, 0) desc, name asc)[0...11] {
+            _id,
             name,
             "slug": slug.current,
             type
           }
-      ])[0...12],
+      ])[count(*[_type == "serviceLocation" && service->slug.current == $serviceSlug && location._ref == _id && !(_id in path("drafts.**"))]) > 0][0...12],
     []
   )
 }`);

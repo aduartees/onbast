@@ -415,10 +415,54 @@ export default async function ServiceLocationPage({ params }: PageProps) {
   })();
   
   // Testimonials: Local > Service
-  const testimonials = override?.customTestimonials?.length ? override.customTestimonials : service.testimonials?.map(t => ({
-    ...t,
-    role: `${t.role} (${location.name})`
-  }));
+  const baseTestimonials = override?.customTestimonials?.length ? override.customTestimonials : service.testimonials;
+
+  const pickTestimonialIndicesForCity = (count: number, seed: string, k = 2) => {
+    if (!Number.isFinite(count) || count <= 0) return new Set<number>();
+    const target = Math.max(0, Math.min(k, Math.floor(count)));
+    if (target === 0) return new Set<number>();
+    if (target >= count) return new Set(Array.from({ length: count }, (_, i) => i));
+
+    let h = 2166136261;
+    for (let i = 0; i < seed.length; i++) {
+      h ^= seed.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    h >>>= 0;
+
+    const out = new Set<number>();
+    for (let i = 0; out.size < target && i < count * 3; i++) {
+      const base = (h + Math.imul(i + 1, 2654435761)) >>> 0;
+      let idx = base % count;
+      while (out.has(idx)) idx = (idx + 1) % count;
+      out.add(idx);
+    }
+    return out;
+  };
+
+  const appendCityToRole = (value: unknown) => {
+    if (typeof value !== "string") return value as any;
+    const trimmed = value.trim();
+    if (!trimmed) return trimmed;
+    if (trimmed.toLowerCase().includes(location.name.toLowerCase())) return trimmed;
+    return `${trimmed} (${location.name})`;
+  };
+
+  const cityRoleIndices = pickTestimonialIndicesForCity(
+    Array.isArray(baseTestimonials) ? baseTestimonials.length : 0,
+    `${service.slug}:${location.slug}`,
+    2
+  );
+
+  const testimonials = Array.isArray(baseTestimonials)
+    ? baseTestimonials.map((t: any, idx: number) => {
+        if (!cityRoleIndices.has(idx)) return t;
+        return {
+          ...t,
+          role: appendCityToRole(t?.role),
+        };
+      })
+    : baseTestimonials;
 
   // Projects: Local > Service
   const projects = override?.customProjects?.length ? override.customProjects : service.relatedProjects;
@@ -476,9 +520,7 @@ export default async function ServiceLocationPage({ params }: PageProps) {
     secondaryButtonLink: service.ctaSection?.secondaryButtonLink || "/proyectos",
   };
 
-  const nearbyLocations = data.nearbyLocations?.length
-    ? data.nearbyLocations
-    : (location.parent ? [{ name: location.parent.name, slug: location.parent.slug, type: "city" }] : []);
+  const nearbyLocations = data.nearbyLocations?.length ? data.nearbyLocations : [];
 
   // --- Schema Generation ---
   // We need to generate Service schema but with AreaServed

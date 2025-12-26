@@ -506,7 +506,11 @@ async function generateContent(service, location, model) {
     3. Reescribe sobre la base: cada field debe ser una reescritura del field base correspondiente.
        - Mantén intención, estructura y significado.
        - Cambia léxico/semántica y añade señales locales de forma natural.
-    4. El campo "localContentBlock" debe ser un array de bloques Portable Text (Sanity) válido.
+       - Si un field queda idéntico al base (mismo texto), es inválido: readaptalo manteniendo la idea base y con la misma cantidad de caracteres.
+    4. Los títulos que se renderizan como encabezados (H2) en la landing deben estar localizados y reescritos (no copies literal):
+       - heroHeadline, featuresTitle, processTitle, techTitle, teamTitle, testimonialsTitle, relatedProjectsTitle, faqTitle, pricingTitle y ctaSection.title.
+       - Evita encabezados genéricos repetidos entre ubicaciones; introduce señales locales sin inventar ofertas.
+    5. El campo "localContentBlock" debe ser un array de bloques Portable Text (Sanity) válido.
        - Usa al menos 6 encabezados estilo "h2".
        - Extensión total: 800-1200 palabras.
        - Habla de la economía local de ${location.name}, polígonos industriales o zonas comerciales reales.

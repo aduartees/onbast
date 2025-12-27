@@ -47,6 +47,7 @@ export async function GET() {
   const images = [
     { size: 16, png: await buildPng(16) },
     { size: 32, png: await buildPng(32) },
+    { size: 48, png: await buildPng(48) },
   ];
 
   const header = new Uint8Array([
@@ -102,4 +103,3 @@ export async function GET() {
     },
   });
 }
-

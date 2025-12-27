@@ -554,6 +554,17 @@ export default async function ServiceLocationPage({ params }: PageProps) {
   const serviceOutputSchemaType =
     typeof service.serviceOutput === "string" ? undefined : normalizeText(service.serviceOutput?.schemaType);
 
+  const baseServiceOutput = (serviceSchema as any)?.serviceOutput as any | undefined;
+  const shouldRenderServiceOutput = Boolean(serviceOutputName || serviceOutputDescription || serviceOutputSchemaType || baseServiceOutput);
+  const localServiceOutput = shouldRenderServiceOutput
+    ? {
+        ...(baseServiceOutput && typeof baseServiceOutput === "object" ? baseServiceOutput : {}),
+        "@type": serviceOutputSchemaType || baseServiceOutput?.["@type"] || "WebApplication",
+        ...(serviceOutputName ? { name: serviceOutputName } : {}),
+        ...(serviceOutputDescription ? { description: serviceOutputDescription } : {}),
+      }
+    : undefined;
+
   const audienceName =
     typeof service.audience === "string"
       ? appendCityToText(service.audience)
@@ -735,15 +746,7 @@ export default async function ServiceLocationPage({ params }: PageProps) {
     name: schemaName,
     description: heroDescription,
     image: localHeroImageAbsolute,
-    ...(serviceOutputName
-      ? {
-          serviceOutput: {
-            "@type": serviceOutputSchemaType || "WebApplication",
-            name: serviceOutputName,
-            ...(serviceOutputDescription ? { description: serviceOutputDescription } : {}),
-          },
-        }
-      : {}),
+    ...(localServiceOutput ? { serviceOutput: localServiceOutput } : {}),
   ...(audienceName || audienceType || audienceDescription
       ? {
           audience: {

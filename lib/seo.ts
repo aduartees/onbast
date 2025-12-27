@@ -191,6 +191,8 @@ export function generateServiceSchema(service: any, agency?: any) {
     const serviceOutputName = normalizeText(service?.serviceOutput?.name ?? service?.serviceOutput);
     const serviceOutputDescription = normalizeText(service?.serviceOutput?.description);
     const serviceOutputSchemaType = normalizeText(service?.serviceOutput?.schemaType) || "WebApplication";
+    const isDatasetServiceOutput = serviceOutputSchemaType.toLowerCase() === "dataset";
+    const shouldAddDatasetAttribution = Boolean(service?.isCoreService) && isDatasetServiceOutput;
 
     const audienceName = normalizeText(service?.audience?.name);
     const audienceType = normalizeText(service?.audience?.audienceType ?? service?.audience);
@@ -342,6 +344,12 @@ export function generateServiceSchema(service: any, agency?: any) {
                     "@type": serviceOutputSchemaType,
                     name: serviceOutputName,
                     ...(serviceOutputDescription ? { description: serviceOutputDescription } : {}),
+                    ...(shouldAddDatasetAttribution
+                        ? {
+                            creator: { "@id": organizationId },
+                            license: `${baseUrl}/condiciones-del-servicio`,
+                        }
+                        : {}),
                 },
             }
             : {}),

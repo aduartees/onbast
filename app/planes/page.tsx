@@ -46,7 +46,8 @@ export default async function PricingPage({
   const planId = Array.isArray(initialPlanId) ? initialPlanId[0] : initialPlanId;
   const loc = Array.isArray(initialLocation) ? initialLocation[0] : initialLocation;
 
-  const baseUrl = process.env.NEXT_PUBLIC_URL || "https://onbast.com";
+  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || "https://www.onbast.com";
+  const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
 
   const parseNumericPrice = (value: unknown) => {
     if (typeof value !== "string") return undefined;

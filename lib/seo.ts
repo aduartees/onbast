@@ -67,6 +67,12 @@ const toAbsoluteUrl = (baseUrl: string, path: string) => {
   return `${baseUrl}${path}`;
 };
 
+const getBaseUrl = (fallback = "https://www.onbast.com") => {
+  const raw = process.env.NEXT_PUBLIC_URL;
+  const value = typeof raw === "string" && raw.trim().length ? raw.trim() : fallback;
+  return value.replace(/\/+$/, "");
+};
+
 export function generateOrganizationSchema(
   data: OrganizationSchemaInput | null | undefined,
   type: OrganizationSchemaType = "Organization",
@@ -75,7 +81,7 @@ export function generateOrganizationSchema(
   const agency = data?.siteSettings?.agency;
   if (!agency) return null;
 
-  const baseUrl = process.env.NEXT_PUBLIC_URL || "https://onbast.com";
+  const baseUrl = getBaseUrl();
   const organizationId = `${baseUrl}/#organization`;
 
   const schedule = data?.contactInfo?.schedule;
@@ -172,7 +178,7 @@ export function generateOrganizationSchema(
 }
 
 export function generateServiceSchema(service: any, agency?: any) {
-    const baseUrl = process.env.NEXT_PUBLIC_URL || "https://onbast.com";
+    const baseUrl = getBaseUrl();
     const organizationId = `${baseUrl}/#organization`;
     const serviceImage = service.seoImage || service.imageUrl;
 

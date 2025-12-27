@@ -24,7 +24,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const data = await client.fetch<LegalNoticeQueryResult>(LEGAL_NOTICE_PAGE_QUERY, {}, { next: { revalidate: 60 } });
 
   const title = data?.title || "Aviso Legal";
-  const baseUrl = process.env.NEXT_PUBLIC_URL || data?.siteSettings?.agency?.url || "https://onbast.com";
+  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || data?.siteSettings?.agency?.url || "https://www.onbast.com";
+  const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
 
   return {
     title,
@@ -49,7 +50,8 @@ export default async function LegalNoticePage() {
   const fallbackTitle = "Aviso Legal";
   const pageTitle = data?.title || fallbackTitle;
 
-  const baseUrl = process.env.NEXT_PUBLIC_URL || data?.siteSettings?.agency?.url || "https://onbast.com";
+  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || data?.siteSettings?.agency?.url || "https://www.onbast.com";
+  const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
   const orgId = `${baseUrl}/#organization`;
   const websiteId = `${baseUrl}#website`;
   const webpageId = `${baseUrl}/aviso-legal#webpage`;

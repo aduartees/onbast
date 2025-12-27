@@ -24,7 +24,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const data = await client.fetch<PrivacyPolicyQueryResult>(PRIVACY_POLICY_PAGE_QUERY, {}, { next: { revalidate: 60 } });
 
   const title = data?.title || "Política de Privacidad";
-  const baseUrl = process.env.NEXT_PUBLIC_URL || data?.siteSettings?.agency?.url || "https://onbast.com";
+  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || data?.siteSettings?.agency?.url || "https://www.onbast.com";
+  const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
 
   return {
     title,
@@ -49,7 +50,8 @@ export default async function PrivacyPolicyPage() {
   const fallbackTitle = "Política de Privacidad";
   const pageTitle = data?.title || fallbackTitle;
 
-  const baseUrl = process.env.NEXT_PUBLIC_URL || data?.siteSettings?.agency?.url || "https://onbast.com";
+  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || data?.siteSettings?.agency?.url || "https://www.onbast.com";
+  const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
   const orgId = `${baseUrl}/#organization`;
   const websiteId = `${baseUrl}#website`;
   const webpageId = `${baseUrl}/politica-de-privacidad#webpage`;

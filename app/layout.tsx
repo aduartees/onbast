@@ -21,12 +21,23 @@ const instrumentSerif = Instrument_Serif({
   style: "italic"
 });
 
+const getBaseUrl = (fallback = "https://www.onbast.com") => {
+  const raw = process.env.NEXT_PUBLIC_URL;
+  const value = typeof raw === "string" && raw.trim().length ? raw.trim() : fallback;
+  return value.endsWith("/") ? value.slice(0, -1) : value;
+};
+
+const baseUrl = getBaseUrl();
+
 export const metadata: Metadata = {
-  title: "ONBAST | Web Development & SEO Agency",
-  description: "Agencia de Desarrollo Web Ultra-High-Performance, SEO & GEO.",
-  metadataBase: new URL("https://onbast.com"),
+  title: "ONBAST | Agencia de Desarrollo Web y Posicionamiento SEO & GEO",
+  description: "Agencia de Desarrollo Web y Posicionamiento SEO & GEO. Transformamos tu negocio con el modelo WaaS: plataformas vivas, velocidad extrema y visibilidad total en Google y ChatGPT. Domina el futuro digital.",
+  metadataBase: new URL(baseUrl),
   alternates: {
     canonical: "./",
+  },
+  other: {
+    "llms-txt": `${baseUrl}/llms.txt`,
   },
 };
 

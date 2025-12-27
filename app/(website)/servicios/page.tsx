@@ -35,7 +35,8 @@ export default async function ServicesPage() {
     client.fetch(SERVICES_PAGE_QUERY)
   ]);
 
-  const baseUrl = process.env.NEXT_PUBLIC_URL || "https://onbast.com";
+  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || "https://www.onbast.com";
+  const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
 
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: "Inicio", item: `${baseUrl}/` },

@@ -20,7 +20,7 @@ export default defineType({
       description: 'Datos utilizados para generar el Schema.org global de la organización.',
       fields: [
         defineField({ name: 'name', title: 'Nombre de la Agencia', type: 'string', initialValue: 'ONBAST' }),
-        defineField({ name: 'url', title: 'URL del Sitio Web', type: 'url', initialValue: 'https://onbast.com' }),
+        defineField({ name: 'url', title: 'URL del Sitio Web', type: 'url', initialValue: 'https://www.onbast.com' }),
         defineField({ name: 'description', title: 'Descripción de la Agencia', type: 'text', rows: 3 }),
         defineField({ name: 'logo', title: 'Logo Principal (SEO)', type: 'image' }),
         defineField({ name: 'email', title: 'Email de Contacto', type: 'string' }),

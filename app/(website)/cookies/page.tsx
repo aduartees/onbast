@@ -25,7 +25,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const fallbackTitle = "Política de Cookies";
   const title = data?.title || fallbackTitle;
-  const baseUrl = process.env.NEXT_PUBLIC_URL || data?.siteSettings?.agency?.url || "https://onbast.com";
+  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || data?.siteSettings?.agency?.url || "https://www.onbast.com";
+  const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
 
   return {
     title,
@@ -50,7 +51,8 @@ export default async function CookiesPage() {
   const fallbackTitle = "Política de Cookies";
   const pageTitle = data?.title || fallbackTitle;
 
-  const baseUrl = process.env.NEXT_PUBLIC_URL || data?.siteSettings?.agency?.url || "https://onbast.com";
+  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || data?.siteSettings?.agency?.url || "https://www.onbast.com";
+  const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
   const orgId = `${baseUrl}/#organization`;
   const websiteId = `${baseUrl}#website`;
   const webpageId = `${baseUrl}/cookies#webpage`;

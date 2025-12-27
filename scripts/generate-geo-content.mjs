@@ -149,7 +149,7 @@ const generationState = {
   maxDelayMs: Number.parseInt(process.env.GEMINI_MAX_DELAY_MS || '60000', 10),
 };
 
-const landingDelayMs = Number.parseInt(process.env.GEO_LANDING_DELAY_MS || '120000', 10);
+const landingDelayMs = Number.parseInt(process.env.GEO_LANDING_DELAY_MS || '60000', 10);
 
 const jitter = (ms) => {
   const delta = Math.max(250, Math.floor(ms * 0.15));

@@ -30,6 +30,8 @@ export function Breadcrumbs() {
   const pathname = rawPathname === "/" ? "/" : rawPathname.replace(/\/+$/, "");
   const { lastItemOverride, itemsOverride } = useBreadcrumb();
 
+  const baseUrl = (process.env.NEXT_PUBLIC_URL || "https://www.onbast.com").replace(/\/+$/, "");
+
   const segments = useMemo(() => pathname.split("/").filter(Boolean), [pathname]);
   const isLocalLanding = segments.length === 2 && segments[0] !== "servicios";
 
@@ -79,14 +81,14 @@ export function Breadcrumbs() {
         "@type": "ListItem",
         "position": 1,
         "name": "Inicio",
-        "item": process.env.NEXT_PUBLIC_URL || "https://onbast.com"
+        "item": baseUrl
       },
       ...breadcrumbs.map((crumb, index) => {
         return {
           "@type": "ListItem",
           "position": index + 2,
           "name": crumb.name,
-          "item": `${process.env.NEXT_PUBLIC_URL || "https://onbast.com"}${crumb.href}`
+          "item": `${baseUrl}${crumb.href}`
         };
       })
     ]

@@ -190,16 +190,19 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
 
   const shareImage = service.seoImage || service.imageUrl || DEFAULT_IMAGE;
 
+  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || "https://www.onbast.com";
+  const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
+
   return {
     title: service.seoTitle || `${service.title} | ONBAST`,
     description: service.seoDescription || service.shortDescription,
     alternates: {
-      canonical: `https://onbast.com/servicios/${service.slug}`,
+      canonical: `${baseUrl}/servicios/${service.slug}`,
     },
     openGraph: {
       title: service.seoTitle || `${service.title} | ONBAST`,
       description: service.seoDescription || service.shortDescription,
-      url: `https://onbast.com/services/${service.slug}`,
+      url: `${baseUrl}/servicios/${service.slug}`,
       images: [
         {
           url: shareImage,
@@ -229,15 +232,16 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
   if (!service) return notFound();
 
-  const baseUrl = process.env.NEXT_PUBLIC_URL || "https://onbast.com";
+  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || "https://www.onbast.com";
+  const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
   const organizationId = `${baseUrl}/#organization`;
 
   const serviceSchema = generateServiceSchema(service, service.agency);
   const faqSchema = generateFAQSchema(service.faqs || []);
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: "Inicio", item: "https://onbast.com" },
-    { name: "Servicios", item: "https://onbast.com/servicios" },
-    { name: service.title, item: `https://onbast.com/servicios/${service.slug}` }
+    { name: "Inicio", item: `${baseUrl}/` },
+    { name: "Servicios", item: `${baseUrl}/servicios` },
+    { name: service.title, item: `${baseUrl}/servicios/${service.slug}` }
   ]);
 
   const offerCatalogSchema = generatePricingOfferCatalogSchema(service.pricing, {

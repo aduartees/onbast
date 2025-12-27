@@ -332,7 +332,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const { service, location, override } = data;
-  const baseUrl = process.env.NEXT_PUBLIC_URL || "https://onbast.com";
+  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || "https://www.onbast.com";
+  const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
 
   // Logic: Override > Constructed > Default
   const metaTitle = override?.seoTitle || `${service.title} en ${location.name} | ONBAST`;
@@ -343,12 +344,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: metaTitle,
     description: metaDescription,
     alternates: {
-      canonical: `https://onbast.com/${service.slug}/${location.slug}`,
+      canonical: `${baseUrl}/${service.slug}/${location.slug}`,
     },
     openGraph: {
       title: metaTitle,
       description: metaDescription,
-      url: `https://onbast.com/${service.slug}/${location.slug}`,
+      url: `${baseUrl}/${service.slug}/${location.slug}`,
       images: [
         {
           url: shareImage,
@@ -380,7 +381,8 @@ export default async function ServiceLocationPage({ params }: PageProps) {
 
   const { service, location, override } = data;
 
-  const baseUrl = process.env.NEXT_PUBLIC_URL || "https://onbast.com";
+  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || "https://www.onbast.com";
+  const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
   const organizationId = `${baseUrl}/#organization`;
 
   const localHeroImage = `/api/hero?title=${encodeURIComponent(`${service.title} en ${location.name}`)}&subtitle=${encodeURIComponent("Desarrollo Web y Posicionamiento SEO & GEO")}`;
@@ -759,20 +761,20 @@ export default async function ServiceLocationPage({ params }: PageProps) {
   
   // Breadcrumbs
   const breadcrumbs = [
-    { name: "Inicio", item: "https://onbast.com" },
-    { name: "Servicios", item: "https://onbast.com/servicios" },
-    { name: service.title, item: `https://onbast.com/servicios/${service.slug}` },
+    { name: "Inicio", item: `${baseUrl}/` },
+    { name: "Servicios", item: `${baseUrl}/servicios` },
+    { name: service.title, item: `${baseUrl}/servicios/${service.slug}` },
   ];
 
   if (location.parent) {
      // If it's a town, add parent city
      // Check if parent slug is available. In query we fetched parent->slug
      if (location.parent.slug) {
-         breadcrumbs.push({ name: location.parent.name, item: `https://onbast.com/${service.slug}/${location.parent.slug}` });
+        breadcrumbs.push({ name: location.parent.name, item: `${baseUrl}/${service.slug}/${location.parent.slug}` });
      }
   }
 
-  breadcrumbs.push({ name: location.name, item: `https://onbast.com/${service.slug}/${location.slug}` });
+  breadcrumbs.push({ name: location.name, item: `${baseUrl}/${service.slug}/${location.slug}` });
 
   const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
 

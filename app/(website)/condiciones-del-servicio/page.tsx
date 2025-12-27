@@ -30,7 +30,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const fallbackTitle = "Condiciones del Servicio";
   const title = data?.seo?.title || data?.title || fallbackTitle;
   const description = data?.seo?.description;
-  const baseUrl = process.env.NEXT_PUBLIC_URL || data?.siteSettings?.agency?.url || "https://onbast.com";
+  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || data?.siteSettings?.agency?.url || "https://www.onbast.com";
+  const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
 
   return {
     title,
@@ -56,7 +57,8 @@ export default async function TermsOfServicePage() {
   const fallbackTitle = "Condiciones del Servicio";
   const pageTitle = data?.title || fallbackTitle;
 
-  const baseUrl = process.env.NEXT_PUBLIC_URL || data?.siteSettings?.agency?.url || "https://onbast.com";
+  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || data?.siteSettings?.agency?.url || "https://www.onbast.com";
+  const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
   const orgId = `${baseUrl}/#organization`;
   const websiteId = `${baseUrl}#website`;
   const webpageId = `${baseUrl}/condiciones-del-servicio#webpage`;

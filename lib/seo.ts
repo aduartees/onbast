@@ -191,7 +191,7 @@ export function generateServiceSchema(service: any, agency?: any) {
     const serviceOutputName = normalizeText(service?.serviceOutput?.name ?? service?.serviceOutput);
     const serviceOutputDescription = normalizeText(service?.serviceOutput?.description);
     const serviceOutputSchemaType = normalizeText(service?.serviceOutput?.schemaType) || "WebApplication";
-    const isDatasetServiceOutput = serviceOutputSchemaType.toLowerCase() === "dataset";
+    const isDatasetServiceOutput = serviceOutputSchemaType.toLowerCase() === "Dataset";
     const shouldAddDatasetAttribution = Boolean(service?.isCoreService) && isDatasetServiceOutput;
 
     const audienceName = normalizeText(service?.audience?.name);

@@ -39,6 +39,17 @@ export const metadata: Metadata = {
   other: {
     "llms-txt": `${baseUrl}/llms.txt`,
   },
+  icons: {
+    icon: [
+      { url: "/icon", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.ico", type: "image/x-icon" },
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/apple-icon", sizes: "180x180", type: "image/png" },
+    ],
+  },
 };
 
 export default function RootLayout({

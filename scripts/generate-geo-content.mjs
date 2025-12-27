@@ -233,9 +233,9 @@ async function getLocations() {
 
 // Zod Schema relajado para evitar fallos por detalles menores
 const geoContentSchema = z.object({
-  seoTitle: z.string().min(1),
-  seoDescription: z.string().min(1),
-  heroHeadline: z.string().min(1),
+  seoTitle: z.string().min(1).max(60),
+  seoDescription: z.string().min(1).max(160),
+  heroHeadline: z.string().min(1).max(60),
   heroText: z.string().min(1),
   heroButtonText: z.string().min(1),
   heroButtonLink: z.string().nullable().optional(),
@@ -372,22 +372,26 @@ async function generateContent(service, location, model) {
   const desiredTechCount = Array.isArray(service.technologies) && service.technologies.length ? service.technologies.length : 8;
   const baseImpactStats = Array.isArray(service.impactSection?.stats) ? service.impactSection.stats : [];
 
-  const clampText = (value, maxLen = 600) => {
+  const clampText = (value, maxLen = 600, { suffix = '…', hard = false } = {}) => {
     const str = typeof value === 'string' ? value.trim() : '';
     if (!str) return '';
+    if (!Number.isFinite(maxLen) || maxLen <= 0) return '';
     if (str.length <= maxLen) return str;
-    return `${str.slice(0, maxLen).trim()}…`;
+    if (hard || !suffix) return str.slice(0, maxLen).trim();
+    const suffixLen = String(suffix).length;
+    if (suffixLen >= maxLen) return str.slice(0, maxLen).trim();
+    return `${str.slice(0, maxLen - suffixLen).trim()}${suffix}`;
   };
 
   const baseServiceForRewrite = {
     title: clampText(service.title, 160),
-    seoTitle: clampText(service.seoTitle, 220),
-    seoDescription: clampText(service.seoDescription, 320),
+    seoTitle: clampText(service.seoTitle, 60, { hard: true }),
+    seoDescription: clampText(service.seoDescription, 160, { hard: true }),
     shortDescription: clampText(service.shortDescription, 320),
     longDescription: clampText(service.longDescription, 1400),
     overviewText: clampText(service.overviewText, 1200),
     hero: {
-      headline: clampText(service.heroHeadline, 220),
+      headline: clampText(service.heroHeadline, 60, { hard: true }),
       highlight: clampText(service.heroHighlight, 140),
       introduction: clampText(service.heroIntroduction, 900),
       buttonText: clampText(service.heroButtonText, 80),
@@ -514,11 +518,15 @@ async function generateContent(service, location, model) {
     3. Reescribe sobre la base: cada field debe ser una reescritura del field base correspondiente.
        - Mantén intención, estructura y significado.
        - Cambia léxico/semántica y añade señales locales de forma natural.
-       - Si un field queda idéntico al base (mismo texto), es inválido: readaptalo manteniendo la idea base y con la misma cantidad de caracteres.
-    4. Los títulos que se renderizan como encabezados (H2) en la landing deben estar localizados y reescritos (no copies literal):
+       - Si un field queda idéntico al base (mismo texto), es inválido: readaptalo manteniendo la idea base y con mas o menos la misma cantidad de caracteres, intentando añadir palabras relacionadas al contexto local o el nombre de la ciudad.
+    4. Límites estrictos de longitud (NO exceder):
+       - seoTitle: máximo 60 caracteres
+       - seoDescription: máximo 160 caracteres
+       - heroHeadline: máximo 60 caracteres
+    5. Los títulos que se renderizan como encabezados (H2) en la landing deben estar localizados y reescritos (no copies literal):
        - heroHeadline, featuresTitle, processTitle, techTitle, teamTitle, testimonialsTitle, relatedProjectsTitle, faqTitle, pricingTitle y ctaSection.title.
        - Evita encabezados genéricos repetidos entre ubicaciones; introduce señales locales sin inventar ofertas.
-    5. El campo "localContentBlock" debe ser un array de bloques Portable Text (Sanity) válido.
+    6. El campo "localContentBlock" debe ser un array de bloques Portable Text (Sanity) válido.
        - Usa al menos 6 encabezados estilo "h2".
        - Extensión total: 800-1200 palabras.
        - Habla de la economía local de ${location.name}, polígonos industriales o zonas comerciales reales.
@@ -606,7 +614,13 @@ async function generateContent(service, location, model) {
         );
  
         const parsed = safeJsonParse(text);
-        const validated = geoContentSchema.parse(parsed);
+        const normalized = {
+          ...parsed,
+          seoTitle: clampText(parsed?.seoTitle, 60, { hard: true }),
+          seoDescription: clampText(parsed?.seoDescription, 160, { hard: true }),
+          heroHeadline: clampText(parsed?.heroHeadline, 60, { hard: true }),
+        };
+        const validated = geoContentSchema.parse(normalized);
         let content = addKeys(validated);
 
         // --- LÓGICA DE CORRECCIÓN AUTOMÁTICA (SELF-HEALING) ---

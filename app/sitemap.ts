@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 import { client } from "@/sanity/lib/client";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 type StaticUpdatedAt = {
   home?: string;
@@ -24,11 +24,6 @@ type SanitySlugDoc = {
 type SanityServiceLocationDoc = {
   serviceSlug?: string;
   citySlug?: string;
-  _updatedAt?: string;
-};
-
-type SanityLocationSlugDoc = {
-  slug?: string;
   _updatedAt?: string;
 };
 
@@ -55,15 +50,11 @@ const SERVICE_LOCATION_SLUGS_QUERY = `*[_type == "serviceLocation" && defined(se
   _updatedAt
 }`;
 
-const CITY_SLUGS_QUERY = `*[_type == "location" && type == "city" && defined(slug.current) && !(_id in path("drafts.**"))]{
-  "slug": slug.current,
-  _updatedAt
-}`;
-
 const getBaseUrl = (fallback = "https://www.onbast.com") => {
   const raw = process.env.NEXT_PUBLIC_URL;
   const value = typeof raw === "string" && raw.trim().length ? raw.trim() : fallback;
-  return value.endsWith("/") ? value.slice(0, -1) : value;
+  const normalized = value.replace(/\/+$/, "");
+  return normalized === "https://onbast.com" ? "https://www.onbast.com" : normalized;
 };
 
 const toDate = (value: string | undefined) => {
@@ -80,11 +71,10 @@ const maxDate = (a?: string, b?: string) => {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getBaseUrl();
 
-  const [staticUpdatedAt, services, serviceLocations, cities] = await Promise.all([
-    client.fetch<StaticUpdatedAt>(STATIC_UPDATED_AT_QUERY, {}, { next: { revalidate } }),
-    client.fetch<SanitySlugDoc[]>(SERVICES_SLUGS_QUERY, {}, { next: { revalidate } }),
-    client.fetch<SanityServiceLocationDoc[]>(SERVICE_LOCATION_SLUGS_QUERY, {}, { next: { revalidate } }),
-    client.fetch<SanityLocationSlugDoc[]>(CITY_SLUGS_QUERY, {}, { next: { revalidate } }),
+  const [staticUpdatedAt, services, serviceLocations] = await Promise.all([
+    client.fetch<StaticUpdatedAt>(STATIC_UPDATED_AT_QUERY, {}, { cache: "no-store" }),
+    client.fetch<SanitySlugDoc[]>(SERVICES_SLUGS_QUERY, {}, { cache: "no-store" }),
+    client.fetch<SanityServiceLocationDoc[]>(SERVICE_LOCATION_SLUGS_QUERY, {}, { cache: "no-store" }),
   ]);
 
   const entries: MetadataRoute.Sitemap = [

@@ -161,6 +161,14 @@ const slugify = (input: string) =>
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-");
 
+const normalizeTocLabel = (input: string) => {
+  const raw = typeof input === "string" ? input : "";
+  const withoutMarkdownHashes = raw.replace(/^#{1,6}\s*/g, "");
+  const normalizedWhitespace = withoutMarkdownHashes.replace(/\s+/g, " ").trim();
+  const withoutOnlyPunctuation = normalizedWhitespace.replace(/^[^\p{L}\p{N}]+$/gu, "");
+  return withoutOnlyPunctuation;
+};
+
 const getSeoContentComponents = () => ({
   block: {
     normal: ({ children }: any) => <p className="mb-6 text-neutral-300 leading-relaxed">{children}</p>,
@@ -516,18 +524,24 @@ const ContentWrapper = ({ mainImage, mainImageAlt, mainImageName, relatedProject
                               <div className="lg:sticky lg:top-28">
                                 <div className="text-xs uppercase tracking-wider text-neutral-500 mb-4">Índice</div>
                                 <nav aria-label="Índice del contenido" className="space-y-2 rounded-2xl border border-white/5 bg-neutral-950/30 p-4">
-                                  {toc.map((item: any) => (
-                                    <a
-                                      key={item.id}
-                                      href={`#${item.id}`}
-                                      className={cn(
-                                        "block text-sm text-neutral-300 hover:text-white transition-colors",
-                                        item.level === "h3" && "pl-4 text-neutral-400"
-                                      )}
-                                    >
-                                      {item.text}
-                                    </a>
-                                  ))}
+                                  {toc.map((item: any, index: number) => {
+                                    const cleaned = normalizeTocLabel(item.text);
+                                    const label = cleaned || (item.level === "h3" ? `Subsección ${index + 1}` : `Sección ${index + 1}`);
+                                    return (
+                                      <a
+                                        key={item.id}
+                                        href={`#${item.id}`}
+                                        title={label}
+                                        aria-label={label}
+                                        className={cn(
+                                          "block text-sm text-neutral-300 hover:text-white transition-colors",
+                                          item.level === "h3" && "pl-4 text-neutral-400"
+                                        )}
+                                      >
+                                        {label}
+                                      </a>
+                                    );
+                                  })}
                                 </nav>
                               </div>
                             </aside>

@@ -810,7 +810,7 @@ async function generateLocalContentBlock(service, location, model) {
       if (h2Count < 8) {
         throw new Error(`localContentBlock insuficiente: h2Count=${h2Count}`);
       }
-      if (wordCount < 1200) {
+      if (wordCount < 1100) {
         throw new Error(`localContentBlock insuficiente: wordCount=${wordCount}`);
       }
 

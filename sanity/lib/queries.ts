@@ -975,7 +975,7 @@ export const SERVICE_LOCATION_PAGE_QUERY = defineQuery(`{
             "slug": slug.current,
             type
           }
-      ])[count(*[_type == "serviceLocation" && service->slug.current == $serviceSlug && location._ref == _id && !(_id in path("drafts.**"))]) > 0][0...12],
+      ])[count(*[_type == "serviceLocation" && service->slug.current == $serviceSlug && location._ref == ^._id && !(_id in path("drafts.**"))]) > 0][0...12],
     []
   )
 }`);

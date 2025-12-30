@@ -506,7 +506,7 @@ async function generateContent(service, location, model) {
     Estilo: Corporativo, cercano, directo, disruptivo (estilo Vercel/Linear).
     
     OBJETIVO: Reescribir y enriquecer semánticamente (anti thin content) el contenido base del servicio
-    para crear la landing page local, manteniendo EXACTAMENTE la propuesta de valor y estructura, pero utilizando un lenguaje más cercano.
+    para crear la landing page local, manteniendo EXACTAMENTE la propuesta de valor y estructura, pero utilizando un lenguaje más cercano y enfocado a hacer SEO. Literalmente es un bloque destinado a hacer Posicionamiento SEO.
     No inventes ofertas, stacks, procesos o claims que no existan en la base.
 
     BASE DEL SERVICIO (JSON REAL, ÚSALO COMO FUENTE):
@@ -891,6 +891,7 @@ async function main() {
     const limit = Number.parseInt(process.env.GEO_LIMIT || '0', 10);
 
     let query = '*[_type == "serviceLocation" && defined(service._ref) && defined(location._ref)';
+    if (allowedTypes.length) query += ' && location->type in $locationTypes';
     if (serviceSlugFilter) query += ' && service->slug.current == $serviceSlug';
     if (citySlugFilter) query += ' && location->slug.current == $citySlug';
     query += ']';
@@ -928,29 +929,57 @@ async function main() {
     if (Number.isFinite(limit) && limit > 0) query += `[0...${limit}]`;
 
     const items = await sanity.fetch(query, {
+      ...(allowedTypes.length ? { locationTypes: allowedTypes } : {}),
       ...(serviceSlugFilter ? { serviceSlug: serviceSlugFilter } : {}),
       ...(citySlugFilter ? { citySlug: citySlugFilter } : {}),
     });
 
-    const list = Array.isArray(items) ? items : [];
-    console.log(`🧩 Modo localContentBlock: ${list.length} landings a procesar.`);
+    const listRaw = Array.isArray(items) ? items : [];
 
-    for (const item of list) {
-      const service = item?.service;
-      const location = item?.location;
-      const id = item?._id;
-      if (!id || !service?._id || !location?._id) {
-        console.log('⏩ Saltando (doc incompleto)');
+    const byBaseId = new Map();
+    for (const item of listRaw) {
+      const id = String(item?._id || '').trim();
+      if (!id) continue;
+      const isDraft = id.startsWith('drafts.');
+      const baseId = isDraft ? id.slice('drafts.'.length) : id;
+      const entry = byBaseId.get(baseId) || { baseId, draft: null, published: null };
+      if (isDraft) entry.draft = item;
+      else entry.published = item;
+      byBaseId.set(baseId, entry);
+    }
+
+    const grouped = Array.from(byBaseId.values());
+    console.log(`🧩 Modo localContentBlock: ${grouped.length} landings únicas a procesar (raw=${listRaw.length}).`);
+
+    for (const entry of grouped) {
+      const source = entry.draft || entry.published;
+      const service = source?.service;
+      const location = source?.location;
+      if (!service?._id || !location?._id) {
+        console.log(`⏩ Saltando (doc incompleto): ${entry.baseId}`);
+        continue;
+      }
+
+      const idsToPatch = [entry.published?._id, entry.draft?._id]
+        .map((v) => (typeof v === 'string' ? v.trim() : ''))
+        .filter(Boolean);
+
+      if (!idsToPatch.length) {
+        console.log(`⏩ Saltando (sin IDs a parchear): ${entry.baseId}`);
         continue;
       }
 
       const localContentBlock = await generateLocalContentBlock(service, location, resolvedGeminiModel);
 
       if (!writeEnabled) {
-        console.log(`🧪 DRY-RUN: Actualizaría localContentBlock: ${service.title} en ${location.name}`);
+        console.log(`🧪 DRY-RUN: Actualizaría localContentBlock (${idsToPatch.join(', ')}): ${service.title} en ${location.name}`);
       } else {
-        await sanity.patch(id).set({ localContentBlock }).commit();
-        console.log(`✅ Actualizado localContentBlock: ${service.title} en ${location.name}`);
+        let tx = sanity.transaction();
+        for (const patchId of idsToPatch) {
+          tx = tx.patch(patchId, { set: { localContentBlock } });
+        }
+        await tx.commit();
+        console.log(`✅ Actualizado localContentBlock (${idsToPatch.join(', ')}): ${service.title} en ${location.name}`);
       }
 
       await sleep(landingDelayMs);

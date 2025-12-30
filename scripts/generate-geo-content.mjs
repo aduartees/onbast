@@ -34,6 +34,7 @@ const argv = process.argv.slice(2);
 const runEnabled = argv.includes('--run') || process.env.RUN_GENERATION === '1';
 const writeEnabled = argv.includes('--write') || process.env.WRITE_TO_SANITY === '1';
 const purgeEnabled = argv.includes('--purge') || process.env.PURGE_SERVICE_LOCATIONS === '1';
+const localContentOnlyEnabled = argv.includes('--local-content-only') || process.env.LOCAL_CONTENT_ONLY === '1';
 
 if (!process.env.SANITY_WRITE_TOKEN) {
   console.error('❌ ERROR: SANITY_WRITE_TOKEN no encontrada en .env.local');
@@ -309,6 +310,10 @@ const geoContentSchema = z.object({
   }),
 });
 
+const localContentOnlySchema = z.object({
+  localContentBlock: geoContentSchema.shape.localContentBlock,
+});
+
 const stripNullsDeep = (value) => {
   if (value === null) return undefined;
   if (Array.isArray(value)) {
@@ -501,7 +506,7 @@ async function generateContent(service, location, model) {
     Estilo: Corporativo, cercano, directo, disruptivo (estilo Vercel/Linear).
     
     OBJETIVO: Reescribir y enriquecer semánticamente (anti thin content) el contenido base del servicio
-    para crear la landing page local, manteniendo EXACTAMENTE la propuesta de valor y estructura.
+    para crear la landing page local, manteniendo EXACTAMENTE la propuesta de valor y estructura, pero utilizando un lenguaje más cercano.
     No inventes ofertas, stacks, procesos o claims que no existan en la base.
 
     BASE DEL SERVICIO (JSON REAL, ÚSALO COMO FUENTE):
@@ -527,9 +532,12 @@ async function generateContent(service, location, model) {
        - heroHeadline, featuresTitle, processTitle, techTitle, teamTitle, testimonialsTitle, relatedProjectsTitle, faqTitle, pricingTitle y ctaSection.title.
        - Evita encabezados genéricos repetidos entre ubicaciones; introduce señales locales sin inventar ofertas.
     6. El campo "localContentBlock" debe ser un array de bloques Portable Text (Sanity) válido.
-       - Usa al menos 6 encabezados estilo "h2".
-       - Extensión total: 800-1200 palabras.
-       - Habla de la economía local de ${location.name}, polígonos industriales o zonas comerciales reales.
+       - Usa al menos 8-10 encabezados estilo "h2".
+       - Extensión total: 1800-2000 palabras.
+       - Habla de la economía local de ${location.name}, polígonos industriales o zonas comerciales reales. 
+       - Este bloque es para hacer SEO lo mejor posible, asi que debes de usar las palabras clave de la landing y la ciudad varias veces en el texto, y casi que todas en el h2, pero evitando el sobreuso.
+       - Repite la keyword principal (servicio + ciudad) constantemente y variaciones semánticas de forma natural.
+       - Evita sobreoptimización (no repitas el mismo patrón de título), pero mantén repetición para dominar la intencion de búsqueda.
     
     ESTRUCTURA DE ARRAYS REQUERIDA (NO FALLAR EN CANTIDADES):
     - customFeatures: EXACTAMENTE ${desiredFeaturesCount} objetos, reescritura 1:1 del concepto de features base, pero readaptalas para evitar thin content y añadir nombre y referencias locales.
@@ -697,6 +705,126 @@ async function generateContent(service, location, model) {
   }
 }
 
+async function generateLocalContentBlock(service, location, model) {
+  console.log(`🤖 Generando localContentBlock (Gemini 3 Pro) para: ${service.title} en ${location.name}...`);
+
+  const clampText = (value, maxLen = 1200, { suffix = '…', hard = false } = {}) => {
+    const str = typeof value === 'string' ? value.trim() : '';
+    if (!str) return '';
+    if (!Number.isFinite(maxLen) || maxLen <= 0) return '';
+    if (str.length <= maxLen) return str;
+    if (hard || !suffix) return str.slice(0, maxLen).trim();
+    const suffixLen = String(suffix).length;
+    if (suffixLen >= maxLen) return str.slice(0, maxLen).trim();
+    return `${str.slice(0, maxLen - suffixLen).trim()}${suffix}`;
+  };
+
+  const baseServiceForRewrite = {
+    title: clampText(service.title, 160),
+    seoTitle: clampText(service.seoTitle, 60, { hard: true }),
+    seoDescription: clampText(service.seoDescription, 160, { hard: true }),
+    shortDescription: clampText(service.shortDescription, 320),
+    longDescription: clampText(service.longDescription, 1400),
+    overviewText: clampText(service.overviewText, 1200),
+    sections: {
+      features: {
+        title: clampText(service.featuresTitle, 140),
+        highlight: clampText(service.featuresHighlight, 120),
+        description: clampText(service.featuresDescription, 800),
+      },
+      process: {
+        title: clampText(service.processTitle, 140),
+        highlight: clampText(service.processHighlight, 120),
+        description: clampText(service.processDescription, 800),
+      },
+      tech: {
+        title: clampText(service.techTitle, 140),
+        highlight: clampText(service.techHighlight, 120),
+        description: clampText(service.techDescription, 800),
+      },
+      pricing: service.pricing
+        ? {
+            title: clampText(service.pricing?.title, 140),
+            subtitle: clampText(service.pricing?.subtitle, 320),
+            trustedCompaniesTitle: clampText(service.pricing?.trustedCompaniesTitle, 160),
+          }
+        : undefined,
+    },
+  };
+
+  const serviceContext = JSON.stringify(baseServiceForRewrite);
+
+  const prompt = `
+    Actúa como un Ingeniero de Contenidos y Copywriter Senior para ONBAST (Agencia de desarrollo web y Posicionamiento SEO y GEO).
+    Estilo: Corporativo, cercano, directo, disruptivo (estilo Vercel/Linear).
+
+    OBJETIVO: Generar SOLO el bloque "localContentBlock" para una landing local ya existente, manteniendo la propuesta de valor del servicio.
+    No inventes ofertas, stacks, procesos o claims que no existan en la base, pero usa un lenguaje cercano, que capte la intencion de compra.
+
+    BASE DEL SERVICIO (JSON REAL, ÚSALO COMO FUENTE):
+    ${serviceContext}
+
+    OBJETIVO: Devolver el JSON final SOLO con localContentBlock para:
+    - Servicio: ${service.title}
+    - Ubicación: ${location.name} (${location.type})
+    - Contexto: ${location.geoContext || 'Zona estratégica empresarial'}
+
+    REGLAS ESTRICTAS DE RESPUESTA:
+    1. Responde SOLO con un objeto JSON válido. Sin markdown, sin explicaciones.
+    2. El JSON debe tener EXCLUSIVAMENTE esta forma:
+       { "localContentBlock": [ ... ] }
+    3. "localContentBlock" debe ser un array Portable Text (Sanity) válido.
+       - Usa al menos 8-10 encabezados estilo "h2".
+       - Extensión total: 1500-2000 palabras.
+       - Incluye párrafos entre H2s; no hagas una lista de H2s vacíos.
+       - Habla de la economía local de ${location.name}, polígonos industriales o zonas comerciales reales.
+       - Repite la keyword principal (servicio + ciudad) constantemente y variaciones semánticas de forma natural.
+       - Evita sobreoptimización (no repitas el mismo patrón de título), pero mantén repetición para dominar la intencion de búsqueda.
+
+    EJEMPLO DE FORMATO (NO COPIAR TEXTO):
+    {
+      "localContentBlock": [
+        { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "..." }] },
+        { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "..." }] }
+      ]
+    }
+  `;
+
+  let lastError = null;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      console.log(`↻ Intento ${attempt}/3...`);
+      const text = await withTimeout(
+        geminiGenerateContent({ prompt, model }),
+        180000,
+        'Gemini request'
+      );
+
+      const parsed = safeJsonParse(text);
+      const validated = localContentOnlySchema.parse(parsed);
+      const content = addKeys(validated);
+
+      const h2Count = countPortableTextH2(content.localContentBlock);
+      const wordCount = estimatePortableTextWordCount(content.localContentBlock);
+
+      if (h2Count < 8) {
+        throw new Error(`localContentBlock insuficiente: h2Count=${h2Count}`);
+      }
+      if (wordCount < 1200) {
+        throw new Error(`localContentBlock insuficiente: wordCount=${wordCount}`);
+      }
+
+      return content.localContentBlock;
+    } catch (err) {
+      lastError = err;
+      console.warn(`⚠️ Error generando localContentBlock (intento ${attempt}):`, err?.message || err);
+      await sleep(jitter(generationState.delayMs));
+    }
+  }
+
+  throw lastError || new Error('No se pudo generar localContentBlock');
+}
+
 const purgeServiceLocations = async () => {
   const ids = await sanity.fetch(`*[_type == "serviceLocation"]{ _id }`);
   const list = Array.isArray(ids)
@@ -731,6 +859,7 @@ async function main() {
 
   if (!runEnabled) {
     console.log('ℹ️ Modo seguro: añade --run para ejecutar (y --write para escribir en Sanity).');
+    console.log('ℹ️ Para actualizar solo localContentBlock: añade --local-content-only.');
     return;
   }
 
@@ -755,6 +884,80 @@ async function main() {
     : locations;
 
   console.log(`📍 Servicios: ${services.length} | Ubicaciones: ${filteredLocations.length}/${locations.length} | Tipos: ${allowedTypes.join(',')}`);
+
+  if (localContentOnlyEnabled) {
+    const serviceSlugFilter = typeof process.env.GEO_SERVICE_SLUG === 'string' ? process.env.GEO_SERVICE_SLUG.trim() : '';
+    const citySlugFilter = typeof process.env.GEO_CITY_SLUG === 'string' ? process.env.GEO_CITY_SLUG.trim() : '';
+    const limit = Number.parseInt(process.env.GEO_LIMIT || '0', 10);
+
+    let query = '*[_type == "serviceLocation" && defined(service._ref) && defined(location._ref)';
+    if (serviceSlugFilter) query += ' && service->slug.current == $serviceSlug';
+    if (citySlugFilter) query += ' && location->slug.current == $citySlug';
+    query += ']';
+    query += `{
+      _id,
+      "service": service-> {
+        _id,
+        title,
+        "slug": slug.current,
+        seoTitle,
+        seoDescription,
+        shortDescription,
+        longDescription,
+        overviewText,
+        featuresTitle,
+        featuresHighlight,
+        featuresDescription,
+        processTitle,
+        processHighlight,
+        processDescription,
+        techTitle,
+        techHighlight,
+        techDescription,
+        pricing { title, subtitle, trustedCompaniesTitle }
+      },
+      "location": location-> {
+        _id,
+        name,
+        type,
+        "slug": slug.current,
+        geoContext,
+        "parentName": parent->name
+      }
+    }`;
+    if (Number.isFinite(limit) && limit > 0) query += `[0...${limit}]`;
+
+    const items = await sanity.fetch(query, {
+      ...(serviceSlugFilter ? { serviceSlug: serviceSlugFilter } : {}),
+      ...(citySlugFilter ? { citySlug: citySlugFilter } : {}),
+    });
+
+    const list = Array.isArray(items) ? items : [];
+    console.log(`🧩 Modo localContentBlock: ${list.length} landings a procesar.`);
+
+    for (const item of list) {
+      const service = item?.service;
+      const location = item?.location;
+      const id = item?._id;
+      if (!id || !service?._id || !location?._id) {
+        console.log('⏩ Saltando (doc incompleto)');
+        continue;
+      }
+
+      const localContentBlock = await generateLocalContentBlock(service, location, resolvedGeminiModel);
+
+      if (!writeEnabled) {
+        console.log(`🧪 DRY-RUN: Actualizaría localContentBlock: ${service.title} en ${location.name}`);
+      } else {
+        await sanity.patch(id).set({ localContentBlock }).commit();
+        console.log(`✅ Actualizado localContentBlock: ${service.title} en ${location.name}`);
+      }
+
+      await sleep(landingDelayMs);
+    }
+
+    return;
+  }
 
   for (const service of services) {
     for (const location of filteredLocations) {

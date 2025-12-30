@@ -24,12 +24,37 @@ type TermsOfServiceQueryResult = {
   };
 };
 
+const getPortableTextExcerpt = (content: TypedObject[] | undefined, maxLen = 160) => {
+  if (!Array.isArray(content) || content.length === 0) return undefined;
+
+  const parts: string[] = [];
+  for (const node of content) {
+    if (!node || typeof node !== "object") continue;
+    const anyNode = node as any;
+    if (anyNode._type !== "block") continue;
+    const children = Array.isArray(anyNode.children) ? anyNode.children : [];
+    const text = children
+      .map((c: any) => (typeof c?.text === "string" ? c.text : ""))
+      .join(" ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (!text) continue;
+    parts.push(text);
+    if (parts.join(" ").length >= maxLen) break;
+  }
+
+  const joined = parts.join(" ").trim();
+  if (!joined) return undefined;
+  if (joined.length <= maxLen) return joined;
+  return `${joined.slice(0, maxLen - 1).trim()}…`;
+};
+
 export async function generateMetadata(): Promise<Metadata> {
   const data = await client.fetch<TermsOfServiceQueryResult>(TERMS_OF_SERVICE_PAGE_QUERY, {}, { next: { revalidate: 60 } });
 
   const fallbackTitle = "Condiciones del Servicio";
   const title = data?.seo?.title || data?.title || fallbackTitle;
-  const description = data?.seo?.description;
+  const description = data?.seo?.description || getPortableTextExcerpt(data?.content) || "Condiciones del servicio de ONBAST. Aquí encontraras las condiciones generales de nuestros servicios.";
   const baseUrlRaw = process.env.NEXT_PUBLIC_URL || data?.siteSettings?.agency?.url || "https://www.onbast.com";
   const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
 

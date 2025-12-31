@@ -151,6 +151,8 @@ const generationState = {
 };
 
 const landingDelayMs = Number.parseInt(process.env.GEO_LANDING_DELAY_MS || '60000', 10);
+const skipDelayMs = Number.parseInt(process.env.GEO_SKIP_DELAY_MS || '0', 10);
+const commitDelayMs = Number.parseInt(process.env.GEO_COMMIT_DELAY_MS || '250', 10);
 
 const jitter = (ms) => {
   const delta = Math.max(250, Math.floor(ms * 0.15));
@@ -889,6 +891,33 @@ async function main() {
     const serviceSlugFilter = typeof process.env.GEO_SERVICE_SLUG === 'string' ? process.env.GEO_SERVICE_SLUG.trim() : '';
     const citySlugFilter = typeof process.env.GEO_CITY_SLUG === 'string' ? process.env.GEO_CITY_SLUG.trim() : '';
     const limit = Number.parseInt(process.env.GEO_LIMIT || '0', 10);
+    const forceRegen = argv.includes('--force') || process.env.GEO_FORCE_REGEN === '1';
+    const minH2 = Number.parseInt(process.env.GEO_LOCAL_BLOCK_MIN_H2 || '8', 10);
+    const minWords = Number.parseInt(process.env.GEO_LOCAL_BLOCK_MIN_WORDS || '1100', 10);
+
+    const estimateWordsFromText = (text) => {
+      const str = typeof text === 'string' ? text.trim() : '';
+      if (!str) return 0;
+      return str.split(/\s+/).filter(Boolean).length;
+    };
+
+    const looksUpdatedMeta = (meta) => {
+      const h2Count = Number.isFinite(meta?.h2Count) ? meta.h2Count : 0;
+      const wordCount = Number.isFinite(meta?.wordCount) ? meta.wordCount : estimateWordsFromText(meta?.text);
+      return h2Count >= minH2 && wordCount >= minWords;
+    };
+
+    const ensurePortableTextKeys = (block) => {
+      if (!Array.isArray(block)) return block;
+      return addKeys({ localContentBlock: block })?.localContentBlock;
+    };
+
+    const fetchLocalContentBlockById = async (id) => {
+      const resolvedId = typeof id === 'string' ? id.trim() : '';
+      if (!resolvedId) return undefined;
+      const res = await sanity.fetch(`*[_id == $id][0]{ localContentBlock }`, { id: resolvedId });
+      return res?.localContentBlock;
+    };
 
     let query = '*[_type == "serviceLocation" && defined(service._ref) && defined(location._ref)';
     if (allowedTypes.length) query += ' && location->type in $locationTypes';
@@ -897,6 +926,15 @@ async function main() {
     query += ']';
     query += `{
       _id,
+      "localContentMeta": {
+        "h2Count": count(localContentBlock[_type == "block" && style == "h2"]),
+        "wordCount": count(
+          string::split(
+            array::join(string::split(pt::text(localContentBlock), "\n\n"), " "),
+            " "
+          )[@ != ""]
+        )
+      },
       "service": service-> {
         _id,
         title,
@@ -967,6 +1005,44 @@ async function main() {
       if (!idsToPatch.length) {
         console.log(`⏩ Saltando (sin IDs a parchear): ${entry.baseId}`);
         continue;
+      }
+
+      const docForId = (patchId) => (String(patchId).startsWith('drafts.') ? entry.draft : entry.published);
+      const idsNeedingPatch = idsToPatch.filter((patchId) => !looksUpdatedMeta(docForId(patchId)?.localContentMeta));
+
+      if (!forceRegen) {
+        const draftOk = looksUpdatedMeta(entry.draft?.localContentMeta);
+        const publishedOk = looksUpdatedMeta(entry.published?.localContentMeta);
+        const reusableId = draftOk ? entry.draft?._id : publishedOk ? entry.published?._id : null;
+
+        if (reusableId) {
+          if (idsNeedingPatch.length === 0) {
+            console.log(`⏩ Ya actualizado (minH2=${minH2}, minWords=${minWords}): ${service.title} en ${location.name}`);
+            if (skipDelayMs > 0) await sleep(skipDelayMs);
+            continue;
+          }
+
+          const fetched = await fetchLocalContentBlockById(reusableId);
+          const localContentBlock = ensurePortableTextKeys(fetched);
+          if (!Array.isArray(localContentBlock) || localContentBlock.length === 0) {
+            console.log(`⏩ Saltando (bloque no recuperable): ${service.title} en ${location.name}`);
+            await sleep(landingDelayMs);
+            continue;
+          }
+          if (!writeEnabled) {
+            console.log(`🧪 DRY-RUN: Sincronizaría localContentBlock (${idsNeedingPatch.join(', ')}): ${service.title} en ${location.name}`);
+          } else {
+            let tx = sanity.transaction();
+            for (const patchId of idsNeedingPatch) {
+              tx = tx.patch(patchId, { set: { localContentBlock } });
+            }
+            await tx.commit();
+            console.log(`✅ Sincronizado localContentBlock (${idsNeedingPatch.join(', ')}): ${service.title} en ${location.name}`);
+          }
+
+          if (commitDelayMs > 0) await sleep(commitDelayMs);
+          continue;
+        }
       }
 
       const localContentBlock = await generateLocalContentBlock(service, location, resolvedGeminiModel);

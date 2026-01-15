@@ -67,10 +67,23 @@ const toAbsoluteUrl = (baseUrl: string, path: string) => {
   return `${baseUrl}${path}`;
 };
 
-const getBaseUrl = (fallback = "https://www.onbast.com") => {
+export const getBaseUrl = (fallback = "https://www.onbast.com") => {
   const raw = process.env.NEXT_PUBLIC_URL;
   const value = typeof raw === "string" && raw.trim().length ? raw.trim() : fallback;
-  return value.replace(/\/+$/, "");
+  const normalized = value.replace(/\/+$/, "");
+
+  try {
+    const url = new URL(normalized);
+    const hostname = url.hostname.toLowerCase();
+    const shouldForceHttpsAndWww = hostname === "onbast.com" || hostname === "www.onbast.com";
+
+    if (hostname === "onbast.com") url.hostname = "www.onbast.com";
+    if (shouldForceHttpsAndWww) url.protocol = "https:";
+
+    return url.origin;
+  } catch {
+    return "https://www.onbast.com";
+  }
 };
 
 export function generateOrganizationSchema(

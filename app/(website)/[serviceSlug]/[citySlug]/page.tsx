@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ServiceHeader } from "@/components/sections/service-header";
 import { ServiceContent } from "@/components/sections/service-content";
 import { ScrollReset } from "@/components/utils/scroll-reset";
-import { generateServiceSchema, generateFAQSchema, generateBreadcrumbSchema, generatePricingOfferCatalogSchema } from "@/lib/seo";
+import { generateServiceSchema, generateFAQSchema, generateBreadcrumbSchema, generatePricingOfferCatalogSchema, getBaseUrl } from "@/lib/seo";
 
 // --- Types ---
 interface PageProps {
@@ -332,8 +332,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const { service, location, override } = data;
-  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || "https://www.onbast.com";
-  const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
+  const baseUrl = getBaseUrl();
 
   // Logic: Override > Constructed > Default
   const metaTitle = override?.seoTitle || `${service.title} en ${location.name} | ONBAST`;
@@ -381,8 +380,7 @@ export default async function ServiceLocationPage({ params }: PageProps) {
 
   const { service, location, override } = data;
 
-  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || "https://www.onbast.com";
-  const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
+  const baseUrl = getBaseUrl();
   const organizationId = `${baseUrl}/#organization`;
 
   const localHeroImage = `/api/hero?title=${encodeURIComponent(`${service.title} en ${location.name}`)}&subtitle=${encodeURIComponent("Desarrollo Web y Posicionamiento SEO & GEO")}`;

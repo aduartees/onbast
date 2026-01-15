@@ -421,9 +421,11 @@ export const TERMS_OF_SERVICE_PAGE_QUERY = defineQuery(`*[_type == "termsOfServi
 export const FOOTER_QUERY = SETTINGS_QUERY;
 
 export const AGENCY_PAGE_QUERY = defineQuery(`*[_type == "agencyPage"][0] {
+  subtitle,
   hero {
     title,
     headline,
+    subtitle,
     highlight,
     description,
     "imageUrl": image.asset->url

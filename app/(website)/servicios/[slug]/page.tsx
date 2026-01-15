@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ServiceHeader } from "@/components/sections/service-header";
 import { ServiceContent } from "@/components/sections/service-content";
 import { ScrollReset } from "@/components/utils/scroll-reset";
-import { generateServiceSchema, generateFAQSchema, generateBreadcrumbSchema, generatePricingOfferCatalogSchema } from "@/lib/seo";
+import { generateServiceSchema, generateFAQSchema, generateBreadcrumbSchema, generatePricingOfferCatalogSchema, getBaseUrl } from "@/lib/seo";
 
 // --- Types ---
 interface ServicePageProps {
@@ -190,8 +190,7 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
 
   const shareImage = service.seoImage || service.imageUrl || DEFAULT_IMAGE;
 
-  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || "https://www.onbast.com";
-  const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
+  const baseUrl = getBaseUrl();
 
   return {
     title: service.seoTitle || `${service.title} | ONBAST`,
@@ -232,8 +231,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
   if (!service) return notFound();
 
-  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || "https://www.onbast.com";
-  const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
+  const baseUrl = getBaseUrl();
   const organizationId = `${baseUrl}/#organization`;
 
   const serviceSchema = generateServiceSchema(service, service.agency);

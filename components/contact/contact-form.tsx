@@ -250,7 +250,7 @@ export function ContactForm({ email }: { email?: string }) {
       <input type="hidden" name="_subject" value="Nuevo Mensaje de Contacto - ONBAST" />
       <input type="hidden" name="_template" value="table" />
       <input type="hidden" name="_captcha" value="false" />
-      <input type="hidden" name="_next" value="https://onbast.com/contacto?success=true" />
+      <input type="hidden" name="_next" value="https://www.onbast.com/contacto?success=true" />
       {/* Honeypot for FormSubmit internal check */}
       <input type="text" name="_honey" style={{display: 'none'}} />
 

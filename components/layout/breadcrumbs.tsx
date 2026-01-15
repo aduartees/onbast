@@ -30,7 +30,24 @@ export function Breadcrumbs() {
   const pathname = rawPathname === "/" ? "/" : rawPathname.replace(/\/+$/, "");
   const { lastItemOverride, itemsOverride } = useBreadcrumb();
 
-  const baseUrl = (process.env.NEXT_PUBLIC_URL || "https://www.onbast.com").replace(/\/+$/, "");
+  const baseUrl = (() => {
+    const raw = process.env.NEXT_PUBLIC_URL;
+    const value = typeof raw === "string" && raw.trim().length ? raw.trim() : "https://www.onbast.com";
+    const normalized = value.replace(/\/+$/, "");
+
+    try {
+      const url = new URL(normalized);
+      const hostname = url.hostname.toLowerCase();
+      const shouldForceHttpsAndWww = hostname === "onbast.com" || hostname === "www.onbast.com";
+
+      if (hostname === "onbast.com") url.hostname = "www.onbast.com";
+      if (shouldForceHttpsAndWww) url.protocol = "https:";
+
+      return url.origin;
+    } catch {
+      return "https://www.onbast.com";
+    }
+  })();
 
   const segments = useMemo(() => pathname.split("/").filter(Boolean), [pathname]);
   const isLocalLanding = segments.length === 2 && segments[0] !== "servicios";

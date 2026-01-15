@@ -112,10 +112,10 @@ export default async function AgencyPage() {
             />
             
             {/* Description Paragraph */}
-            {hero?.description && (
+            {(hero?.subtitle || hero?.description || data?.subtitle) && (
                 <div className="max-w-xl mx-auto mb-10 md:mb-16 px-4 mt-8">
                    <BlurReveal
-                     text={hero.description}
+                     text={hero?.subtitle || hero?.description || data?.subtitle}
                      className="text-sm md:text-base text-neutral-400 leading-relaxed"
                      delay={0.3}
                      as="p"

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { client } from '@/sanity/lib/client';
+import { getBaseUrl } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
@@ -77,8 +78,7 @@ const LLM_QUERY = `{
 
 export async function GET() {
   const data = await client.fetch(LLM_QUERY);
-  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || data.settings?.url || 'https://www.onbast.com';
-  const baseUrl = typeof baseUrlRaw === 'string' ? baseUrlRaw.replace(/\/$/, '') : 'https://www.onbast.com';
+  const baseUrl = getBaseUrl(data.settings?.url || 'https://www.onbast.com');
 
   // Helper to format address
   const formatAddress = (addr: any) => {

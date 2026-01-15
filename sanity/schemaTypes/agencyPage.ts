@@ -14,12 +14,19 @@ export default defineType({
   },
   fields: [
     defineField({
+      name: 'subtitle',
+      title: 'Subtítulo',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
       name: 'hero',
       title: 'Hero Section',
       type: 'object',
       fields: [
         defineField({ name: 'title', title: 'Título (Pill / H1)', type: 'string', description: 'Ej: Agencia, Nosotros' }),
         defineField({ name: 'headline', title: 'Frase Principal (Large Text)', type: 'text', rows: 2, description: 'La frase grande de impacto. Ej: Más que una agencia.' }),
+        defineField({ name: 'subtitle', title: 'Subtítulo (Párrafo)', type: 'text', rows: 3 }),
         defineField({ name: 'highlight', title: 'Palabra Destacada (Cursiva)', type: 'string' }),
         defineField({ name: 'description', title: 'Descripción Corta (Párrafo)', type: 'text', rows: 3, description: 'El párrafo introductorio bajo la frase.' }),
         defineField({ name: 'image', title: 'Imagen Hero', type: 'image', options: { hotspot: true } }),

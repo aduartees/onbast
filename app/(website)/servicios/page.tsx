@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Code2, Zap, Shield, Globe, Database, Smartphone } from "lucide-react";
 import Image from "next/image";
 import * as LucideIcons from "lucide-react";
-import { generateBreadcrumbSchema } from "@/lib/seo";
+import { generateBreadcrumbSchema, getBaseUrl } from "@/lib/seo";
 
 export const dynamic = 'force-dynamic';
 
@@ -35,8 +35,7 @@ export default async function ServicesPage() {
     client.fetch(SERVICES_PAGE_QUERY)
   ]);
 
-  const baseUrlRaw = process.env.NEXT_PUBLIC_URL || "https://www.onbast.com";
-  const baseUrl = typeof baseUrlRaw === "string" ? baseUrlRaw.replace(/\/+$/, "") : "https://www.onbast.com";
+  const baseUrl = getBaseUrl();
 
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: "Inicio", item: `${baseUrl}/` },

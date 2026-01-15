@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { BreadcrumbProvider } from "@/components/layout/breadcrumb-context";
 import Script from "next/script";
 import { CookieConsentManager } from "@/components/utils/cookie-consent";
+import { getBaseUrl } from "@/lib/seo";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const poppins = Poppins({ 
@@ -20,12 +21,6 @@ const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument",
   style: "italic"
 });
-
-const getBaseUrl = (fallback = "https://www.onbast.com") => {
-  const raw = process.env.NEXT_PUBLIC_URL;
-  const value = typeof raw === "string" && raw.trim().length ? raw.trim() : fallback;
-  return value.endsWith("/") ? value.slice(0, -1) : value;
-};
 
 const baseUrl = getBaseUrl();
 

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { client } from "@/sanity/lib/client";
+import { getBaseUrl } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -49,13 +50,6 @@ const SERVICE_LOCATION_SLUGS_QUERY = `*[_type == "serviceLocation" && defined(se
   "citySlug": location->slug.current,
   _updatedAt
 }`;
-
-const getBaseUrl = (fallback = "https://www.onbast.com") => {
-  const raw = process.env.NEXT_PUBLIC_URL;
-  const value = typeof raw === "string" && raw.trim().length ? raw.trim() : fallback;
-  const normalized = value.replace(/\/+$/, "");
-  return normalized === "https://onbast.com" ? "https://www.onbast.com" : normalized;
-};
 
 const toDate = (value: string | undefined) => {
   const d = value ? new Date(value) : new Date();
